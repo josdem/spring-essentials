@@ -1,8 +1,8 @@
 // The base title of page
-//title = "Gaiden"
+title = ". : Entrenamiento - MakingDevs : ."
 
 // The title of TOC
-//tocTitle = "Table of contents"
+tocTitle = "Tabla de contenidos"
 
 // The path of template file
 //templatePath = "templates/layout.html"
