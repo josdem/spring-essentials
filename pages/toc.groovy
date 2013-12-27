@@ -1,30 +1,53 @@
-"presentacion.html"(title: "Bienvenido al curso : Aplicaciones web con Springframework y jQuery"){
+"presentacion.html"(title: "Bienvenido al curso : "){
   "presentacion.html#1"(title: "Bienvenido a MakingDevs")
   "presentacion.html#2"(title: "Objetivo del entrenamiento")
   "presentacion.html#3"(title: "Consideraciones")
   "presentacion.html#4"(title: "Herramientas para entrenamiento")
 }
 
-"springmvc.html"(title:"Arquitectura de SpringMVC"){
-  "springmvc.html#1"(title:"Revisión del modelo de programación")
-}
+//  Elementos esenciales de Springframework
+//    Módulos en Spring
+//    Diseño de aplicaciones
+//    con interfaces
+//
+//  Inversion of control y Dependency Injection
+//  
+//  El conteneder de Spring
+//      Declaración de beans
+//      Inyección por constructor
+//      Inyecciones por setter
+//      Wiring
+//      Ciclo de vida de los beans
+//      AppCtx y BeanFactory
+//
+//  Configuración del AppCtx
+//    Configuración con XML
+//      Namespaces
+//    Configuración con Anotaciones
+//    Configuración con JavaConfig
+//    Configuración con Groovy
+// 
+//  SPEL
+//  
+//  AOP
+//  Conceptos esenciales
+//  JoinPoint
+//  Pointcut
+//    Expresiones
+//  Declarando aspectos con Anotaciones
+//  Soporte de anotaciones con AspectJ
+//  Declaración de aspectos(Advice)
+//    Before
+//    After
+//    After returning
+//    After throwing
+//    Around 
+//  JoinPoint en detalle
+//  Declarando aspectos con XML
+//  
+//  Testing de servicios de negocio
+//    Pruebas de unidad en servicios de negocio
+//    Pruebas de integración
 
-"controllers.html"(title:"Implementando controllers avanzados"){
-  "controllers.html#1"(title:"HTTP Request y @Response Body")
-}
-
-"view_resolvers.html"(title:"Resolviendo e implementando vistas"){
-  "view_resolvers.html#1"(title:"Message Converters")
-  "view_resolvers.html#2"(title:"@ResponseBody y @RequestBody")
-  "view_resolvers.html#3"(title:"Uso de Views y de @ResponseBody con MessageConverter")
-}
-
-"multiple_web.html"(title:"Validaciones, Formas, Archivos y Excepciones"){
-  "multiple_web.html#1"(title:"Manejo de formularios")
-  "multiple_web.html#2"(title:"Validaciones en formularios")
-  "multiple_web.html#3"(title:"Controlando excepciones")
-}
-
-"testing.html"(title:"Testing de aplicaciones SpringMVC")
 
 "agradecimiento.html"(title: "Agradecimiento")
