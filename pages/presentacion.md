@@ -31,13 +31,7 @@ __“Making best code, through better developers”__
 
 <h2 id="2">Objetivo del entrenamiento</h2>
 
-* Ampliar el conocimiento de SpringMVC 
-* Integrar jQuery en el uso de llamadas al framework
-* Permitir refactorizar código existente de SpringMVC para mejorar la experiencia del usuario de una forma simple y no invasiva
-* Revisar el modelo de programación de SpringMVC para aprovecharlo
-* Aprender a manejar peticiones HTTP, obteniendo entradas del request y generando respuestas de back-end
-* Conocer los message converters
-* Manejar componentes con Ajax y SpringMVC: Formas, upload de archivos, excepciones y testing
+* 
 
 <h2 id="3">Consideraciones</h2>
 
