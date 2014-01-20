@@ -31,7 +31,13 @@ __“Making best code, through better developers”__
 
 <h2 id="2">Objetivo del entrenamiento</h2>
 
-* 
+* Diseñar aplicaciones basadas en Springframework
+* Conocer los elementos de Depdendency Injection e Inversion of Control
+* Profundizar en el manejo del contenedor de Spring
+* Conocer los diferentes formas para crear un Application Context
+* Aplicar programación Orientada a Aspectos
+* Conocer los elementos de testing para crear componentes sustentables
+* Mejorar tus habilidades como desarrollador Java en la creación de aplicaciones Java empresariales
 
 <h2 id="3">Consideraciones</h2>
 
@@ -49,12 +55,11 @@ Es importante contar con los siguientes elementos instalados:
 * Necesarios:
     * Tener el JDK perfectamente instalado con la variable JAVA_HOME bien definida
     * Tener instalado el SpringSource Tool Suite
-    * Tener un navegador con herramientas de desarrollo
-        * Chrome
-        * Firefox
+    * Conocer bien el uso de la línea de comando
     * Tener Maven 2 bien instalado
 * Opcionales:
     * Algún otro IDE
         * Netbeans
         * IntelliJ IDEA
     * Un editor de textos
+    * Algún otro sistema de construcción automático basado en línea de comando
