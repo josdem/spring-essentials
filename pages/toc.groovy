@@ -5,9 +5,9 @@
   "presentacion.html#4"(title: "Herramientas para entrenamiento")
 }
 
-"essential.html"(title: "Elementos esenciales de Springframework"){
-  "essential.html"(title: "Módulos en Spring")
-  "essential.html"(title: "Diseño de aplicaciones(orientado a interfaces)")
+"essentials.html"(title: "Elementos esenciales de Springframework"){
+  "essentials.html"(title: "Módulos en Spring")
+  "essentials.html"(title: "Diseño de aplicaciones(orientado a interfaces)")
 }
 
 "ioc.html"(title: "Inversion of control y Dependency Injection"){
