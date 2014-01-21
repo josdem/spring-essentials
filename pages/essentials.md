@@ -41,21 +41,21 @@ En Noviembre del 2007 el equipo de SpringSource libero la versión 2.5 del frame
 
 Con la liberación de Spring 3.0(Diciembre del 2009), se adoptaron aún más el uso de anotaciones en varios aspectos del framework y un conjunto intenso de nuevas características:
 
-* Spring 3.0
+* [Spring 3.0](http://spring.io/blog/2009/12/16/spring-framework-3-0-goes-ga)
     * Soporte a gran escala para REST en SpringMVC, incluyendo los controllers que responden a las URL's del estilo REST con XML, JSON, RSS o cualquier otra respuesta adecuada.
     * Un nuevo lenguaje de expresión que ofrece inyección de dependencias a un nuevo nivel habilitando la inyección de valores de una variedad de fuentes, incluyendo otros beans y propiedades de sistema.
     * Nuevas anotaciones para SpringMVC, incluyendo `@CookieValue` y `@Request-Header`, para jalar valores desde la información del navegador y el request.
     * Un nuevo namespace XML para una configuración más fácil de SpringMVC
     * Soporte para validaciones declarativas con anotaciones de JSR-303(Bean Validations).
     * Soporte para la especificación JSR-330 en inyección de dependencias.
-    * Declaraciones basada en anotaciones de métodos calendarizados y asíncronos.
+    *y  Declaraciones basada en anotaciones de métodos calendarizados y asíncronos.
     * Una nueva configuración basada en anotaciones para librar a Spring de la configuración XML.
     * La funcionalidad de mapeo Objeto a XML del proyecto de Spring WebServices(OXM).
     * Ya no hay soporte para Java 1.4
 
 El pasado Diciembre del 2013 se libero la versión 4 de Spring, con cambios y mejoras muy notables de mencionar, y aún mejor conocer, ya que se adaptan a las nuevas necesidades de las aplicaciones modernas:
 
-* Spring 4
+* [Spring 4](http://spring.io/blog/2013/12/12/announcing-spring-framework-4-0-ga-release)
     * Esta versión es compatible con Java 1.6+.
     * Nuevas versiones de integración con frameworks como: Hibernate 3.6+, EhCache 2.1+, Quartz 1.8+, Groovy 1.8+, y Joda-Time 2.0+, Hibernate Validator 4.3+ y Jackson 2.0+.
     * Un POM llamado **Bill of Materials** para que los usuarios de Maven no conflictuen las versiones.
@@ -64,7 +64,7 @@ El pasado Diciembre del 2013 se libero la versión 4 de Spring, con cambios y me
     * Soporte para Servlet 3.0.
     * Más soporte para REST a través de `@RestController` y el `AsyncRestTemplate`.
     * El nuevo soporte para WebSockets compatible con el JSR-356, en conjunto con [SockJS](https://github.com/sockjs/sockjs-client), a través de STOMP.
-    * Mejor soporte de Tesing con el uso de meta-anotaciones, el uso de profiles con `@ActiveProfiles`.
+    * Mejor soporte de Testing con el uso de meta-anotaciones, el uso de profiles con `@ActiveProfiles`.
     * Y aunque no es parte de la liberación central, parte de esto motivo la liberación de [Spring Boot](http://projects.spring.io/spring-boot/docs/README.html).
 
 ## Módulos de Spring
@@ -100,3 +100,17 @@ Springframework esta formado en alrededor de 20 módulos. Dichos módulos están
 ------
 
 ## Diseño de aplicaciones(orientada a interfaces)
+
+La mayoría de nosotros hemos tenido la mala experiencia de lidiar con una pieza de software que tiene un _mal diseño_. Inclusive muchos de nosotros hemos tratado de descubrir que quizo decir el autor con ese diseño. Pero ¿qué es un mal diseño?.
+
+La mayoría de los desarrolladores no se propusieron crear _malos diseños_. Sin embargo, la mayoría del software se degrada finalmente al punto en que alguien dirá que el diseño es poco sólido. ¿Por qué ocurre esto? No fue el diseño pobre para empezar, o qué el diseño realmente esta en degradación como un pedazo de carne en mal estado. En el corazón de este problema es nuestra falta de una buena definición de _mal diseño_.
+
+Hay un conjunto de criterios que creo que la mayoría de los desarrolladores consideran o están de acuerdo. Una pieza de software que cumpla con sus requisitos y sin embargo presente cualquiera o todos los siguientes tres rasgos tiene un mal diseño:
+
+1. Es díficil de cambiar por que cada cambio afecta muchas otras partes del sistema.(Rígidez)
+2. Cuando haces un cambio, partes inesperadas del sistema se rompen.(Fragilidad)
+3. Es díficil de re-usar en otra aplicación por que no se puede desenredar de la aplicación actual.(Inmóvilidad)
+
+Por otra parte, sería difícil demostrar que una pieza de software que no exhibe esos rasgos, es decir, que es flexible, robusto, y reutilizable, y que también cumple todos sus requisitos, tiene un mal diseño. Por lo tanto, podemos utilizar estos tres rasgos como una forma sin ambigüedades para decidir si un diseño es "bueno" o "malo".
+
+
