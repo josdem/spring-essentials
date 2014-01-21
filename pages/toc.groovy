@@ -15,6 +15,7 @@
 }
 
 "spring_container.html"(title: "El conteneder de Spring"){
+  "spring_container.html"(title: "Bill of materials")
   "spring_container.html"(title: "Declaración de beans")
   "spring_container.html"(title: "Inyección por constructor")
   "spring_container.html"(title: "Inyecciones por setter")
@@ -30,10 +31,8 @@
   "appctx.html"(title:"Configuración con Anotaciones")
   "appctx.html"(title:"Configuración con JavaConfig")
   "appctx.html"(title:"Configuración con Groovy")
-
+  "appctx.html"(title:"Spring Expression Language")
 }
-
-"spel.html"(title:"Spring Expression Language")
 
 "aop.html"(title:"Programación orientada a aspectos"){
   "aop.html"(title:"Conceptos esenciales"){
