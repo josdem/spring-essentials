@@ -113,4 +113,37 @@ Hay un conjunto de criterios que creo que la mayoría de los desarrolladores con
 
 Por otra parte, sería difícil demostrar que una pieza de software que no exhibe esos rasgos, es decir, que es flexible, robusto, y reutilizable, y que también cumple todos sus requisitos, tiene un mal diseño. Por lo tanto, podemos utilizar estos tres rasgos como una forma sin ambigüedades para decidir si un diseño es "bueno" o "malo".
 
+### Creando aplicaciones con alta cohesión
 
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> CoupledPalindrome.java</h4>
+    <pre class="brush: java">
+        package com.makingdevs.essentials;
+
+        import java.io.BufferedReader;
+        import java.io.IOException;
+        import java.io.InputStreamReader;
+
+        public class CoupledPalindrome {
+
+          public static void main(String[] args) throws IOException {
+            System.out.println("Introduce una frase");
+            BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
+            String frase = in.readLine();
+            StringBuilder sb = new StringBuilder(frase);
+            String fraseInvertida = sb.reverse().toString();
+            boolean esPalindrome = frase.equals(fraseInvertida);
+            if(esPalindrome){
+              System.out.println("La frase que ingresaste es palindrome!");
+            }else{
+              System.out.println("La frase que ingresaste NO es palindrome!");
+            }
+          }
+        }
+    </pre>
+  </div>
+</div>
+
+
+### Alta cohesión y bajo acoplamiento
