@@ -322,6 +322,33 @@ public class TaskManager {
   </div>
 </div>
 
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskManagerScrum.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+public class TaskManagerScrum extends TaskManager {
+
+  public TaskManagerScrum(){
+    super();
+  }
+  //....
+}
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskManagerKanban.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+public class TaskManagerKaban extends TaskManager {
+
+  public TaskManagerScrum(){
+    super();
+  }
+  //....
+}
+    </script>
+  </div>
+</div>
+
 Es aquí, en donde entra posibilidad de abstraer el comportamiento de los componentes que tienen responsabilidades por separados y pensar que inclusive se podrían y deberían de probar por separado, de tal manera que podríamos resusarlos o cambiarlos sin afectar a los demás.
 
 Las interfaces surgen como el siguiente paso de la Programación Orientada a Objetos con la necesidad de agrupar y reutilizar las distintas funcionalidades de un objetode una forma más simple. Mediante interfaces podemos crear mejores diseños sin caer en las trampas de POO, así también, se crean nuevas y mejores formas de aplicar la implementación de un código de forma abstracta. Sin embargo debemos de tener presentes los 3 principios:
@@ -547,4 +574,12 @@ public class TaskManagerUnitTests {
 }
     </script>
   </div>
+</div>
+
+<div class="bs-callout bs-callout-info">
+<h4><i class="icon-coffee"></i> Información de utilidad</h4>
+  <p>
+    Te recomendamos que explores <a href="http://docs.mockito.googlecode.com/hg/latest/org/mockito/Mockito.html">la documentación de Mockito</a>, que aunque es simple, cubre la mayoría de los casos que se puedan presentar en cualquier aplicación empresarial, y te ayudarán a comprobar el comportamiento de tu aplicación.
+  </a>
+  </p>
 </div>
