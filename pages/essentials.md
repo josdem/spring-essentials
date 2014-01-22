@@ -118,7 +118,7 @@ Por otra parte, sería difícil demostrar que una pieza de software que no exhib
 <div class="row">
   <div class="col-md-12">
     <h4><i class="icon-file"></i> TaskManager.java</h4>
-    <pre class="brush: java">
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.essentials;
 
 import java.io.BufferedReader;
@@ -147,7 +147,7 @@ public class TaskManager {
     }
   }
 }
-    </pre>
+    ]]></script>
   </div>
 </div>
 
@@ -157,7 +157,7 @@ public class TaskManager {
 <div class="row">
   <div class="col-md-6">
     <h4><i class="icon-file"></i> TaskManagerIntegrationTests.java</h4>
-    <pre class="brush: java">
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.essentials;
 
 import static org.junit.Assert.*;
@@ -234,11 +234,11 @@ public class TaskManagerIntegrationTests {
   }
 
 }
-    </pre>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> TaskManagerIntegrationTests.java</h4>
-    <pre class="brush: java">
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.essentials;
 
 import java.io.BufferedReader;
@@ -275,6 +275,6 @@ public class TaskManager {
     return null;
   }
 }
-    </pre>
+    ]]></script>
   </div>
 </div>
