@@ -322,4 +322,229 @@ public class TaskManager {
   </div>
 </div>
 
-Es aquí, en donde entra posibilidad de abstraer el comportamiento de los componentes que tienen responsabilidades por separados y pensar que inclusive se podríany deberían de probar por separado
+Es aquí, en donde entra posibilidad de abstraer el comportamiento de los componentes que tienen responsabilidades por separados y pensar que inclusive se podrían y deberían de probar por separado, de tal manera que podríamos resusarlos o cambiarlos sin afectar a los demás.
+
+Las interfaces surgen como el siguiente paso de la Programación Orientada a Objetos con la necesidad de agrupar y reutilizar las distintas funcionalidades de un objetode una forma más simple. Mediante interfaces podemos crear mejores diseños sin caer en las trampas de POO, así también, se crean nuevas y mejores formas de aplicar la implementación de un código de forma abstracta. Sin embargo debemos de tener presentes los 3 principios:
+
+<blockquote>
+  <strong>
+    La implementación de una interfaz debe hacer lo que sus métodos dicen que hacen.
+  </strong>
+</blockquote>
+
+<blockquote>
+  <strong>
+    Una interfaz no debe interferir otros módulos de un programa o con otros programas.
+  </strong>
+</blockquote>
+
+<blockquote>
+  <strong>
+    Si una implementación no es capaz de realizar su responsabilidad, debe notificar a quien lo llamó.
+  </strong>
+</blockquote>
+
+Cuando diseñamos de esta forma, podemos encontrar formas más elegantes de resolver un problema y centrar nuestra lógica de negocio en ello de tal manera que pueda llevarse a una prueba de unidad exclusiva de una funcionalidad.
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskManager.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.essentials;
+
+import java.util.List;
+
+public class TaskManager {
+
+  private TaskStore taskStore;
+
+  public int howManyTasks() {
+    return taskStore.count();
+  }
+
+  public void addTask(Task task) {
+    taskStore.createTask(task);
+  }
+
+  public void addTask(String description) {
+    Task task = new Task();
+    // Nothing with description
+    taskStore.createTask(task);
+  }
+
+  public void addTask(List<Task> tasksToAdd) {
+    for(Task task:tasksToAdd){
+      taskStore.createTask(task);
+    }
+  }
+
+  public Task getTaskAt(int i) {
+    return taskStore.readTask(new Integer(i).longValue());
+  }
+
+  public Task findTask(String description) {
+    return taskStore.findTask(description);
+  }
+
+  public List<Task> findTasks(String description) {
+    return taskStore.findAllTasks(description);
+  }
+}
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskStore.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.essentials;
+
+import java.util.List;
+
+public interface TaskStore {
+  void createTask(Task task);
+  Task readTask(Long pk);
+  Task findTask(String description);
+  List<Task> findAllTasks(String description);
+  int count();
+}
+    </script>
+  </div>
+</div>
+
+Siempre se han confundido las pruebas de integración con las pruebas de unidad. Nuestra concepción debe ampliarse más para entender los preceptos de la terminología. Para  explicar esto detallemos lo siguiente de manera informal:
+
+* Pruebas de unidad: Son del tipo que determinan si un componente funciona de cierta forma esperada, bajos ciertos escenarios controlados y bien definidos, y excluyen el buen o mal funcionamiento de los elementos que colaboran con el mismo, pues no es de la incumbencia del elemento bajo ejecución, pero deben indicarnos que los mensajes a dichos elementos ajenos y externos deben ser enviados.
+* Pruebas de integración: Son aquellas que determinan que un componente se ejecuta correctamente incluyendo las interacciones con sus componentes asociados, los cuales también deben estar listos para ser invocados.
+* Pruebas de sistema: Son aquellas que ayudan a determinar si un flujo de negocio se ejecuto de manera correcta dadas ciertas condiciones y ambientes, y por lo general incluyen a varios componentes en su estructura.
+
+#### Mockito
+
+[Mockito](https://code.google.com/p/mockito/) es un framework de mocking. Permite escribir pruebas con una API simple y limpia. Mockito es poderoso debido a que las pruebas son muy fácil de leer y que producen errores de verificación de limpieza con orden.
+
+Mockito casi no tiene API's. en verdad se necesita de muy poco para crear mocks, pues solo hay un tipo de mock y hay solo una forma de crearlos. Sólo hay que recordar una cosa muy simple: **El stub(simulación) va antes de la ejecución, las verificaciones de las interacciones van después.**
+
+Algunas otras características son:
+
+* Se pueden crear mocks en clases concretas o interfaces.
+* Se usa la anotación `@Mock` para los colaboradores.
+* La verificación de errores es limpia.
+* Permite una verificaicón flexible en orden.
+* Soporte verificaciones de un número exacto de invocaciones o de por lo menos alguna.
+* Algunas otras más.
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> TaskManagerUnitTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.essentials;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class TaskManagerUnitTests {
+
+  @Mock
+  TaskStore taskStore;
+
+  @InjectMocks
+  TaskManager taskManager = new TaskManager();
+
+  @Test
+  public void aTaskManagerWithZeroTasks(){
+    when(taskStore.count()).thenReturn(0);
+    assertTrue(taskManager.howManyTasks() == 0);
+    verify(taskStore).count();
+  }
+
+  @Test
+  public void aTaskManagerWithOneTasks(){
+    Task taskMock = new Task();
+    when(taskStore.count()).thenReturn(1);
+    taskManager.addTask(taskMock);
+    assertTrue(taskManager.howManyTasks() == 1);
+    verify(taskStore).createTask(taskMock);
+    verify(taskStore).count();
+  }
+
+  @Test
+  public void addATaskFromAString(){
+    Task taskMock = new Task();
+    doNothing().when(taskStore).createTask(any(Task.class));
+    when(taskStore.count()).thenReturn(1);
+    taskManager.addTask("new task with String");
+    assertTrue(taskManager.howManyTasks() == 1);
+    verify(taskStore).createTask(any(Task.class));
+    verify(taskStore).count();
+  }
+
+  @Test
+  public void addATasksFromAList(){
+    assertNotNull(taskManager);
+    List<Task> tasksToAdd = new ArrayList<Task>();
+    tasksToAdd.add(new Task());
+    tasksToAdd.add(new Task());
+    when(taskStore.count()).thenReturn(2);
+    doNothing().when(taskStore).createTask(any(Task.class));
+    taskManager.addTask(tasksToAdd);
+    assertTrue(taskManager.howManyTasks() == 2);
+    verify(taskStore,times(2)).createTask(any(Task.class));
+    verify(taskStore).count();
+    // atLeastOnce()
+    // atLeast(2)
+    // atMost(5)
+  }
+
+  @Test
+  public void addATasksFromAFile(){
+    // TODO: Implements the feature
+    assertTrue(false);
+  }
+
+  @Test
+  public void getATaskByIndex(){
+    addATaskFromAString();
+    when(taskStore.readTask(1L)).thenReturn(new Task());
+    Task task = taskManager.getTaskAt(1);
+    assertNotNull(task);
+    verify(taskStore).readTask(1L);
+  }
+
+  @Test
+  public void findTaskByDescription(){
+    addATaskFromAString();
+    when(taskStore.findTask("new task")).thenReturn(new Task());
+    Task task = taskManager.findTask("new task");
+    assertNotNull(task);
+    verify(taskStore).findTask("new task");
+  }
+
+  @Test
+  public void findAllTasksByDescription(){
+    addATasksFromAList();
+    List<Task> tasksMocked = new ArrayList<Task>();
+    tasksMocked.add(new Task());
+    tasksMocked.add(new Task());
+    when(taskStore.findAllTasks("new task")).thenReturn(tasksMocked);
+    List<Task> tasksFound = taskManager.findTasks("new task");
+    assertTrue(tasksFound.size() == 2);
+    verify(taskStore).findAllTasks("new task");
+  }
+
+}
+    </script>
+  </div>
+</div>
