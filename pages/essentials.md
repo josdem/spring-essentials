@@ -153,6 +153,14 @@ public class TaskManager {
   </div>
 </div>
 
+Ya tenemos una aplicación, ahora bien, que pasa si:
+
+* Deseamos tener una entrada distinta a la línea del usuario, por ejemplo: Un String, una lista o un archivo.
+* Queremos presentar la información en varios formatos y de diferentes formas.
+* Deseamos modelar la clase encargada de almacenar la descripción de la tarea, e incluso determinar cuando se creó.
+* Deseamos reutilizar este componente para crear tareas para varias equipos.
+* Queremos saber quién creo la tarea y a quién se le va a asignar.
+* La funcionalidad que deseemos agregar...
 
 ### Alta cohesión y bajo acoplamiento
 
@@ -283,7 +291,7 @@ public class TaskManager {
   </div>
 </div>
 
-En algunos casos y pensando en el paradigma escolar de Orientación a Objetos podemos pensar en soluciones basadas en las relaciones entre objetos que ya conocemos, tales como Herencia, Agregación y/o Composición. Lo cual nos permite separar y estructurar la forma en como los objetos se podrían comportar.
+En algunos casos y pensando en el paradigma escolar de Orientación a Objetos podemos concebir en soluciones basadas en las relaciones entre objetos que ya conocemos, tales como Herencia, Agregación y/o Composición. Lo cual nos permite separar y estructurar la forma en como los objetos se podrían comportar.
 
 <div class="row">
   <div class="col-md-6">
@@ -313,3 +321,5 @@ public class TaskManager {
     </script>
   </div>
 </div>
+
+Es aquí, en donde entra posibilidad de abstraer el comportamiento de los componentes que tienen responsabilidades por separados y pensar que inclusive se podríany deberían de probar por separado
