@@ -115,6 +115,8 @@ Por otra parte, sería difícil demostrar que una pieza de software que no exhib
 
 ### Creando aplicaciones con baja cohesión y alto acoplamiento
 
+Si bien podemos crear aplicaciones con el entendimiento mínimo del requerimiento, y también siendo muy estrictos en su funcionamiento, encapsulando y colocando toda la funcionalidad en un sólo lugar puede causarnos muchos más problemas de los que potencialmente resolvería.
+
 <div class="row">
   <div class="col-md-12">
     <h4><i class="icon-file"></i> TaskManager.java</h4>
@@ -153,6 +155,8 @@ public class TaskManager {
 
 
 ### Alta cohesión y bajo acoplamiento
+
+Al tratar de crecer una aplicación, debemos de estar conscientes que la separación de componentes y responsabilidades es trivial para el éxito y funcionamiento
 
 <div class="row">
   <div class="col-md-6">
@@ -237,7 +241,7 @@ public class TaskManagerIntegrationTests {
     ]]></script>
   </div>
   <div class="col-md-6">
-    <h4><i class="icon-file"></i> TaskManagerIntegrationTests.java</h4>
+    <h4><i class="icon-file"></i> TaskManager.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.essentials;
 
@@ -276,5 +280,36 @@ public class TaskManager {
   }
 }
     ]]></script>
+  </div>
+</div>
+
+En algunos casos y pensando en el paradigma escolar de Orientación a Objetos podemos pensar en soluciones basadas en las relaciones entre objetos que ya conocemos, tales como Herencia, Agregación y/o Composición. Lo cual nos permite separar y estructurar la forma en como los objetos se podrían comportar.
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskManager.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+public class TaskManager extends TaskStore {
+
+  public TaskManager(){
+    super();
+  }
+  //....
+}
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskManager.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+public class TaskManager {
+
+  private TaskStore taskStore;
+
+  public TaskManager(){
+    taskStore = new TaskStore();
+  }
+  //....
+}
+    </script>
   </div>
 </div>
