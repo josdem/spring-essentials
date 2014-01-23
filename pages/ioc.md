@@ -274,7 +274,7 @@ public class SimpleTaskManager {
     ]]></script>
   </div>
   <div class="col-md-4">
-    <h4><i class="icon-file"></i> TaskComponents.java</h4>
+    <h4><i class="icon-file"></i> PresentationTaskManager.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.ioc;
 
@@ -302,22 +302,107 @@ public class PresentationTaskManager {
 **La recomendación para desacoplar las dependencias entre los componentes es crear abstracciones que puedan ser sustituidas por cualquier implementación.**
 
 <div class="row">
-  <div class="col-md-4">
-    <h4><i class="icon-file"></i> SimpleTaskStore.java</h4>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ITaskStore.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.ioc;
 
+import com.makingdevs.essentials.Task;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+public interface ITaskStore {
+  void setDataSource(DataSource dataSource);
+  List<Task> getCurrentTasks();
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ITaskManager.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+
+import java.util.List;
+
+public interface ITaskManager {
+  List<Task> getCurrentTasks();
+}
+    ]]></script>
+  </div>
+</div>
+
+Teniendo estas abstracciones podemos usarlas en nuestros componentes agregando la dependencia a quienes desean usarlos e implementando a quienes se encargan de los detalles.
+
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> TaskStoreImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+public class TaskStoreImpl implements ITaskStore {
+
+  private DataSource dataSource;
+
+  public void setDataSource(DataSource dataSource){
+    this.dataSource = dataSource;
+  }
+
+  public List<Task> getCurrentTasks() {
+    //...
+  }
+
+}
     ]]></script>
   </div>
   <div class="col-md-4">
-    <h4><i class="icon-file"></i> SimpleTaskManager.java</h4>
+    <h4><i class="icon-file"></i> TaskManagerImpl.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.ioc;
 
+import com.makingdevs.essentials.Task;
+import java.util.List;
+
+public class TaskManagerImpl implements ITaskManager {
+
+  private ITaskStore iTaskStore;
+
+  // Constructor or setter, what do you prefer?
+
+  public List<Task> getCurrentTasks() {
+    // Business Logic is here
+    // Implementation goes here
+  }
+}
     ]]></script>
   </div>
   <div class="col-md-4">
-    <h4><i class="icon-file"></i> TaskComponents.java</h4>
+    <h4><i class="icon-file"></i> PresentationTaskManager.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.ioc;
 
+import com.makingdevs.essentials.Task;
+import java.util.List;
+
+public class PresentationTaskManager {
+
+  private ITaskManager iTaskManager;
+
+  // Constructor or setter, is your choice
+
+  public View showCurrentTasks(){
+    List<Task> currentTasks = iTaskManager.getCurrentTasks();
+    // currentTasks + View
+    return view;
+  }
+}
     ]]></script>
   </div>
 </div>
