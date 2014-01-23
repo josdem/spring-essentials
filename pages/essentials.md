@@ -5,7 +5,7 @@
 Spring es un framework Open Source, originalmente creado por Rod Johnson y descrito en su libro [_Expert One-on-one: J2EE Design and Development_](http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764543857.html). Spring fue creado para direccionar la complejidad del desarrollo de una aplicación empresarial, y hace posible usar JavaBeans para mantener la simplicidad del desarrollo, así como, la creación de componentes complejos con conceptos muy simples como son Clases e Interfaces. Y aunque es mayormente usado en aplicaciones cliente-servidor, cualquier tipo de aplicación puede beneficiarse de Spring.
 
 <blockquote>
-Spring simplifica de sobremanera el desarrollo Java.
+<p>Spring simplifica de sobremanera el desarrollo Java.</p>
 </blockquote>
 
 Actualmente, Springframework es una plataforma Java que proveeo del soporte comprensivo de infraestructura para desarrollar aplicaciones para la JVM. Maneja y administra la infraestructura de tal manera que podemos enfocarnos en el desarrollo de la aplicación.
@@ -297,7 +297,7 @@ En algunos casos y pensando en el paradigma escolar de Orientación a Objetos po
   <div class="col-md-6">
     <h4><i class="icon-file"></i> TaskManager.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-public class TaskManager extends TaskStore {
+public abstract class TaskManager extends TaskStore { // Siendo TaskStore y TaskManager abstractas
 
   public TaskManager(){
     super();
@@ -354,21 +354,27 @@ Es aquí, en donde entra posibilidad de abstraer el comportamiento de los compon
 Las interfaces surgen como el siguiente paso de la Programación Orientada a Objetos con la necesidad de agrupar y reutilizar las distintas funcionalidades de un objetode una forma más simple. Mediante interfaces podemos crear mejores diseños sin caer en las trampas de POO, así también, se crean nuevas y mejores formas de aplicar la implementación de un código de forma abstracta. Sin embargo debemos de tener presentes los 3 principios:
 
 <blockquote>
+  <p>
   <strong>
     La implementación de una interfaz debe hacer lo que sus métodos dicen que hacen.
   </strong>
+  </p>
 </blockquote>
 
 <blockquote>
+  <p>
   <strong>
     Una interfaz no debe interferir otros módulos de un programa o con otros programas.
   </strong>
+  </p>
 </blockquote>
 
 <blockquote>
+  <p>
   <strong>
     Si una implementación no es capaz de realizar su responsabilidad, debe notificar a quien lo llamó.
   </strong>
+  </p>
 </blockquote>
 
 Cuando diseñamos de esta forma, podemos encontrar formas más elegantes de resolver un problema y centrar nuestra lógica de negocio en ello de tal manera que pueda llevarse a una prueba de unidad exclusiva de una funcionalidad.
