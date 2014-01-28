@@ -18,13 +18,13 @@
   "spring_container.html"(title: "Bill of materials")
   "spring_container.html"(title: "AppCtx y BeanFactory")
   "spring_container.html"(title: "Ciclo de vida de los beans")
-  "spring_container.html"(title: "Declaración de beans")
-  "spring_container.html"(title: "Inyección por constructor")
-  "spring_container.html"(title: "Inyecciones por setter")
-  "spring_container.html"(title: "Wiring")
+  "spring_container.html"(title: "Caso de estudio")
 }
 
 "appctx.html"(title:"Configuración del AppCtx"){
+  "appctx.html"(title: "Inyección por constructor")
+  "appctx.html"(title: "Inyecciones por setter")
+  "appctx.html"(title: "Declaración de beans")
   "appctx.html"(title:"Configuración con XML"){
     "appctx.html"(title:"Namespaces")  
   }

@@ -151,13 +151,23 @@ En donde, como se puede ver el AppCtx es un subtipo de BeanFactory, y mas intere
 * GenericXmlApplicationContext
 * XmlWebApplicationContext
 
-**Adicionalmente, es bueno mencionar que los paquetes _org.springframework.beans_ y _org.springframework.context_ son la base del contenedor de Spring.**
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-code"></i> Instanciando el AppCtx</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+      ApplicationContext context = new FileSystemXmlApplicationContext("/tmp/foo.xml");
+      ApplicationContext context2 = new ClassPathXmlApplicationContext("/tmp/bar.xml");
+    </script>
+  </div>
+</div>
+
+**Adicionalmente, es bueno mencionar que los paquetes `org.springframework.beans` y `org.springframework.context` son la base del contenedor de Spring.**
 
 ### Diferencias entre el BeanFactory y el AppCtx
 
 El `BeanFactory` proporciona la base fundamental para la funcionalidad del contenedor de IoC de Spring pero sólo se usa directamente en la integración con otros frameworks de terceros, y ahora es en gran parte de naturaleza histórica para la mayoría de los usuarios de Spring. Sin embargo la regla es: **Usa un `ApplicationContext` a menos que tengas una buena razón para no hacerlo.**
 
-El `ApplicationContext` agrega la integración con características de AOP, manejode recursos, publicación de eventos y contextos específicos en función del tipo de aplicación.
+El `ApplicationContext` agrega la integración con características de AOP, manejo de recursos, publicación de eventos y contextos específicos en función del tipo de aplicación.
 
 * Un BeanFactory
     * Instancia y alambra los beans
@@ -167,8 +177,6 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
     * Hace un registro automático  del `BeanFactoryPostProcessor`
     * Habilita el acceso conveniente al `MessageSource`
     * Hace la publicación del `ApplicationEvent`
-
-#### ¿Qué hace el BeanFactory?
 
 <div class="row">
   <div class="col-md-12">
@@ -184,6 +192,23 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
   </div>
 </div>
 
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-code"></i> Archivo base de configuración: appctx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+    <?xml version="1.0" encoding="UTF-8"?>
+      <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd">
+        <bean id="..." class="...">
+          <!-- colaboradores y configuraciones de este bean -->
+        </bean>
+    </beans>
+    </script>
+  </div>
+</div>
+
 ## Ciclo de vida de los beans
 
 <blockquote>
@@ -192,9 +217,24 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
   </p>
 </blockquote>
 
+En una aplicación basada en Spring, los objetos de la aplicación vivirán dentro del contenedor de Spring, este último los creará y ellos se alambrarán, se configurarán y el mismo contenedor los administrará.
 
-## Declaración de beans
+![Alt container-magic](img/container-magic.png "Container Magic")
 
+El contenedor es la parte central de SpringFramework, el cual, usa inyección de dependencias para administrar los componentes de la aplicación. Esto incluye la creación de asociaciones entre componentes colaboradores.
+
+En una aplicación Java tradicional el ciclo de vida de un bean es simple, la palabra reservada `new` es usada para instanciarlo y con eso esta listo para usarse. Una vez que ya no se usa más, entonces es candidato para que el Garbage Collector pase por él. En contraste, el ciclo de vida de un bean dentro del contenedor de Spring es más elaborado. Como se pudo apreciar anteriormente, el `BeanFactory` ejecuta varias pasos antes de enlistar un bean, y sumado con lo que hace el `ApplicationContext` podemos enlistar las siguientes:
+
+1. Spring instancia el bean
+2. Spring inyecta valores y referencias de beans en sus propiedades.
+3. Si el bean implementa `BeanNameAware`, Spring pasa el ID del bean al método `setBeanName()`.
+4. Si el bean implementa `BeanFactoryAware`, Spring llama al método `setBeanFactory()`, pasando el bean a dicho factory.
+5. Si el bean implementa `ApplicationContextAware`, Spring llama el método `setApplicationContext()`, pasando la referencia a dicho AppCtx dentro del bean.
+6. Si cualquiera de los beans implementa la interface `BeanPostProcessor`, Spring llama a su método `postProcessBeforeInitialization()`.
+7. Si cualquiera de los beans implementa la interfaz `InitializingBean`, Spring llama a su método `agterPropertiesSet()`. Similarmente, si el bean fue declarado con un _init-method_, entonces dicho método es llamado.
+8. Si existen beans que implementan `BeanPostProcessor`, Soring llmará a su método `postProcessAfterInitialization()`.
+9. En este punto, el bean esta listo para ser usado por la aplicación y permanecerá en el contexto de la aplicación hasta que dicho contexto sea destruido.
+10. Si cualquier bean implementa la interfaz `DisposableBean`, entonces Spring llamará a su método `destroy()`. De otra forma, si cualquier bean fue declarado con un _destroy-method_, entonces dicho método será llamado.
 
 ## Inyección por constructor
 
