@@ -111,12 +111,12 @@ Para solucionar el problema, Maven soporta el concepto de "Bill of materials". P
 Para usar los repositorios de Spring con Gradle incluye las URL's apropiadas en la sección de repositorios, y agrega las dependencias a tu gusto:
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-12">
     <h4><i class="icon-file"></i> build.gradle</h4>
     <script type="syntaxhighlighter" class="brush: groovy"><![CDATA[
       repositories {
         mavenCentral()
-        maven { url "http://repo.spring.io/release" }  // milestone or snapshots
+        maven { url "http://repo.spring.io/release" }  // milestone or snapshotsl
       }
       dependencies {
         compile("org.springframework:spring-context:4.0.0.RELEASE")
@@ -127,10 +127,70 @@ Para usar los repositorios de Spring con Gradle incluye las URL's apropiadas en 
 </div>
 
 
-## AppCtx y BeanFactory
+## BeanFactory y AppCtx
 
+<blockquote>
+  <p>
+    En Spring los objetos que forman la columna vertebral de tu aplicación y que son manejados por el contenedor de IoC son llamados <strong>beans</strong>.
+  </p>
+</blockquote>
+
+Spring provee dos tipos de implementación del contenedor de IoC. La básica es llamada _bean factory_, la más avanzada es llamada _application context_, el cual es una extensión compatible con el _bean factory_. Y la configuración para estos dos tipos de contenedores es idéntica. El _AppCtx_ provee funcionalidades más avanzadas pero se mantiene simple de usar. Es más recomemdable usar el _AppCtx_ para cada aplicación a menos que los recursos de esta sean restringidos, como cuando corremos un appleto o un dispositvo móvil. Dichos contenedores están declarados en las siguientes interfaces:
+
+* [org.springframework.beans.factory.BeanFactory](http://docs.spring.io/spring/docs/4.0.x/javadoc-api/org/springframework/beans/factory/BeanFactory.html)
+* [org.springframework.context.ApplicationContext](http://docs.spring.io/spring/docs/4.0.x/javadoc-api/org/springframework/context/ApplicationContext.html)
+
+En donde, como se puede ver el AppCtx es un subtipo de BeanFactory, y mas interesante es, ver los tipos de ApplicationContext con los que contamos para crear una aplicación, entre ellos podemos nombrar de forma destacada:
+
+* AnnotationConfigApplicationContext
+* AnnotationConfigWebApplicationContext
+* ClassPathXmlApplicationContext
+* FileSystemXmlApplicationContext
+* GenericGroovyApplicationContext
+* GenericWebApplicationContext
+* GenericXmlApplicationContext
+* XmlWebApplicationContext
+
+**Adicionalmente, es bueno mencionar que los paquetes _org.springframework.beans_ y _org.springframework.context_ son la base del contenedor de Spring.**
+
+### Diferencias entre el BeanFactory y el AppCtx
+
+El `BeanFactory` proporciona la base fundamental para la funcionalidad del contenedor de IoC de Spring pero sólo se usa directamente en la integración con otros frameworks de terceros, y ahora es en gran parte de naturaleza histórica para la mayoría de los usuarios de Spring. Sin embargo la regla es: **Usa un `ApplicationContext` a menos que tengas una buena razón para no hacerlo.**
+
+El `ApplicationContext` agrega la integración con características de AOP, manejode recursos, publicación de eventos y contextos específicos en función del tipo de aplicación.
+
+* Un BeanFactory
+    * Instancia y alambra los beans
+* Un ApplicationContext
+    * Instancia y alambra los beans
+    * Hace un registro automático con `BeanPostProcessor`
+    * Hace un registro automático  del `BeanFactoryPostProcessor`
+    * Habilita el acceso conveniente al `MessageSource`
+    * Hace la publicación del `ApplicationEvent`
+
+#### ¿Qué hace el BeanFactory?
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-code"></i> Usando el BeanFactory</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+      XmlBeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+      MyBeanPostProcessor postProcessor = new MyBeanPostProcessor();
+      factory.addBeanPostProcessor(postProcessor);
+      PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
+      cfg.setLocation(new FileSystemResource("jdbc.properties"));
+      cfg.postProcessBeanFactory(factory);
+    </script>
+  </div>
+</div>
 
 ## Ciclo de vida de los beans
+
+<blockquote>
+  <p>
+    Un bean es un objeto que es instanciado, ensamblado, y de alguna manera administrado por el contenedor de Spring.
+  </p>
+</blockquote>
 
 
 ## Declaración de beans
