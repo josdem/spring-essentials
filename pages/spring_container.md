@@ -209,6 +209,10 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
   </div>
 </div>
 
+## Inyección de Dependencias entre beans con elementos transversales.
+
+**IMAGEN**
+
 ## Ciclo de vida de los beans
 
 <blockquote>
@@ -217,7 +221,7 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
   </p>
 </blockquote>
 
-En una aplicación basada en Spring, los objetos de la aplicación vivirán dentro del contenedor de Spring, este último los creará y ellos se alambrarán, se configurarán y el mismo contenedor los administrará.
+En una aplicación basada en Spring, los objetos de la aplicación vivirán dentro del contenedor de IoC, este último los creará y ellos se alambrarán, se configurarán y el mismo contenedor los administrará.
 
 ![Alt container-magic](img/container-magic.png "Container Magic")
 
@@ -236,11 +240,98 @@ En una aplicación Java tradicional el ciclo de vida de un bean es simple, la pa
 9. En este punto, el bean esta listo para ser usado por la aplicación y permanecerá en el contexto de la aplicación hasta que dicho contexto sea destruido.
 10. Si cualquier bean implementa la interfaz `DisposableBean`, entonces Spring llamará a su método `destroy()`. De otra forma, si cualquier bean fue declarado con un _destroy-method_, entonces dicho método será llamado.
 
-## Inyección por constructor
+## Caso de estudio
 
+Nuestro ejemplo estará basado en un tablero de tareas(Taskboard), el cual esta asignado a algun proyecto que a su vez tiene varias historias de usuario, dichas historias serán pobladas por las tareas. Todo este conjunto nos dará como resultado un tablero que potencialmente podrá ser visualizado en un front-end.
 
-## Inyecciones por setter
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> Project.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.container;
 
+import java.util.Date;
+import java.util.List;
 
-## Wiring
+public class Project {
+  private String name;
+  private Date dateCreated;
+  private Date lastUpdated;
+  
+  private List<UserStory> userStories;
+  
+  // Getters y Setters
+}
+    </script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> UserStory.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.container;
+
+import java.util.Date;
+import java.util.List;
+
+public class UserStory {
+  private String asUser;
+  private String iWant;
+  private String because;
+  private Date dateCreated;
+  private Date lastUpdated;
+  
+  private Project project;
+  private List<Task> tasks;
+  // Getters y Setters
+}
+    </script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> Task.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.container;
+
+import java.util.Date;
+import java.util.List;
+
+public class Task {
+  private String description;
+  private TaskStatus status;
+  private Date dateCreated;
+  private Date lastUpdated;
+  
+  private UserStory userStory;
+  private List<User> participants;
+  // Getters y Setters
+}
+    </script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskStatus.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.container;
+
+public enum TaskStatus {
+  TODO,WIP,DONE;
+}
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> User.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.container;
+
+import java.util.Date;
+
+public class User {
+  private String username;
+  private Date dateCreated;
+  private Date lastUpdated;
+  // Getters y Setters
+}
+    </script>
+  </div>
+</div>
 
