@@ -2,6 +2,8 @@
 
 ------
 
+![Alt platform-stack](img/platform-stack.png "Platform Stack")
+
 Spring es un framework Open Source, originalmente creado por Rod Johnson y descrito en su libro [_Expert One-on-one: J2EE Design and Development_](http://www.wrox.com/WileyCDA/WroxTitle/productCd-0764543857.html). Spring fue creado para direccionar la complejidad del desarrollo de una aplicación empresarial, y hace posible usar JavaBeans para mantener la simplicidad del desarrollo, así como, la creación de componentes complejos con conceptos muy simples como son Clases e Interfaces. Y aunque es mayormente usado en aplicaciones cliente-servidor, cualquier tipo de aplicación puede beneficiarse de Spring.
 
 <blockquote>
@@ -62,6 +64,7 @@ El pasado Diciembre del 2013 se libero la versión 4 de Spring, con cambios y me
     * El soporte temprano para Java 8
     * Configuración del AppCtx con ayuda el lenguaje dinámico Groovy, demasiado interesante, pues provee de un DSL para hacerlo.
     * Soporte para Servlet 3.0.
+    * Creación de anotaciones compuestas
     * Más soporte para REST a través de `@RestController` y el `AsyncRestTemplate`.
     * El nuevo soporte para WebSockets compatible con el JSR-356, en conjunto con [SockJS](https://github.com/sockjs/sockjs-client), a través de STOMP.
     * Mejor soporte de Testing con el uso de meta-anotaciones, el uso de profiles con `@ActiveProfiles`.
