@@ -211,7 +211,17 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
 
 ## Inyección de Dependencias entre beans con elementos transversales.
 
-**IMAGEN**
+![Alt spring-container](img/spring-container.png "Spring container")
+
+------
+
+![Alt di](img/di.png "Dependency injection")
+
+------
+
+![Alt cross-concern](img/cross-concern.png "Cross concern")
+
+------
 
 ## Ciclo de vida de los beans
 
