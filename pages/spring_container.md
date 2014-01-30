@@ -413,6 +413,7 @@ public class Project {
   private List<User> participants;
   
   // Getters y Setters
+  // Constructores
 }
     </script>
   </div>
@@ -435,6 +436,7 @@ public class UserStory {
   private Project project;
   private List<Task> tasks;
   // Getters y Setters
+  // Constructores
 }
     </script>
   </div>
@@ -456,6 +458,7 @@ public class Task {
   private UserStory userStory;
   private List<User> participants;
   // Getters y Setters
+  // Constructores
 }
     </script>
   </div>
@@ -485,6 +488,7 @@ public class User {
   private Date dateCreated;
   private Date lastUpdated;
   // Getters y Setters
+  // Constructores
 }
     </script>
   </div>
