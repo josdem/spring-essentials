@@ -24,7 +24,7 @@ public class UserServiceSimpleImpl implements UserService {
   // Not implemented methods, yet...
 
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> ApplicationContext.xml</h4>
@@ -38,7 +38,7 @@ public class UserServiceSimpleImpl implements UserService {
   </bean>
 
 </beans>
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -85,7 +85,7 @@ public class UseSpringAsLibraryTests {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -118,7 +118,7 @@ public class UseSpringAsLibraryTests {
   </bean>
 
 </beans>
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> ConstructorInjectionTest.java</h4>
@@ -167,7 +167,7 @@ public class ConstructorInjectionTest {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -205,7 +205,7 @@ public class ConstructorInjectionTest {
   </bean>
 
 </beans>
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> SetterInjectionTest.java</h4>
@@ -255,7 +255,7 @@ public class SetterInjectionTest {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -303,7 +303,7 @@ public class SetterInjectionTest {
   </bean>
 
 </beans>
-    </script>
+    ]]></script>
   </div>
 
   <div class="col-md-6">
@@ -356,7 +356,7 @@ public class SetterInjectionTest {
   </bean>
 
 </beans>
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -409,14 +409,14 @@ public class CollaboratorInjectionTest {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
 ------
 
-<div class="row">
-  <div class="col-md-4">
+<div cxlass="row">
+  <div class="col-md-6">
     <h4><i class="icon-file"></i> MultiPropertiesBean.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.practica6;
@@ -459,9 +459,9 @@ public class MultiPropertiesBean {
   }
   
 }
-    </script>
+    ]]></script>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <h4><i class="icon-file"></i> MoreInjectedBeansAppCtx.xml</h4>
     <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
@@ -510,9 +510,12 @@ public class MultiPropertiesBean {
   </bean>
 
 </beans>
-    </script>
+    ]]></script>
   </div>
-  <div class="col-md-4">
+</div>
+
+<div cxlass="row">
+  <div class="col-md-12">
     <h4><i class="icon-file"></i> MultiPropertiesCollaboratorInjectionTest.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.practica6;
@@ -549,7 +552,7 @@ public class MultiPropertiesCollaboratorInjectionTest {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -574,11 +577,123 @@ El contenedor de Spring valida la configuración de cada bean al momento de que 
 * `oxm` Soporta la configuración para las características del mapeo objeto a XML(object-to-XML).
 * `tx` Provee de configuración para transacciones declarativas.
 * `util` Una variedad de selección de elementos de utilería. Incluye la habilidad de declarar colecciones como beans y soporte para elementos marcadores de propiedades.
+* Hay algunos otros más...
 
+<div cxlass="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> UsingNamespacesAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
+  <util:properties id="courseProperties" location="com/makingdevs/practica7/externalProperties.properties"/>
+
+  <bean id="tres" class="java.lang.Integer">
+    <constructor-arg value="3" />
+  </bean>
+
+  <util:map id="naturalNumbers">
+    <entry key="Uno">
+      <value>1</value>
+    </entry>
+    <entry key="Dos" value="2"></entry>
+    <entry key="Uno" value-ref="tres" />
+    <entry key="Tres" value-ref="tres" />
+  </util:map>
+
+  <util:list id="multiLine">
+    <value>Welcome!!!</value>
+    <value>You're MakingDevs...</value>
+    <value>And you're here because...</value>
+    <value>You want to be a better developer!</value>
+  </util:list>
+
+  <util:set id="primeNumbers">
+    <value>1</value>
+    <value>3</value>
+    <value>5</value>
+    <value>7</value>
+    <value>11</value>
+    <value>13</value>
+  </util:set>
+
+  <bean id="multiPropertiesBean" class="com.makingdevs.practica6.MultiPropertiesBean">
+    <property name="aMap" ref="naturalNumbers"/>
+    <property name="multiLine" ref="multiLine"/>
+    <property name="primeNumbers" ref="primeNumbers"/>
+    <property name="courseProperties" ref="courseProperties"/>
+  </bean>
+
+</beans>
+    ]]></script>
+  </div>
+</div>
+
+<div cxlass="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica7;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.makingdevs.practica6.MultiPropertiesBean;
+
+public class MultiPropertiesWithNamespaceCollaboratorInjectionTest {
+
+  private ApplicationContext appCtx;
+
+  @Before
+  public void setup() {
+    String[] configurations = { "com/makingdevs/practica7/UsingNamespacesAppCtx.xml" };
+    appCtx = new ClassPathXmlApplicationContext(configurations);
+    assertNotNull(appCtx);
+  }
+
+  @Test
+  public void getBeanWitMultiProperties() {
+    MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
+    assertTrue(multi.getaMap().size() == 3);
+    assertTrue(multi.getaMap().containsKey("Uno"));
+    assertTrue(multi.getMultiLine().size() == 4);
+    assertTrue(multi.getPrimeNumbers().size() == 6);
+    assertTrue(multi.getCourseProperties().size() == 3);
+    assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
+    // Wherever you want...
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+------
 
 ## Configuración con Anotaciones
 
+<div cxlass="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+nbjkdlnjklds
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+fklsflmkf
+    ]]></script>
+  </div>
+</div>
 
 ## Configuración con JavaConfig
 
