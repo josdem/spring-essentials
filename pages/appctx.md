@@ -11,15 +11,80 @@ El acto de crear dichas asociaciones entre los objetos de la aplicación es la e
 Como hemos dicho antes, Spring es un framework basado en contenedores. Pero si Spring no es configurado, entonces, tenemos un contenedor vacío y no sirve de mucho. Necesitamos configurar Spring para decirle que beans deberá contener y como los alambra para que trabajen juntos.
 
 <div class="row">
-  <div class="col-md-12">
-    <h4><i class="icon-code"></i> Usando el BeanFactory</h4>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> UserServiceSimpleImpl.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-      XmlBeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
-      MyBeanPostProcessor postProcessor = new MyBeanPostProcessor();
-      factory.addBeanPostProcessor(postProcessor);
-      PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
-      cfg.setLocation(new FileSystemResource("jdbc.properties"));
-      cfg.postProcessBeanFactory(factory);
+package com.makingdevs.practica4;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+public class UserServiceSimpleImpl implements UserService {
+
+  // Not implemented methods, yet...
+
+}
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ApplicationContext.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  
+  <bean id="userService" class="com.makingdevs.practica4.UserServiceSimpleImpl">
+  </bean>
+
+</beans>
+    </script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> UseSpringAsLibraryTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica4;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import com.makingdevs.services.UserService;
+
+public class UseSpringAsLibraryTests {
+
+  @Test
+  public void useSpringWithBeanFactory() {
+    Resource resource = new ClassPathResource("com/makingdevs/practica4/ApplicationContext.xml");
+    BeanFactory beanFactory = new XmlBeanFactory(resource);
+    UserService userService = (UserService)beanFactory.getBean("userService");
+    assertNotNull(userService);
+  }
+  
+  @Test
+  public void useSpringWithAppCtx() {
+    ApplicationContext appCtx = new ClassPathXmlApplicationContext("com/makingdevs/practica4/ApplicationContext.xml");
+    UserService userService = (UserService)appCtx.getBean("userService");
+    assertNotNull(userService);
+  }
+  
+  @Test
+  public void useSpringWithAppCtxByType() {
+    ApplicationContext appCtx = new ClassPathXmlApplicationContext("com/makingdevs/practica4/ApplicationContext.xml");
+    UserService userService = appCtx.getBean(UserService.class);
+    assertNotNull(userService);
+  }
+
+}
     </script>
   </div>
 </div>
