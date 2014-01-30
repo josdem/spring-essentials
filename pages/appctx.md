@@ -6,7 +6,7 @@ En Spring, los objetos no son responsables de encontrar o crear a otros objetos 
 
 El acto de crear dichas asociaciones entre los objetos de la aplicación es la esencia de la inyección de dependencias(DI), y es comúnmente referido como _wiring_. Como la inyección de dependencias es el concepto más elemental que hace Spring, mostraremos las técnicas mayormente usadas y las que encontrarás en la mayoría de los proyectos actualmente desarrollados.
 
-## Declaración de beans
+## Declaración de beans y configuración con XML
 
 Como hemos dicho antes, Spring es un framework basado en contenedores. Pero si Spring no es configurado, entonces, tenemos un contenedor vacío y no sirve de mucho. Necesitamos configurar Spring para decirle que beans deberá contener y como los alambra para que trabajen juntos.
 
@@ -89,17 +89,26 @@ public class UseSpringAsLibraryTests {
   </div>
 </div>
 
-## Configuración con XML
-
-
 ## Inyección por constructor
 
 <div class="alert alert-danger">
   <strong><i class="icon-terminal"></i> Ten cuidado...!</strong> Las clases de dominio no se benefician de la inyección de dependencias, los ejemplos mostrados a continuación no son prácticas recomendadas y sólo nos servirán de ejemplo.
 </div>
 
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ConstructorInjectionAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ConstructorInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
 
+    </script>
+  </div>
+</div>
 
 ## Inyecciones por setter
 
