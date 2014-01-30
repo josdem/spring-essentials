@@ -305,6 +305,7 @@ public class SetterInjectionTest {
 </beans>
     </script>
   </div>
+
   <div class="col-md-6">
     <h4><i class="icon-file"></i> AnotherCollaboratorInjectionAppCtx.xml</h4>
     <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
@@ -414,7 +415,143 @@ public class CollaboratorInjectionTest {
 
 ------
 
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> MultiPropertiesBean.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica6;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+public class MultiPropertiesBean {
+  
+  private Map<String, Integer> aMap;
+  private List<String> multiLine;
+  private Set<Float> primeNumbers;
+  private Properties courseProperties;
+  
+  public Properties getCourseProperties() {
+    return courseProperties;
+  }
+  public void setCourseProperties(Properties courseProperties) {
+    this.courseProperties = courseProperties;
+  }
+  public Map<String, Integer> getaMap() {
+    return aMap;
+  }
+  public void setaMap(Map<String, Integer> aMap) {
+    this.aMap = aMap;
+  }
+  public List<String> getMultiLine() {
+    return multiLine;
+  }
+  public void setMultiLine(List<String> multiLine) {
+    this.multiLine = multiLine;
+  }
+  public Set<Float> getPrimeNumbers() {
+    return primeNumbers;
+  }
+  public void setPrimeNumbers(Set<Float> primeNumbers) {
+    this.primeNumbers = primeNumbers;
+  }
+  
+}
+    </script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> MoreInjectedBeansAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  
+  <bean id="tres" class="java.lang.Integer">
+   <constructor-arg value="3"/>
+  </bean>
+
+  <bean id="multiPropertiesBean" class="com.makingdevs.practica6.MultiPropertiesBean">
+    <property name="aMap">
+      <map>
+        <entry key="Uno"><value>1</value></entry>
+        <entry key="Dos" value="2"></entry>
+        <entry key="Uno" value-ref="tres"/>
+        <entry key="Tres" value-ref="tres"/>
+      </map>
+    </property>
+    <property name="multiLine">
+      <array>
+        <value>Welcome!!!</value>
+        <value>You're MakingDevs...</value>
+        <value>And you're here because...</value>
+        <value>You want to be a better developer!</value>
+      </array>
+    </property>
+    <property name="primeNumbers">
+      <set>
+        <value>1</value>
+        <value>3</value>
+        <value>5</value>
+        <value>7</value>
+        <value>11</value>
+        <value>13</value>
+      </set>
+    </property>
+    <property name="courseProperties">
+      <props>
+        <prop key="SPRING-ESSENTIALS">Diseño de aplicaciones con Spring</prop>
+        <prop key="SPRING-DATA_ACCESS">Acceso a datos con Spring</prop>
+        <prop key="SPRING-WEB">Desarrollo Web con Spring</prop>
+      </props>
+    </property>
+  </bean>
+
+</beans>
+    </script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> MultiPropertiesCollaboratorInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica6;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MultiPropertiesCollaboratorInjectionTest {
+
+  private ApplicationContext appCtx;
+
+  @Before
+  public void setup() {
+    String[] configurations = { "com/makingdevs/practica6/MoreInjectedBeansAppCtx.xml" };
+    appCtx = new ClassPathXmlApplicationContext(configurations);
+    assertNotNull(appCtx);
+  }
+
+  @Test
+  public void getBeanWitMultiProperties() {
+    MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
+    assertTrue(multi.getaMap().size() == 3);
+    assertTrue(multi.getaMap().containsKey("Uno"));
+    assertTrue(multi.getMultiLine().size() == 4);
+    assertTrue(multi.getPrimeNumbers().size() == 6);
+    assertTrue(multi.getCourseProperties().size() == 3);
+    assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
+    // Wherever you want...
+  }
+
+}
+    </script>
+  </div>
+</div>
 
 ### Proceso de resolución de dependencias
 
@@ -437,6 +574,8 @@ El contenedor de Spring valida la configuración de cada bean al momento de que 
 * `oxm` Soporta la configuración para las características del mapeo objeto a XML(object-to-XML).
 * `tx` Provee de configuración para transacciones declarativas.
 * `util` Una variedad de selección de elementos de utilería. Incluye la habilidad de declarar colecciones como beans y soporte para elementos marcadores de propiedades.
+
+
 
 ## Configuración con Anotaciones
 
