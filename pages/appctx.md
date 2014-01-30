@@ -98,14 +98,75 @@ public class UseSpringAsLibraryTests {
 <div class="row">
   <div class="col-md-6">
     <h4><i class="icon-file"></i> ConstructorInjectionAppCtx.xml</h4>
-    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+  <bean id="projectFromConstructor" class="com.makingdevs.model.Project">
+    <constructor-arg value="1"/>
+    <constructor-arg value="My taskboards"/>
+    <constructor-arg value="TASKBOARD"/>
+    <constructor-arg value="Project description"/>
+  </bean>
+  
+  <bean id="userFromConstructor" class="com.makingdevs.model.User">
+    <constructor-arg value="makingdevs" index="1"/>
+    <constructor-arg name="id" value="100"/>
+    <constructor-arg value="true" type="boolean"/>
+  </bean>
+
+</beans>
     </script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> ConstructorInjectionTest.java</h4>
-    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica5;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.makingdevs.model.Project;
+import com.makingdevs.model.User;
+
+public class ConstructorInjectionTest {
+  
+  private ApplicationContext appCtx;
+  
+  @Before
+  public void setup(){
+    // Look ma, String arrays!
+    String[] configurations = {"com/makingdevs/practica5/ConstructorInjectionAppCtx.xml"};
+    appCtx = new ClassPathXmlApplicationContext(configurations);
+    assertNotNull(appCtx);
+  }
+
+  @Test
+  public void getBeanWithConstructorInjection() {
+    assertTrue(appCtx.containsBean("projectFromConstructor"));
+    Project project = (Project)appCtx.getBean("projectFromConstructor");
+    assertTrue(project.getId() == 1L);
+    assertTrue(project.getName().equals("My taskboards"));
+    assertTrue(project.getCodeName().equals("TASKBOARD"));
+    assertTrue(project.getDescription().equals("Project description"));
+  }
+  
+  @Test
+  public void getAnotherBeanWithConstructor(){
+    User user = appCtx.getBean(User.class);
+    assertTrue(user.getId() == 100L);
+    assertTrue(user.getUsername().equals("makingdevs"));
+    assertTrue(user.isEnabled());
+  }
+
+}
     </script>
   </div>
 </div>
@@ -116,9 +177,109 @@ public class UseSpringAsLibraryTests {
   <strong><i class="icon-terminal"></i> Nuestra recomendación...!</strong> Usa mayormente la inyección por setters, pues es díficil de mantener una clase con un constructor y varios parámetros por inyectar.
 </div>
 
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> SetterInjectionAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="projectFromConstructor" class="com.makingdevs.model.Project">
+    <property name="id" value="1"/>
+    <property name="name" value="My taskboards"/>
+    <property name="codeName" value="TASKBOARD"/>
+    <property name="description" value="Project description"/>
+  </bean>
+  
+  <bean id="userFromConstructor" class="com.makingdevs.model.User">
+    <property name="id" value="100"/>
+    <property name="username">
+      <value>makingdevs</value>
+    </property>
+    <property name="enabled" value="true"/>
+    <property name="dateCreated">
+      <bean class="java.util.Date" />
+    </property>
+  </bean>
+
+</beans>
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> SetterInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica5;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.makingdevs.model.Project;
+import com.makingdevs.model.User;
+
+public class SetterInjectionTest {
+  
+  private ApplicationContext appCtx;
+  
+  @Before
+  public void setup(){
+    // Look ma! String array.
+    String[] configurations = {"com/makingdevs/practica5/SetterInjectionAppCtx.xml"};
+    appCtx = new ClassPathXmlApplicationContext(configurations);
+    assertNotNull(appCtx);
+  }
+
+  @Test
+  public void getBeanWithConstructorInjection() {
+    assertTrue(appCtx.containsBean("projectFromConstructor"));
+    Project project = (Project)appCtx.getBean("projectFromConstructor");
+    assertTrue(project.getId() == 1L);
+    assertTrue(project.getName().equals("My taskboards"));
+    assertTrue(project.getCodeName().equals("TASKBOARD"));
+    assertTrue(project.getDescription().equals("Project description"));
+  }
+  
+  @Test
+  public void getAnotherBeanWithConstructor(){
+    User user = appCtx.getBean(User.class);
+    assertTrue(user.getId() == 100L);
+    assertTrue(user.getUsername().equals("makingdevs"));
+    assertTrue(user.isEnabled());
+    assertNotNull(user.getDateCreated());
+  }
+
+}
+    </script>
+  </div>
+</div>
+
+### Proceso de resolución de dependencias
+
+* El `ApplicationContext` es creado e inicializado con la configuración de los metadatos que describe todos los beans. Los metadatos pueden ser XML, Java, Groovy o anotaciones.
+* Para cada _bean_, sus dependencias son expresadas en forma de propiedades, argumentos del constructor, o argumentos de un método de factoría estática si se está usando en lugar de un constructor. Dichas dependencias son proveídas al bean, cuando el bean es creado.
+* Cada propiedad o argumento del constructor es una definición actual del valor a establecer, o una referencia a otro bean en el contenedor.
+* Cada propiedad o argumento del constructor el cual es un valor es convertido de su formato específico al tipo actual de la propiedad o argumento del constructor. Por default Spring trbajá muy bien con los tipos más simples que tenemos en la plataforma Java.
+
+El contenedor de Spring valida la configuración de cada bean al momento de que se va creando el contenedor, incluyendo las referencias que tiene un bean hacia otros beans. Sin embargo, las propiedades de los beans por si mismas no son establecidas hasta que hayan sido creadas.
 
 ### Namespaces 
 
+* `aop` Provee elementos para declarar aspectos  y para automáticamente proxear clases anotadas con AspectJ como aspectos de Spring
+* `beans` El namespace central de Spring, habilita la declaración de beans y como deben ser alambrados. 
+* `context` Viene con elementos para configurar el application context de Spring, incluyendo la habilidad para autodetectar y auto-alambrar beans y la inyección de los objetos no directamente manejados por Spring.
+* `jee` Ofrece integración con la API de JEE como JNDI y EJB.
+* `jms` Provee de elementos de configuración para declarar messgae-driven POJO's.
+* `lang` Habilita la declaración de beansque implementan Groovy, JRuby o scripts de BeanShell.
+* `mvc` Habilita las capacidades de Spring MVC como las anotaciones orientadas a controllers, vistas e interceptores.
+* `oxm` Soporta la configuración para las características del mapeo objeto a XML(object-to-XML).
+* `tx` Provee de configuración para transacciones declarativas.
+* `util` Una variedad de selección de elementos de utilería. Incluye la habilidad de declarar colecciones como beans y soporte para elementos marcadores de propiedades.
 
 ## Configuración con Anotaciones
 
