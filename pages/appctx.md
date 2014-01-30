@@ -259,6 +259,163 @@ public class SetterInjectionTest {
   </div>
 </div>
 
+## Inyección de colaboradores
+
+<div class="alert alert-danger">
+  <strong><i class="icon-terminal"></i> Ten cuidado...!</strong> Las clases de dominio no se benefician de la inyección de dependencias, los ejemplos mostrados a continuación no son prácticas recomendadas y sólo nos servirán de ejemplo.
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> CollaboratorInjectionAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="taskDescription1" class="java.lang.String">
+    <constructor-arg value="Create schema" />
+  </bean>
+
+  <bean id="task1" class="com.makingdevs.model.Task">
+    <property name="id" value="1" />
+    <property name="description" ref="taskDescription1" />
+    <property name="status">
+      <value type="com.makingdevs.model.TaskStatus">
+        TODO
+      </value>
+    </property>
+    <property name="userStory" ref="userStory"/>
+  </bean>
+
+  <bean id="task2" class="com.makingdevs.model.Task">
+    <property name="id" value="2" />
+    <property name="description" value="Create folder structure" />
+    <property name="status">
+      <value type="com.makingdevs.model.TaskStatus">
+        TODO
+      </value>
+    </property>
+    <property name="userStory">
+      <null/>
+    </property>
+  </bean>
+
+</beans>
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> AnotherCollaboratorInjectionAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="userStory" class="com.makingdevs.model.UserStory">
+    <property name="priority" value="1" />
+    <property name="effort" value="3" />
+    <property name="tasks">
+      <array>
+        <ref bean="task1" />
+        <null />
+        <ref bean="task2" />
+        <bean id="task3" class="com.makingdevs.model.Task">
+          <property name="id" value="3" />
+          <property name="description" value="Initialize configuration" />
+          <property name="status">
+            <value type="com.makingdevs.model.TaskStatus">
+              TODO
+            </value>
+          </property>
+        </bean>
+      </array>
+    </property>
+  </bean>
+
+  <bean class="com.makingdevs.model.Project">
+    <property name="codeName" value="TASKBOARD" />
+    <property name="name" value="My Taskboard" />
+    <property name="id" value="2" />
+    <property name="userStories">
+      <array>
+        <ref bean="userStory" />
+      </array>
+    </property>
+    <property name="participants">
+      <set>
+        <bean class="com.makingdevs.model.User">
+          <property name="username" value="makingdevs" />
+          <property name="enabled" value="true" />
+          <property name="id" value="12" />
+        </bean>
+      </set>
+    </property>
+  </bean>
+
+</beans>
+    </script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> CollaboratorInjectionTest.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica6;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.makingdevs.model.Project;
+import com.makingdevs.model.User;
+import com.makingdevs.model.UserStory;
+
+public class CollaboratorInjectionTest {
+  
+  private ApplicationContext appCtx;
+
+  @Before
+  public void setup(){
+    String[] configurations = {
+        "com/makingdevs/practica6/CollaboratorInjectionAppCtx.xml",
+        "com/makingdevs/practica6/AnotherCollaboratorInjectionAppCtx.xml"
+        };
+    appCtx = new ClassPathXmlApplicationContext(configurations);
+    assertNotNull(appCtx);
+  }
+
+  @Test
+  public void getBeanWithDependencies() {
+    Project project = appCtx.getBean(Project.class);
+    assertTrue(project.getId() == 2L);
+    assertTrue(project.getCodeName().equals("TASKBOARD"));
+    assertTrue(project.getUserStories().size() == 1);
+    assertTrue(project.getParticipants().size() == 1);
+    User user = project.getParticipants().get(0);
+    assertTrue(user.getUsername().equals("makingdevs"));
+    UserStory userStory = project.getUserStories().get(0);
+    assertTrue(userStory.getEffort() == 3);
+    assertTrue(userStory.getTasks().size() == 4);
+    assertTrue(userStory.getTasks().contains(null));
+    // Wherever you want...
+  }
+
+}
+    </script>
+  </div>
+</div>
+
+------
+
+
+
 ### Proceso de resolución de dependencias
 
 * El `ApplicationContext` es creado e inicializado con la configuración de los metadatos que describe todos los beans. Los metadatos pueden ser XML, Java, Groovy o anotaciones.
