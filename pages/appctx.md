@@ -579,8 +579,8 @@ El contenedor de Spring valida la configuración de cada bean al momento de que 
 * `util` Una variedad de selección de elementos de utilería. Incluye la habilidad de declarar colecciones como beans y soporte para elementos marcadores de propiedades.
 * Hay algunos otros más...
 
-<div cxlass="row">
-  <div class="col-md-12">
+<div class="row">
+  <div class="col-md-6">
     <h4><i class="icon-file"></i> UsingNamespacesAppCtx.xml</h4>
     <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
@@ -630,11 +630,8 @@ El contenedor de Spring valida la configuración de cada bean al momento de que 
 </beans>
     ]]></script>
   </div>
-</div>
-
-<div cxlass="row">
-  <div class="col-md-12">
-    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.java</h4>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.xml</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.practica7;
 
@@ -678,22 +675,21 @@ public class MultiPropertiesWithNamespaceCollaboratorInjectionTest {
 
 ------
 
+### Alcance de los beans y modelos de instanciación
+
+<blockquote><p>Por default, todos los beans son singletons.</p></blockquote>
+
+Cuando el contenedor despacha un bean, siempre manejará la misma instancia del bean. Pero habrá veces en las que tal vez necesites una nueva instancia del bean cada vez que lo pidas. Cuando declaras un `<bean>` en Spring tienes la opción de definir el alcance del mismo. Entre los alcances que tenemos disponibles podemos mencionar los siguientes:
+
+* `singleton` Alcance para la definición de un bean para una sola instancia por contenedor de Spring.
+* `prototype` Permite a un bean ser instanciado cualqueir número de veces(una vez por uso).
+* `request` Alcance para la definición de un bean en una solicitud HTTP. Sólo válido con el uso de SpringMVC.
+* `session` Alcance de un dentro de la definición de una sesión HTTP.
+
+Para la mayoría de las veces, probablemente será suficiente con dejar el alcance como _singleton_, sin embargo _prototype_ será útil en situaciones donde quieras usar Spring como una fábrica para instancias de objetos de dominio nuevos.
+
 ## Configuración con Anotaciones
 
-<div cxlass="row">
-  <div class="col-md-6">
-    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.java</h4>
-    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-nbjkdlnjklds
-    ]]></script>
-  </div>
-  <div class="col-md-6">
-    <h4><i class="icon-file"></i> MultiPropertiesWithNamespaceCollaboratorInjectionTest.java</h4>
-    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-fklsflmkf
-    ]]></script>
-  </div>
-</div>
 
 ## Configuración con JavaConfig
 
@@ -703,3 +699,6 @@ fklsflmkf
 
 ## Spring Expression Language
 
+
+
+Nota: Bean Scoping, inicializando y destruyendo beans
