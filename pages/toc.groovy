@@ -6,32 +6,34 @@
 }
 
 "essentials.html"(title: "Elementos esenciales de Springframework"){
-  "essentials.html"(title: "Módulos en Spring")
-  "essentials.html"(title: "Diseño de aplicaciones(orientado a interfaces)")
+  "essentials.html"(title: "¿Qué es lo nuevo en Spring?")
+  "essentials.html"(title: "Módulos de Spring")
+  "essentials.html"(title: "Mockito")
 }
 
 "ioc.html"(title: "Inversion of control y Dependency Injection"){
-
+  "ioc.html"(title: "Inversión de control")
+  "ioc.html"(title: "Separación de las interfaces y sus implementaciones")
 }
 
 "spring_container.html"(title: "El conteneder de Spring"){
   "spring_container.html"(title: "Bill of materials")
-  "spring_container.html"(title: "AppCtx y BeanFactory")
-  "spring_container.html"(title: "Ciclo de vida de los beans")
-  "spring_container.html"(title: "Caso de estudio")
+  "spring_container.html"(title: "Administración de dependencias con Gradle")
+  "spring_container.html"(title: "Diferencias entre el BeanFactory y el AppCtx")
+  "spring_container.html"(title: "El contenedor de beans de Spring")
+  "spring_container.html"(title: "Componentes funcionales y no funcionales")
+  "spring_container.html"(title: "Cross cutting concerns")
+  "spring_container.html"(title: "Estructura de las clases de dominio")
+  "spring_container.html"(title: "Funcionalidad que deseamos implementar a nivel de interfaces")
 }
 
 "appctx.html"(title:"Configuración del AppCtx"){
-  "appctx.html"(title: "Inyección por constructor")
-  "appctx.html"(title: "Inyecciones por setter")
-  "appctx.html"(title: "Declaración de beans")
-  "appctx.html"(title:"Configuración con XML"){
-    "appctx.html"(title:"Namespaces")  
-  }
+  "appctx.html"(title:"Declaración de beans y configuración con XML")
+  "appctx.html"(title:"Inyección por constructor")
+  "appctx.html"(title:"Inyecciones por setter")
   "appctx.html"(title:"Configuración con Anotaciones")
   "appctx.html"(title:"Configuración con JavaConfig")
   "appctx.html"(title:"Configuración con Groovy")
-  "appctx.html"(title:"Spring Expression Language")
 }
 
 "aop.html"(title:"Programación orientada a aspectos"){

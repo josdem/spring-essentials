@@ -452,7 +452,7 @@ Siempre se han confundido las pruebas de integración con las pruebas de unidad.
 * Pruebas de integración: Son aquellas que determinan que un componente se ejecuta correctamente incluyendo las interacciones con sus componentes asociados, los cuales también deben estar listos para ser invocados.
 * Pruebas de sistema: Son aquellas que ayudan a determinar si un flujo de negocio se ejecuto de manera correcta dadas ciertas condiciones y ambientes, y por lo general incluyen a varios componentes en su estructura.
 
-#### Mockito
+## Mockito
 
 [Mockito](https://code.google.com/p/mockito/) es un framework de mocking. Permite escribir pruebas con una API simple y limpia. Mockito es poderoso debido a que las pruebas son muy fácil de leer y que producen errores de verificación de limpieza con orden.
 
