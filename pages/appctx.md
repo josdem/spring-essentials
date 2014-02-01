@@ -1415,6 +1415,119 @@ public class BeanConfigurationTwo implements BeanConfigurationContractTwo{
 
 Ahora solo necesitaremos usar esta última configuración en nuestra última prueba para determinar que nuestro wiring es correcto: `@ContextConfiguration(classes = { BeanConfigurationTwo.class })`.
 
+### Mezclando configuraciones
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> GlobalConfiguration.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica12;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
+
+import com.makingdevs.practica11.BeanConfigurationTwo;
+
+@Configuration
+@Import(BeanConfigurationTwo.class)
+@ImportResource({ "classpath:/com/makingdevs/practica6/MoreInjectedBeansAppCtx.xml" })
+@ComponentScan(basePackages = { "com.makingdevs.practica12" })
+public class GlobalConfiguration {
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> MultiStyleConfiguration.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <context:component-scan base-package="com.makingdevs.practica12"/>
+
+</beans>
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> MultiStyleConfigurationTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica12;
+
+import static org.junit.Assert.assertTrue;
+import static org.springframework.util.Assert.notNull;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.makingdevs.practica6.MultiPropertiesBean;
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+import com.makingdevs.services.UserStoryService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations={"MultiStyleConfiguration.xml"})
+@ContextConfiguration(classes={GlobalConfiguration.class})
+public class MultiStyleConfigurationTests {
+
+  @Autowired
+  TaskService taskService;
+  @Autowired
+  ProjectService projectService;
+  @Autowired
+  UserService userService;
+  @Autowired
+  UserStoryService userStoryService;
+  
+  @Autowired
+  ApplicationContext appCtx;
+  
+  @Autowired
+  UserStoreImpl userStoreImpl;
+
+  @Test
+  public void testBeans() {
+    notNull(projectService);
+    notNull(taskService);
+    notNull(userService);
+    notNull(userStoryService);
+  }
+  
+  @Test
+  public void getBeanWitMultiProperties() {
+    MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
+    assertTrue(multi.getaMap().size() == 3);
+    assertTrue(multi.getaMap().containsKey("Uno"));
+    assertTrue(multi.getMultiLine().size() == 4);
+    assertTrue(multi.getPrimeNumbers().size() == 6);
+    assertTrue(multi.getCourseProperties().size() == 3);
+    assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
+    // Wherever you want...
+  }
+  
+  @Test
+  public void getAnotherExtraBean(){
+    notNull(userStoreImpl);
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
 ------
 
 ## Configuración con Groovy
