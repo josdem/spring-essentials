@@ -673,6 +673,10 @@ public class MultiPropertiesWithNamespaceCollaboratorInjectionTest {
   </div>
 </div>
 
+<div class="alert alert-info">
+  <strong><i class="icon-terminal"></i> Puedes importar más archivos de configuración</strong>, para hacerlo usa el tag <code>import resource="masConfiguracion.xml"</code> para agregar más definiciones de beans.
+</div>
+
 ------
 
 ### Alcance de los beans y modelos de instanciación
@@ -1112,6 +1116,187 @@ public class ComponentScanBeansTests {
 </div>
 
 ## Configuración con JavaConfig
+
+No a todos nos gusta el XML, y a muchos les gusta mucho el lenguaje Java. A partir de Spring 3 podemos configurar la mayor parte de nuestra aplicación con clases Java, crear el contenedor y configurar la onyección de dependencias con la estructura de una clase, para ellos nos basaremos en un par de anotaciones: `@Configuration` y `@Bean` para hacerlo.
+
+Lo que estamos haciendo es crear un `AnnotationConfigApplicationContext`, el cuál es capaz de no sólo aceptar clases con `@Configuration`, además puede usar `@Component` y clases anotadas con el JSR-330. Nota: Lo cual permite crear abstracciones aún más altas.
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-code"></i> Configuración con anotaciones de forma programática</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+public static void main(String[] args) {
+  AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+  ctx.register(AppConfig.class, OtherConfig.class);
+  ctx.register(AdditionalConfig.class);
+  ctx.refresh();
+  MyService myService = ctx.getBean(MyService.class);
+  myService.doStuff();
+}
+    ]]></script>
+  </div>
+</div>
+
+### Replicando el comportamiento de la configuración basada en XML con Java Config
+
+<div class="row">
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> ProjectServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica10;
+
+// Other imports
+
+// Look ma! No annotations, Spring is not invading this class
+public class ProjectServiceImpl implements ProjectService {
+
+  // Implemented Methods
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> TaskServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica10;
+
+// Other imports
+
+//Look ma! No annotations, Spring is not invading this class
+public class TaskServiceImpl implements TaskService {
+  
+  private UserService userService;
+
+  public TaskServiceImpl(UserService userService){
+    this.userService = userService;
+  }
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
+
+  // Implemented Methods
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> UserServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica10;
+
+// Other imports
+
+//Look ma! No annotations, Spring is not invading this class
+public class UserServiceImpl implements UserService {
+
+  // Implemented Methods
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> UserStoryServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica10;
+
+import java.util.List;
+
+// Other imports
+
+//Look ma! No annotations, Spring is not invading this class
+public class UserStoryServiceImpl implements UserStoryService {
+  
+  private ProjectService projectService;
+
+  public ProjectService getProjectService() {
+    return projectService;
+  }
+
+  public void setProjectService(ProjectService projectService) {
+    this.projectService = projectService;
+  }
+
+  // Implemented Methods ...
+
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> JavaBeanConfiguration.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica10;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+import com.makingdevs.services.UserStoryService;
+
+@Configuration
+public class JavaBeanConfiguration {
+
+  @Bean
+  public ProjectService projectService(){
+    ProjectService projectService = new ProjectServiceImpl();
+    return projectService;
+  }
+  
+  @Bean
+  public UserStoryService userStoryService(){
+    UserStoryServiceImpl userStoryServiceImpl = new UserStoryServiceImpl();
+    // Setter injection
+    userStoryServiceImpl.setProjectService(projectService());
+    return userStoryServiceImpl; 
+  }
+  
+  @Bean
+  public UserService userService() {
+    UserService userService = new UserServiceImpl();
+    return userService;
+  }
+  
+  @Bean
+  public TaskService taskService(){
+    // Constructor injection
+    TaskService taskService = new TaskServiceImpl(userService());
+    return taskService;
+  }
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> JavaBeansConfigurationTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica10;
+
+// Other imports
+
+@RunWith(SpringJUnit4ClassRunner.class)
+//Hey look the configuration, It's Java!!!
+@ContextConfiguration(classes = { JavaBeanConfiguration.class })
+public class JavaBeansConfigurationTests {
+
+  // Same as ComponentScanBeansTests
+
+}
+    ]]></script>
+  </div>
+</div>
+
+------
+
 
 
 ## Configuración con Groovy
