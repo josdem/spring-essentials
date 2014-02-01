@@ -1532,8 +1532,73 @@ public class MultiStyleConfigurationTests {
 
 ## Configuración con Groovy
 
+Con SpringFramework 4.0, ahora es posible definir la configuración externa de beans mediante un DSL Groovy. Esto es similar en concepto a utilizar definiciones de beans XML, pero permite una sintaxis más concisa. Usando Groovy también podemos incrustar fácilmente las definiciones de los beans directamente en el código de arranque. Por ejemplo:
 
-## Spring Expression Language
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> GroovyAppCtxTests.groovy</h4>
+    <script type="syntaxhighlighter" class="brush: groovy"><![CDATA[
+package com.makingdevs.practica13;
 
+import static org.junit.Assert.*
+import static org.springframework.util.Assert.notNull;
 
-Nota: Bean Scoping, inicializando y destruyendo beans
+import org.junit.Before
+import org.junit.Test
+import org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader
+import org.springframework.context.support.GenericApplicationContext
+
+import com.makingdevs.practica10.ProjectServiceImpl
+import com.makingdevs.practica10.TaskServiceImpl
+import com.makingdevs.practica10.UserServiceImpl
+import com.makingdevs.practica10.UserStoryServiceImpl
+
+class GroovyAppCtxTests {
+  
+  def appCtx
+  
+  @Before
+  void before() {
+    appCtx = new GenericApplicationContext()
+    def reader = new GroovyBeanDefinitionReader(appCtx)
+    
+    reader.beans {
+      projectService(ProjectServiceImpl)
+      userService(UserServiceImpl)
+      userStoryService(UserStoryServiceImpl){
+        projectService = projectService 
+      }
+      taskService(TaskServiceImpl){
+         userService = userService
+      }
+    }
+    
+    appCtx.refresh()
+  }
+
+  @Test
+  public void testAppCtx() {
+    def taskService = appCtx.getBean("taskService")
+    notNull(taskService)
+    notNull(taskService.userService)
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+------
+
+<div class="bs-callout bs-callout-info">
+<h4><i class="icon-coffee"></i> Información de utilidad</h4>
+  <p>
+    Te recomendamos que explores los temas que corresponden a:
+    <ul>
+      <li><a href="http://docs.spring.io/spring/docs/4.0.1.RELEASE/spring-framework-reference/htmlsingle/#beans-factory-scopes">Bean Scopes</a></li>
+      <li><a href="http://docs.spring.io/spring/docs/4.0.1.RELEASE/spring-framework-reference/htmlsingle/#beans-factory-nature">Ciclo de vida de un bean</a></li>
+      <li><a href="http://docs.spring.io/spring/docs/4.0.1.RELEASE/spring-framework-reference/htmlsingle/#beans-autowired-annotation-qualifiers">Calificadores - @Qualifier</a></li>
+    </ul>
+  </a>
+  </p>
+</div>
