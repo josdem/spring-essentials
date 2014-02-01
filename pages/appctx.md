@@ -688,8 +688,428 @@ Cuando el contenedor despacha un bean, siempre manejará la misma instancia del 
 
 Para la mayoría de las veces, probablemente será suficiente con dejar el alcance como _singleton_, sin embargo _prototype_ será útil en situaciones donde quieras usar Spring como una fábrica para instancias de objetos de dominio nuevos.
 
+<div class="bs-callout bs-callout-info">
+<h4><i class="icon-coffee"></i> Información de utilidad</h4>
+  <p>
+    Te recomendamos que veas el video de <a href="https://vimeo.com/12381504">Modelos de instanciación en Spring</a>, pues podrás notar que opciones tienes y como funcionan al momento de crear un bean dentro de Spring.
+  </a>
+  </p>
+</div>
+
+### Autowiring de colaboradores
+
+El contenedor de Spring puede _auto-alambrar_ relaciones entre beans que colaboran entre ellos. Puede permitir a Spring resolver colaboradores automáticamente para los beans declarados inspeccionando el contenido del `ApplicationContext`. El **autowiring** tiene las siguientes ventajas:
+
+* El autowiring puede significativamente reducir la necesidad de especificar propiedades o argumentos del constructor. 
+* El autowiring puede actualizar una configuración como los objetos vayan evolucionando. Por ejemplo, si necesitas una dependencia en una clase, dicha dependendencia puede ser satisfecha automáticamente sin la necesidad de modificar la configuración. Muy útil en desarrollo.
+
+#### Modos de autowiring
+
+* _no_ - Las dependencias deben ser especificadas vía un elemento `ref` de la decalración del bean.
+* byName
+* byType
+* constructor
+
 ## Configuración con Anotaciones
 
+Desde Spring 2.5, una de las formas más interesantes de crear un contenedor de Spring con todos sus beans ha sido usar anotaciones para automáticamente alambrar las propiedades de los beans. Autowiring con anotaciones no es tan diferente como usar `autowire`en XML. Sin embargo, es más selectivo al marcar ciertas propiedades.
+
+La configuración por anotaciones no esta habilitada por default, por lo tanto, antes de usarla debemos habilitarla:
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> AnnotationAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+</beans>
+    ]]></script>
+  </div>
+</div>
+
+`<context:annotation-config/>` le dice a Spring que deseamos usar la configuración por anotaciones. Spring soporta diferentes anotaciones para el autowiring:
+
+* `@Autowired` de Spring
+* `@Inject` del [JSR-330](https://www.jcp.org/en/jsr/detail?id=330)
+* `@Resource` del [JSR-250](https://www.jcp.org/en/jsr/detail?id=250)
+
+
+<div class="row">
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> ProjectServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica8;
+
+import com.makingdevs.model.Project;
+import com.makingdevs.services.ProjectService;
+
+public class ProjectServiceImpl implements ProjectService {
+  // Implemented Methods
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> TaskServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica8;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.makingdevs.model.Task;
+import com.makingdevs.model.TaskStatus;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+public class TaskServiceImpl implements TaskService {
+  
+  private UserService userService;
+
+  // Setter Injection
+  // @Inject
+  // @Resource
+  @Autowired
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  // Implemented Methods
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> UserServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica8;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+public class UserServiceImpl implements UserService {
+  // Implemented Methods
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> UserStoryServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica8;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.makingdevs.model.UserStory;
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.UserStoryService;
+
+public class UserStoryServiceImpl implements UserStoryService {
+  
+  private ProjectService projectService;
+  
+  public UserStoryServiceImpl(){}
+  
+  // Constructor Injection
+  // @Inject
+  // @Resource
+  @Autowired
+  public UserStoryServiceImpl(ProjectService projectService){
+    this.projectService =  projectService;
+  }
+
+  public ProjectService getProjectService() {
+    return projectService;
+  }
+
+  // Implemented Methods
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> AnnotationConfigAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <context:annotation-config />
+
+  <bean class="com.makingdevs.practica8.ProjectServiceImpl"/>
+  <bean class="com.makingdevs.practica8.TaskServiceImpl"/>
+  <bean class="com.makingdevs.practica8.UserServiceImpl"/>
+  <bean class="com.makingdevs.practica8.UserStoryServiceImpl"/>
+
+</beans>
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> AnnotationConfigBeansTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica8;
+
+import static org.springframework.util.Assert.notNull;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+import com.makingdevs.services.UserStoryService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"AnnotationConfigAppCtx.xml"})
+public class AnnotationConfigBeansTests {
+  
+  @Autowired
+  ApplicationContext applicationContext;
+
+  @Test
+  public void testAppCtx() {
+    notNull(applicationContext);
+  }
+  
+  @Test
+  public void testBeans(){
+    ProjectService projectService = applicationContext.getBean(ProjectService.class);
+    TaskService taskService= applicationContext.getBean(TaskService.class);
+    UserService userService = applicationContext.getBean(UserService.class);
+    UserStoryService userStoryService = applicationContext.getBean(UserStoryService.class);
+    
+    notNull(projectService);
+    notNull(taskService);
+    notNull(userService);
+    notNull(userStoryService);
+  }
+  
+  @Test
+  public void testImplementedBeans(){
+    TaskServiceImpl taskServiceImpl = applicationContext.getBean(TaskServiceImpl.class);
+    notNull(taskServiceImpl);
+    notNull(taskServiceImpl.getUserService());
+    
+    UserStoryServiceImpl userStoryServiceImpl = applicationContext.getBean(UserStoryServiceImpl.class);
+    notNull(userStoryServiceImpl);
+    notNull(userStoryServiceImpl.getProjectService());
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+### Descubriendo beans de forma automática
+
+Cuando agregas `<context:annotation-config />` a tu configuración de Spring, le debemos indicar a Spring la definición de los beans que queremos dar de alta dentro del AppCtx, aunque las dependencias se resuelvan por si solas con ayuda de la inyección basada en anotaciones. Es decir, a pesar de que nos quitamos el trabajo de definir `<property>` y `<constructor-arg>`, aún tenemos que definir `<bean>`.
+
+Pero Spring cuenta con `<context:component-scan base-package="com.makingdevs"/>`, que hace el trabajo de `<context:annotation-config />`, y además le indica a Spring que descubra todos los beans que sean candidatos a vivir dentro del contenedor. Por lo tanto no tenemos la necesidad de declarlos como `<bean>`. 
+
+Usamos el elemento `<context:component-scan base-package=""/>` dentro del archivo de configuración de Spring, en donde, el atributo `scan-package` es el nombre del paquete del cual comenzará a buscar todos los elementos que sean beans de spring, pero también buscará en sus subpaquetes, registrándolos así en el `ApplicationContext`.
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> ComponentScanAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <context:component-scan base-package="com.makingdevs.practica9"/>
+
+</beans>
+    ]]></script>
+  </div>
+</div>
+
+**¿Cómo sabe Spring que beans va a cargar en el contenedor?** Sencillo, Spring buscará por clases anotadas con uno de los siguientes estereotipos:
+
+* `@Component` Una anotación estereotipo de propósito general que le indica a una clase que es un bean de Spring.
+* `@Controller` Indica que la clase define un controller de Spring MVC
+* `@Repository` Indica que la clase define un repositorio de acceso a datos.
+* `@Service` Indica que la clase define un servicio de negocio.
+* Cualquier anotación personalizada que este definida a si misma con `@Component`
+
+<div class="row">
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> ProjectServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica9;
+
+import org.springframework.stereotype.Component;
+
+import com.makingdevs.model.Project;
+import com.makingdevs.services.ProjectService;
+
+@Component //Look ma! Annotations...
+public class ProjectServiceImpl implements ProjectService {
+
+  // Implemented methods
+}
+
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> TaskServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica9;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.Task;
+import com.makingdevs.model.TaskStatus;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@Service
+public class TaskServiceImpl implements TaskService {
+  
+  @Autowired
+  private UserService userService;
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  // Implemented methods
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> UserServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica9;
+
+import org.springframework.stereotype.Repository;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+// We use @Repository only for demo purposes
+@Repository
+public class UserServiceImpl implements UserService {
+
+  // Implemented methods
+}
+    ]]></script>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="icon-file"></i> UserStoryServiceImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica9;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.makingdevs.model.UserStory;
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.UserStoryService;
+
+@Component
+public class UserStoryServiceImpl implements UserStoryService {
+  
+  @Autowired
+  private ProjectService projectService;
+
+  public ProjectService getProjectService() {
+    return projectService;
+  }
+
+  // Implemented methods
+
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> ComponentScanBeansTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica9;
+
+import static org.springframework.util.Assert.notNull;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+import com.makingdevs.services.UserStoryService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"ComponentScanAppCtx.xml"})
+public class ComponentScanBeansTests {
+  
+  // You must inject abstractions, like this.
+  @Autowired
+  TaskService taskService;
+  @Autowired
+  ProjectService projectService;
+  @Autowired
+  UserService userService;
+  @Autowired
+  UserStoryService userStoryService;
+  
+  // This is bad practice, is only for demo purposes.
+  @Autowired
+  TaskServiceImpl taskServiceImpl;
+  @Autowired
+  UserStoryServiceImpl userStoryServiceImpl;
+  
+  @Test
+  public void testBeans(){
+    
+    notNull(projectService);
+    notNull(taskService);
+    notNull(userService);
+    notNull(userStoryService);
+  }
+  
+  @Test
+  public void testImplementedBeans(){
+    notNull(taskServiceImpl);
+    notNull(taskServiceImpl.getUserService());
+    notNull(userStoryServiceImpl);
+    notNull(userStoryServiceImpl.getProjectService());
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
 
 ## Configuración con JavaConfig
 
@@ -698,7 +1118,6 @@ Para la mayoría de las veces, probablemente será suficiente con dejar el alcan
 
 
 ## Spring Expression Language
-
 
 
 Nota: Bean Scoping, inicializando y destruyendo beans
