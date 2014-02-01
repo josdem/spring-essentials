@@ -1297,7 +1297,125 @@ public class JavaBeansConfigurationTests {
 
 ------
 
+### Inyección de configuración
 
+Es posible definir a nivel de contrato que instancias o beans deseamos de algún elemento, las configuraciones serán implementadas a nivel de clase, y por lo tanto podremos inyectarlas entre sí.
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> BeanConfigurationContractOne.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica11;
+
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.UserService;
+
+public interface BeanConfigurationContractOne {
+  ProjectService projectService();
+  UserService userService();
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> BeanConfigurationContractTwo.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica11;
+
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserStoryService;
+
+public interface BeanConfigurationContractTwo {
+  TaskService taskService();
+  UserStoryService userStoryService();
+}
+    ]]></script>
+  </div>
+</div>
+
+Las implementaciones son entonces la definición de la configuración que deseamos par< nuestra aplicación.
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> BeanConfigurationOne.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica11;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+import com.makingdevs.practica10.ProjectServiceImpl;
+import com.makingdevs.practica10.UserServiceImpl;
+import com.makingdevs.services.ProjectService;
+import com.makingdevs.services.UserService;
+
+// Look ma, I'm confguration and a Spring bean at the same time
+@Configuration
+@Component
+public class BeanConfigurationOne implements BeanConfigurationContractOne {
+
+  @Bean
+  public ProjectService projectService(){
+    ProjectService projectService = new ProjectServiceImpl();
+    return projectService;
+  }
+  
+  @Bean
+  public UserService userService() {
+    UserService userService = new UserServiceImpl();
+    return userService;
+  }
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> BeanConfigurationContractTwo.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica11;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+import com.makingdevs.practica10.TaskServiceImpl;
+import com.makingdevs.practica10.UserStoryServiceImpl;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserStoryService;
+
+@Configuration
+@Import(BeanConfigurationOne.class) // Look ma, importing configuration
+public class BeanConfigurationTwo implements BeanConfigurationContractTwo{
+
+  // WTF!, are you serious? Inject configuration?
+  @Autowired
+  BeanConfigurationContractOne beanConfigurationContractOne;
+
+  @Bean
+  public UserStoryService userStoryService(){
+    UserStoryServiceImpl userStoryServiceImpl = new UserStoryServiceImpl();
+    // Setter injection
+    userStoryServiceImpl.setProjectService(beanConfigurationContractOne.projectService());
+    return userStoryServiceImpl; 
+  }
+  
+  
+  @Bean
+  public TaskService taskService(){
+    // Constructor injection
+    TaskService taskService = new TaskServiceImpl(beanConfigurationContractOne.userService());
+    return taskService;
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+Ahora solo necesitaremos usar esta última configuración en nuestra última prueba para determinar que nuestro wiring es correcto: `@ContextConfiguration(classes = { BeanConfigurationTwo.class })`.
+
+------
 
 ## Configuración con Groovy
 
