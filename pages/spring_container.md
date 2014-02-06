@@ -106,7 +106,7 @@ Para solucionar el problema, Maven soporta el concepto de "Bill of materials". P
   </div>
 </div>
 
-### Administración de dependencias con Gradle
+## Administración de dependencias con Gradle
 
 Para usar los repositorios de Spring con Gradle incluye las URL's apropiadas en la sección de repositorios, y agrega las dependencias a tu gusto:
 
@@ -163,7 +163,7 @@ En donde, como se puede ver el AppCtx es un subtipo de BeanFactory, y mas intere
 
 **Adicionalmente, es bueno mencionar que los paquetes `org.springframework.beans` y `org.springframework.context` son la base del contenedor de Spring.**
 
-### Diferencias entre el BeanFactory y el AppCtx
+## Diferencias entre el BeanFactory y el AppCtx
 
 El `BeanFactory` proporciona la base fundamental para la funcionalidad del contenedor de IoC de Spring pero sólo se usa directamente en la integración con otros frameworks de terceros, y ahora es en gran parte de naturaleza histórica para la mayoría de los usuarios de Spring. Sin embargo la regla es: **Usa un `ApplicationContext` a menos que tengas una buena razón para no hacerlo.**
 
@@ -211,19 +211,19 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
 
 ## Inyección de Dependencias entre beans con elementos transversales.
 
-### El contenedor de beans de Spring
+## El contenedor de beans de Spring
 
 ![Alt spring-container](img/spring-container.png "Spring container")
 
 ------
 
-### Componentes funcionales y no funcionales
+## Componentes funcionales y no funcionales
 
 ![Alt di](img/di.png "Dependency injection")
 
 ------
 
-### Cross cutting concerns
+## Cross cutting concerns
 
 ![Alt cross-concern](img/cross-concern.png "Cross concern")
 
@@ -390,7 +390,7 @@ Nuestro ejemplo estará basado en un tablero de tareas(Taskboard), el cual esta 
 
 ------
 
-### Estructura de las clases de dominio
+## Estructura de las clases de dominio
 
 <div class="row">
   <div class="col-md-4">
@@ -496,7 +496,7 @@ public class User {
 
 ------
 
-### Funcionalidad que deseamos implementar a nivel de interfaces
+## Funcionalidad que deseamos implementar a nivel de interfaces
 
 <div class="row">
   <div class="col-md-6">
