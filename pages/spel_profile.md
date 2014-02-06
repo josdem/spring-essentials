@@ -173,5 +173,163 @@ public class UsingLanguageTests {
 
 ### Uso del SpEL dentro de los archivos de configuración
 
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> SpELInjection.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+package com.makingdevs.practica14;
+
+public class SystemInfo {
+  private String javaHome;
+  private String osName;
+  private String osVersion;
+  private String userDir;
+  private String userHome;
+  private String userName;
+  // getters and setters
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> SpELInjection.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+package com.makingdevs.practica14;
+
+public class SystemInfo {
+  private String javaHome;
+  private String osName;
+  private String osVersion;
+  private String userDir;
+  private String userHome;
+  private String userName;
+  // getters and setters
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> SpELInjection.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica14;
+
+public class SystemInfo {
+  private String javaHome;
+  private String osName;
+  private String osVersion;
+  private String userDir;
+  private String userHome;
+  private String userName;
+  // getters and setters
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> SpELInjection.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <bean id="userWitSpel" class="com.makingdevs.practica14.SystemInfo">
+    <property name="javaHome" value="#{systemProperties['java.home']}"/>
+    <property name="osName" value="#{systemProperties['os.name']}"/>
+    <property name="osVersion" value="#{systemProperties['os.version']}"/>
+    <property name="userDir" value="#{systemProperties['user.dir']}"/>
+    <property name="userHome" value="#{systemProperties['user.home']}"/>
+    <property name="userName" value="#{systemProperties['user.name']}"/>
+  </bean>
+  
+  <!-- Loading file with properties -->
+  <util:properties id="userInfo" location="classpath:/com/makingdevs/practica14/userInfo.properties" />
+  
+  <!-- Injecting properties with SpEL -->
+  <bean id="userInfoSpel" class="com.makingdevs.model.User">
+    <property name="id" value="#{userInfo[id]}"/>
+    <property name="username" value="#{userInfo[username]}"/>
+    <property name="enabled" value="#{userInfo[enabled]}"/>
+  </bean>
+  
+  <!-- Placeholders values -->
+  <context:property-placeholder location="classpath:/com/makingdevs/practica14/userInfo.properties" />
+  
+  <!-- Injecting properties with SpEL -->
+  <bean id="userInfoPlaceholders" class="com.makingdevs.model.User">
+    <property name="id" value="${id}"/>
+    <property name="username" value="${username}"/>
+    <property name="enabled" value="${enabled}"/>
+  </bean>  
+
+</beans>
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> SpELXmlConfigTests.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+package com.makingdevs.practica14;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+import com.makingdevs.model.User;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"SpELInjection.xml"})
+public class SpELXmlConfigTests {
+  
+  @Autowired
+  SystemInfo systemInfo;
+  
+  @Autowired
+  User userInfoSpel;
+  
+  @Autowired
+  User userInfoPlaceholders;
+
+  @Test
+  public void testSpELInjection() {
+    Assert.notNull(systemInfo);
+    Assert.notNull(systemInfo.getJavaHome());
+    // everything else ...
+    System.out.println(systemInfo);
+  }
+  
+  @Test
+  public void testSpELInjectionOnUser(){
+    Assert.notNull(userInfoSpel);
+    Assert.isTrue(userInfoSpel.getUsername().equals("makingdevs"));
+    Assert.isTrue(userInfoSpel.isEnabled());
+    Assert.isTrue(userInfoSpel.getId() == 100L);
+  }
+  
+  @Test
+  public void testSpELInjectionPlaceholders(){
+    Assert.notNull(userInfoPlaceholders);
+    Assert.isTrue(userInfoPlaceholders.getUsername().equals("makingdevs"));
+    Assert.isTrue(userInfoPlaceholders.isEnabled());
+    Assert.isTrue(userInfoPlaceholders.getId() == 100L);
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
 ## Spring Profiles
 
