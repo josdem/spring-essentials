@@ -398,3 +398,169 @@ public class SpELAnnotatedTests {
 
 ## Spring Profiles
 
+La definición de beans de _profile_ es un mecanismo en el contenedor central de Spring que permite el registro de diferentes beans en diferentes entornos. Esta característica puede ayudarnos en un par de casos de uso:
+
+* Trabajar con una base de datos local contra una base de datos en producción, o bien un `DataSource` en QA o Producción
+* Registrar infraestructura de monitoreo solamente cuando se despliega una aplicación en un entorno de medición de rendimiento
+* Registrar implementaciones personalizadas de beans para una aplicación A y una aplicación B
+* Registrar infraestructra de brokers, parámetros de SMTP, o cualquier otro elemento externo que sea parte del entorno de la aplicación
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> UserServiceDevImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica16;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+public class UserServiceDevImpl implements UserService {
+
+  @Override
+  public User createUser(String username) {
+    System.out.println("Creating user in development environment");
+    return null;
+  }
+
+  // Another implemented methods...
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> UserServiceProdImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica16;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+public class UserServiceProdImpl implements UserService {
+
+  @Override
+  public User createUser(String username) {
+    System.out.println("Creating user in production environment");
+    return null;
+  }
+
+  // Another implemented methods...
+
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ProfileAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <beans profile="dev">
+    <bean class="com.makingdevs.practica16.UserServiceDevImpl"/>
+  </beans>
+  
+  <beans profile="prod">
+    <bean class="com.makingdevs.practica16.UserServiceProdImpl"/>
+  </beans>
+
+</beans>
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> ProfileTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica16;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+import com.makingdevs.services.UserService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"ProfileAppCtx.xml"})
+@ActiveProfiles(profiles={"dev"}) // Change to 'prod'
+public class ProfileTests {
+  
+  @Autowired
+  UserService userService;
+
+  @Test
+  public void testProfileInBean() {
+    Assert.notNull(userService);
+    userService.createUser("makingdevs");
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="bs-callout bs-callout-warning">
+<h4><i class="icon-coffee"></i> Advertencias de uso</h4>
+  <p>
+    Hay algunas coas que debes observar cuando consideras usar perfiles en la definición de los beans:
+    <ul>
+      <li>No uses perfiles si una aproximación más simple puede resolver el problema</li>
+      <li>El conjunto de beans registrado entre dos perfiles deberías ser probablemente más similar que diferente</li>
+      <li>Se cuidadoso con no poner mucho en producción</li>
+    </ul>
+  </a>
+  </p>
+</div>
+
+Aunque puedes usar la propiedad de sistema `spring.profiles.active` para determinar de forma externalizada que ambiente se usará. Adicionalmente, podemos usar anotaciones para configurar los perfiles.
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> StandaloneDataConfig.xml</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+      @Configuration
+      @Profile("dev")
+      public class StandaloneDataConfig {
+
+        @Bean
+        public DataSource dataSource() {
+          return new EmbeddedDatabaseBuilder()
+          .setType(EmbeddedDatabaseType.HSQL)
+          .addScript("classpath:com/bank/config/sql/schema.sql")
+          .addScript("classpath:com/bank/config/sql/test-data.sql")
+          .build();
+        }
+
+      }
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> JndiDataConfig.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+      @Configuration
+      @Profile("production")
+      public class JndiDataConfig {
+
+        @Bean
+        public DataSource dataSource() throws Exception {
+          Context ctx = new InitialContext();
+          return (DataSource) ctx.lookup("java:comp/env/jdbc/datasource");
+        }
+
+      }
+    ]]></script>
+  </div>
+</div>
+
+<div class="bs-callout bs-callout-info">
+<h4><i class="icon-coffee"></i> Información de utilidad</h4>
+  <p>
+    Podrás definir que entorno utilizar incluso en aplicaciones web de forma externalizada para determinar el conjunto de beans que corresponden a una aplicación.
+  </a>
+  </p>
+</div>
