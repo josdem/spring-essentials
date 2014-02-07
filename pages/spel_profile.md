@@ -175,44 +175,6 @@ public class UsingLanguageTests {
 
 <div class="row">
   <div class="col-md-12">
-    <h4><i class="icon-file"></i> SpELInjection.xml</h4>
-    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
-package com.makingdevs.practica14;
-
-public class SystemInfo {
-  private String javaHome;
-  private String osName;
-  private String osVersion;
-  private String userDir;
-  private String userHome;
-  private String userName;
-  // getters and setters
-}
-    ]]></script>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <h4><i class="icon-file"></i> SpELInjection.xml</h4>
-    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
-package com.makingdevs.practica14;
-
-public class SystemInfo {
-  private String javaHome;
-  private String osName;
-  private String osVersion;
-  private String userDir;
-  private String userHome;
-  private String userName;
-  // getters and setters
-}
-    ]]></script>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
     <h4><i class="icon-file"></i> SpELInjection.java</h4>
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.practica14;
@@ -276,8 +238,8 @@ public class SystemInfo {
     ]]></script>
   </div>
   <div class="col-md-6">
-    <h4><i class="icon-file"></i> SpELXmlConfigTests.xml</h4>
-    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+    <h4><i class="icon-file"></i> SpELXmlConfigTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 package com.makingdevs.practica14;
 
 import org.junit.Test;
