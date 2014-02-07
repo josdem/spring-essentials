@@ -171,7 +171,7 @@ public class UsingLanguageTests {
   </div>
 </div>
 
-### Uso del SpEL dentro de los archivos de configuración
+### Uso de SpEL dentro de los archivos de configuración
 
 <div class="row">
   <div class="col-md-12">
@@ -292,6 +292,109 @@ public class SpELXmlConfigTests {
     ]]></script>
   </div>
 </div>
+
+### Uso de SpEL en configuración basada en anotaciones
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> db_parameters.properties</h4>
+    <script type="syntaxhighlighter" class="brush: plain"><![CDATA[
+driver=org.postgresql.Driver
+url=jdbc:postgresql://localhost:5432/MakingDevs
+user=db_md
+password=mejorusatulocal
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> AnnotationConfigAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+  <util:properties id="dbProperties" location="classpath:/com/makingdevs/practica15/db_parameters.properties" />
+
+</beans>
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> DBInfo.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica15;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.stereotype.Component;
+
+@Configuration
+@ImportResource({"classpath:/com/makingdevs/practica15/AnnotationConfigAppCtx.xml"})
+@Component
+public class DBInfo {
+  @Value("#{dbProperties['username'] ?: 'username'}")
+  private String username;
+  @Value("#{dbProperties['password'] ?: 'password'}")
+  private String password;
+  @Value("#{dbProperties['url'] ?: 'jdbc:h2:tcp://localhost/md'}")
+  private String url;
+  @Value("#{dbProperties['driver'] ?: 'org.h2.Driver'}")
+  private String driver;
+  
+  public String getUsername() {
+    return username;
+  }
+  public String getPassword() {
+    return password;
+  }
+  public String getUrl() {
+    return url;
+  }
+  public String getDriver() {
+    return driver;
+  }
+  
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> SpELAnnotatedTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica15;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static org.springframework.util.Assert.*;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { DBInfo.class })
+public class SpELAnnotatedTests {
+
+  @Autowired
+  DBInfo dbInfo;
+
+  @Test
+  public void testDBProperties() {
+    notNull(dbInfo);
+    isTrue(dbInfo.getDriver().equals("org.postgresql.Driver"));
+    isTrue(dbInfo.getUrl().equals("jdbc:postgresql://localhost:5432/MakingDevs"));
+    // Anything else...
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+------
 
 ## Spring Profiles
 
