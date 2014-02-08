@@ -74,22 +74,26 @@
 
 "aop.html"(title:"Programación orientada a aspectos"){
   "aop.html"(title:"Conceptos esenciales"){
-    "aop.html"(title:"JoinPoint")
-    "aop.html"(title:"Pointcut")
-    "aop.html"(title:"Expresiones")  
+    "aop.html"(title:" Advice")
+    "aop.html"(title:" JoinPoint")
+    "aop.html"(title:" Pointcut")
+    "aop.html"(title:" Aspectos")
+    "aop.html"(title:" Introductions")
+    "aop.html"(title:" AOP Proxy")
+    "aop.html"(title:" Weaving  ")
   }
-  "aop.html"(title:"Declarando aspectos con Anotaciones"){
-    "aop.html"(title:"Soporte de anotaciones con AspectJ")
-    "aop.html"(title:"Declaración de aspectos(Advice)")
-    "aop.html"(title:"Before")
-    "aop.html"(title:"After")
-    "aop.html"(title:"After returning")
-    "aop.html"(title:"After throwing")
-    "aop.html"(title:"Around ")  
+
+  "aop.html"(title:"Declarando aspectos"){
+    "aop.html"(title:"Definiendo advices")
   }
-  
-  "aop.html"(title:"JoinPoint en detalle")
+
+  "aop.html"(title:"Declarando mejores pointcuts"){
+    "aop.html"(title:"Ejemplos de pointcuts")
+  }
+
   "aop.html"(title:"Declarando aspectos con XML")
+  "aop.html"(title:"Advice ordering")
+  "aop.html"(title:"Advisor")
 }
 
 "agradecimiento.html"(title: "Agradecimiento")
