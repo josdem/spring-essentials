@@ -459,6 +459,17 @@ public class AdvicedServicesTests {
   </div>
 </div>
 
+
+#### También puedes habilitar el soporte de anotaciones con Java Config
+
+```
+@Configuration
+@EnableAspectJAutoProxy
+public class AppConfig {
+
+}
+```
+
 ------
 
 <div class="row">
@@ -555,5 +566,134 @@ public class BeforeAdvice {
 
 ## Declarando mejores pointcuts
 
+En Spring AOP, los pointcuts son definidos usando el lenguaje de expresión de AspectJ. Lo más importante a conocer es que Spring soporta un subconjunto de designadores de pointcuts disponibles en AspectJ. La declaración de un pointcut tiene dos partes:
+
+1. Una firma que comprende un nombre y los parámetros
+2. Una expresión que determina qué ejecuciones de métodos exactamente nos interesa
+
+Para lo anterior nos vamos a ayudar de la anotación `@Pointcut` en un método que deberá ser `void`.
+
+Adicionalmente, Spring AOP soporta los siguientes designadores de pointcuts de AspectJ para usar en expresiones:
+
+* `execution` para las coincidencias de ejecución de Join Points
+* `within` límita coincidir con join points dentro de ciertos tipos
+* `this` limita coincidir con join points donde la referencia del bean object es una instancia de un tipo dado
+* `target` limita coincidir con join points donde la referencia del target object es una instancia de un tipo dado
+* `args` limita coincidir con join points donde las instancias de los argumentos son de tipos dados
+* `@target` 
+* `@args` 
+* `@within` 
+* `@annotation` 
+
+### Ejemplos de pointcuts
+
+* `execution(public * *(..))` - Ejecución de cualquier método publico
+* `execution(* set*(..))` - Ejecución de cualquier metodo que comience con el nombre set
+* `execution(* com.makingdevs.services.UserService.*(..))` -  La ejecución de cualquier método definido por la interfaz UserService
+* `execution(* com.makingdevs.services..(..))` -  La ejecución de cualquier método dentro del paquete
+* `execution(* com.makingdevs.services...(..))` - La ejecución de cualquier método dentro del paquete y subpaquete
+* `within(com.makingdevs.services.*)` - Cualquier JP dentro del paquete de servicio
+* `this(com.makingdevs.services.UserService)` - Cualquier JP donde los proxies implementen UserService
+* `target(com.makingdevs.services.UserService)` - Cualquier JP donde el target object implemente UserService
+* `args(java.io.Serializable)` -  Cualquier JP que tome sólo un parámetro, y el argumento pasado en tiempo de ejecución sea Serializable
+* `@target(org.springframework.transaction.annotation.Transactional)` - Cualquier JP donde el target object este anotado con `@Transactional`
+* `@within(org.springframework.transaction.annotation.Transactional)` - Cualquier JP donde el tipo declarado del target object tenga una anotación `@Transactional`.
+* `@annotation(org.springframework.transaction.annotation.Transactional)` - Cualquier JP donde el método ejecutado tenga la anotación `@Transactional`
+
+<div class="bs-callout bs-callout-info">
+<h4><i class="icon-coffee"></i> Información de utilidad</h4>
+  <p>
+    Para una comprensión más completa de la estructura de los pointcuts podemos consultar el <a href="http://www.eclipse.org/aspectj/doc/released/adk15notebook/index.html">AspectJ 5 Developers Notebook</a>.
+  </a>
+  </p>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> pom.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica20;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class CommonPointcut {
+
+  @Pointcut("this(com.makingdevs.services.UserService)")
+  public void dataAccessLayer() {
+  }
+
+  @Pointcut("execution(* com.makingdevs.practica18.*Service*.*(..))")
+  public void servicesLayer() {
+  }
+
+  @Pointcut("within(com.makingdevs.services.*)")
+  public void webLayer() {
+  }
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> pom.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica20;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class LogAroundAdvice {
+  
+  private Log log = LogFactory.getLog(LogAroundAdvice.class);
+
+  @Around("com.makingdevs.practica20.CommonPointcut.servicesLayer()")
+  public Object aroundMethod(ProceedingJoinPoint pjp) throws Throwable{
+    log.debug("Antes de ejecutar " + pjp.getSignature().getName());
+    Object retVal = pjp.proceed();
+    log.debug("Despues de ejecutar " + pjp.getSignature().getName());
+    return retVal;
+  }
+}      
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> pom.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica20;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class BenchmarkAroundAdvice {
+  private Log log = LogFactory.getLog(BenchmarkAroundAdvice.class);
+
+  @Around("com.makingdevs.practica20.CommonPointcut.servicesLayer()")
+  public Object aroundMethod(ProceedingJoinPoint pjp) throws Throwable{
+    long startTime = System.currentTimeMillis();
+    Object retVal = pjp.proceed();
+    long endTime = System.currentTimeMillis();
+    log.debug("Method " + pjp.getSignature().getName() +" executed in " + (endTime-startTime) + " ms.");
+    return retVal;
+  }
+}      
+    ]]></script>
+  </div>
+</div>
+
 ## Declarando aspectos con XML
 
+### Advice ordering
