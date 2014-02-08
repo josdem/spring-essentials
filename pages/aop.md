@@ -461,6 +461,98 @@ public class AdvicedServicesTests {
 
 ------
 
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> AfterAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica19;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class AfterAdvice {
+
+  private Log log = LogFactory.getLog(AfterAdvice.class);
+
+  @After("execution(* createUser*(..))")
+  public void afterMethod(JoinPoint joinPoint) {
+    log.debug("After advice method in " + joinPoint.getSignature().getName() + " with arguments:");
+    for(Object o:joinPoint.getArgs()){
+      log.debug("\t - " + o);
+    }
+  }
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> AfterThrowingAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica19;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class AfterThrowingAdvice {
+
+  private Log log = LogFactory.getLog(AfterThrowingAdvice.class);
+
+  // Look ma! I'm catching exceptions with AOP !!!
+  @AfterThrowing(pointcut="execution(public * *(..))",throwing="customNameException")
+  public void afterReturningMethod(JoinPoint joinPoint, RuntimeException customNameException) {
+    StringBuffer buffer = new StringBuffer("Ha ocurrido un error en " + joinPoint.getSignature().getName() + " ");
+    buffer.append("de " + joinPoint.getTarget().getClass().getName() + " - Argumentos:");
+    for(Object o:joinPoint.getArgs()){
+      buffer.append(o + " ");
+    }
+    buffer.append(" y el error " + customNameException.getMessage());
+    log.error(buffer.toString());
+  }
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> BeforeAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica19;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class BeforeAdvice {
+  
+  private Log log = LogFactory.getLog(BeforeAdvice.class);
+  
+  @Before("execution(* com.makingdevs.practica18.*Service*.*(..))")
+  public void beforeMethod(JoinPoint joinPoint) {
+    log.debug("Before advice method in " + joinPoint.getSignature().getName() + " with arguments:");
+    for(Object o:joinPoint.getArgs()){
+      log.debug("\t - " + o);
+    }
+  }
+}
+    ]]></script>
+  </div>
+</div>
+
 ## Declarando mejores pointcuts
 
 ## Declarando aspectos con XML
