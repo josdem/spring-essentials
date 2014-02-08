@@ -44,6 +44,14 @@ Un aspecto es la combinación de advices y pointcuts. Tomados en conjunto, defin
 
 Aunque no son considerador en este entrenamiento, es bueno saber que un _introduction_ te permite agregar métodos o atributos a clases existentes. El nuevo método y variable de instancia pueden ser introducidos a clases existentes sin tener que cambiarlo, dándoles nuevo comportamiento y estado.
 
+### Target object
+
+Es el objeto siendo avisado por varios por uno o más aspectos. Además conocido como el _advice object_. Este objeto por lo general será un objeto proxy.
+
+### AOP Proxy
+
+Es un objeto creado por el framework de AOP en orden para implementar los contratos del aspecto. En Spring, un proxy AOP será un proxy dinámico del JDK o un proxy CGLIB.
+
 ### Weaving
 
 _Weaving_ es el proceso de aplicar aspectos a un _target object_ para crear un _proxy object_. Los aspectos son tejidos dentro del _target object_ en los _join points_ específicados. El weaving puedde tomar lugar en varios puntos en el ciclo de vida del _target object_:
@@ -51,6 +59,10 @@ _Weaving_ es el proceso de aplicar aspectos a un _target object_ para crear un _
 * _Compile time_ - Los aspectos son tejidos cuando la clase es compilada. Esto requiere un compilador especial, en el caso de AspecjtJ lo hace de esta forma.
 * _Classload time_ - Los aspectos son tejidos cuando la clase es cargada dentro de la JVM. Esto requiere un `ClassLoader` especial que mejora el código de byte de la clase antes de ser introducida a la aplicación.
 * _Runtime_ - Los aspectos son tejidos en algún momento durante la ejecución de la aplicación. Típicamente, un contenedor de AOP generará dinámicamente un _proxy object_ que será delegado al _target object_ mientras se en los aspectos. Así es como Spring AOP funcionan.
+
+<blockquote>
+  <p>Los advices de Spring son escritos en Java.</p>
+</blockquote>
 
 <div class="bs-callout bs-callout-info">
 <h4><i class="icon-coffee"></i> Información de utilidad</h4>
@@ -61,7 +73,154 @@ _Weaving_ es el proceso de aplicar aspectos a un _target object_ para crear un _
   </p>
 </div>
 
-## Declarando aspectos con Anotaciones
+El soporte de Spring para AOP viene en 4 formas:
+
+* Spring AOP clásico basado en objetos proxy
+* Aspectos manejados por anotaciones con `@AspectJ`
+* Aspectos POJO puros
+* Aspectos inyectados de AspectJ(disponibles en todas las versiones de Spring)
+
+<div class="bs-callout bs-callout-warning">
+<h4><i class="icon-coffee"></i> Información de utilidad</h4>
+  <p>
+  Y aunque el soporte clásico de Spring es base para aquellos manejados por aspectos y los de POJO puros, no los trataremos a profundidad, sin embargo, es bueno revisar y entender <a hrfe="http://docs.spring.io/spring/docs/4.0.1.RELEASE/spring-framework-reference/html/aop.html#aop-understanding-aop-proxies">los proxies de AOP en la documentación de Spring</a>.
+  </p>
+</div>
+
+En Spring, los aspectos son tejidos dentro de los beans administrados por Spring en tiempo de ejecución cambiándolos por una clase proxy. Entre el tiempo cuando el proxy intercepta la llamada al método y el tiempo cuando invoca el método del target bean, el proxy ejecuta la lógica del aspecto. Spring no crea objetos proxy hasta que el bean proxy es necesario para la aplicación. Es por esto último que no necesitamos un compilador de AOP, ya que todo sucede en runtime.
+
+<blockquote>
+  <p>Spring sólo soporta Join Points de métodos.</p>
+</blockquote>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> UserServiceLoggedImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica17;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+@Service
+public class UserServiceLoggedImpl implements UserService {
+
+  private Log log = LogFactory.getLog(UserServiceLoggedImpl.class);
+
+  @Override
+  public User findUserByUsername(String username) {
+    log.debug("findUserByUsername : params = [" + username + "]");
+    return null;
+  }
+
+  @Override
+  public User createUser(String username) {
+    log.debug("createUser : params = [" + username + "]");
+    return null;
+  }
+
+  @Override
+  public void addToProject(String username, String codeName) {
+    log.debug("addToProject : params = [" + username + "," + codeName + "]");
+  }
+
+}
+    </script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskServiceLoggedImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica17;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.Task;
+import com.makingdevs.model.TaskStatus;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@Service
+public class TaskServiceLoggedImpl implements TaskService {
+  
+  private Log log = LogFactory.getLog(TaskServiceLoggedImpl.class);
+  
+  @Autowired
+  UserService userService;
+
+  @Override
+  public Task createTaskForUserStory(String taskDescription, Long userStoryId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void assignTaskToUser(Long taskId, String username) {
+    log.debug("Starting: assignTaskToUser");
+    userService.findUserByUsername(username);
+    log.debug("Ending: assignTaskToUser");
+  }
+
+  @Override
+  public void changeTaskStatus(Long taskId, TaskStatus taskStatus) {
+    // TODO Auto-generated method stub
+    
+  }
+
+}
+    </script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> LoggingServicesTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica17;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"LoggingAppCtx.xml"})
+public class LoggingServicesTests {
+  
+  @Autowired
+  UserService userService;
+  @Autowired
+  TaskService taskService;
+
+  @Test
+  public void testUserService() {
+    Assert.notNull(userService);
+    userService.createUser("EmilyThorn");
+  }
+  
+  @Test
+  public void testTaskService() {
+    Assert.notNull(taskService);
+    taskService.assignTaskToUser(1L, "MakingDevs");
+  }
+
+}
+    </script>
+  </div>
+</div>
+
+## Declarando aspectos
 
 ### Soporte de anotaciones con AspectJ
 
