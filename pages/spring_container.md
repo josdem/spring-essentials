@@ -17,7 +17,7 @@ Si estás usando Maven para la administración de dependencias no necesitas prov
           <version>4.0.0.RELEASE</version>
         </dependency>
       </dependencies>
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -36,7 +36,7 @@ El ejemplo anterior trabaja con el repo Central de Maven. Pero para garantizar l
     </snapshots>
   </repository>
 </repositories>
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-4">
     <h4><i class="icon-file"></i> pom.xml - MILESTONES</h4>
@@ -50,7 +50,7 @@ El ejemplo anterior trabaja con el repo Central de Maven. Pero para garantizar l
           </snapshots>
         </repository>
       </repositories>
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-4">
     <h4><i class="icon-file"></i> pom.xml - SNAPSHOTS</h4>
@@ -64,7 +64,7 @@ El ejemplo anterior trabaja con el repo Central de Maven. Pero para garantizar l
         </snapshots>
       </repository>
     </repositories>
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -87,7 +87,7 @@ Para solucionar el problema, Maven soporta el concepto de "Bill of materials". P
           </dependency>
         </dependencies>
       </dependencyManagement>
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> pom.xml</h4>
@@ -102,7 +102,7 @@ Para solucionar el problema, Maven soporta el concepto de "Bill of materials". P
           <artifactId>spring-web</artifactId>
         </dependency>
       <dependencies>
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -122,7 +122,7 @@ Para usar los repositorios de Spring con Gradle incluye las URL's apropiadas en 
         compile("org.springframework:spring-context:4.0.0.RELEASE")
         testCompile("org.springframework:spring-test:4.0.0.RELEASE")
       }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -157,7 +157,7 @@ En donde, como se puede ver el AppCtx es un subtipo de BeanFactory, y mas intere
     <script type="syntaxhighlighter" class="brush: java"><![CDATA[
       ApplicationContext context = new FileSystemXmlApplicationContext("/tmp/foo.xml");
       ApplicationContext context2 = new ClassPathXmlApplicationContext("/tmp/bar.xml");
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -188,7 +188,7 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
       PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
       cfg.setLocation(new FileSystemResource("jdbc.properties"));
       cfg.postProcessBeanFactory(factory);
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -205,7 +205,7 @@ El `ApplicationContext` agrega la integración con características de AOP, mane
           <!-- colaboradores y configuraciones de este bean -->
         </bean>
     </beans>
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -415,7 +415,7 @@ public class Project {
   // Getters y Setters
   // Constructores
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-4">
     <h4><i class="icon-file"></i> UserStory.java</h4>
@@ -438,7 +438,7 @@ public class UserStory {
   // Getters y Setters
   // Constructores
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-4">
     <h4><i class="icon-file"></i> Task.java</h4>
@@ -460,7 +460,7 @@ public class Task {
   // Getters y Setters
   // Constructores
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -473,7 +473,7 @@ package com.makingdevs.container;
 public enum TaskStatus {
   TODO,WIP,DONE;
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> User.java</h4>
@@ -490,7 +490,7 @@ public class User {
   // Getters y Setters
   // Constructores
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -509,7 +509,7 @@ public interface ProjectService {
   Project findProjectByCodeName(String codeName);
   Integer totalEffortForProject(String codeName);
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> UserStoryService.java</h4>
@@ -524,7 +524,7 @@ public interface UserStoryService {
   boolean isUserStoryDone(Long userStoryId);
   UserStory findUserStoryByIdentifier(Long userStoryId);
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -539,7 +539,7 @@ public interface TaskService {
   void assignTaskToUser(Long taskId, String username);
   void changeTaskStatus(Long taskId, TaskStatus taskStatus);
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> UserService.java</h4>
@@ -551,7 +551,7 @@ public interface UserService {
   User createUser(String username);
   void addToProject(String username, String codeName);
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 

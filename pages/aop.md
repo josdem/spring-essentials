@@ -6,6 +6,16 @@ En software, varias actividades son comúnes a la mayoría de las aplicaciones. 
 
 En desarrollo de software, las funciones que se extienden a múltiples puntos de una aplicación son llamados _cross cutting concerns_. Típicamente, dichas preocupaciones transversales están conceptualmente separadas(pero a menudi embebebidos) de la lógica de la aplicación. La separación de las preocupaciones transversales de la lógica de negocio es donde la **programación orientada a aspectos** se ocupa bastante bien.
 
+<blockquote>
+  <p>
+    El AOP es usado en Spring para...<br>
+    <ul>
+      <li>... proveer servicios empresariales declarativos, especialmente como reemplazo de los servicios EJB's. El servicio más importante es la administración declarativa de transacciones</li>
+      <li>... permitir a los usuarios implementar aspectos personalizados, complementando el uso de POO con AOP.</li>
+    </ul>
+  </p>
+</blockquote>
+
 ## Conceptos esenciales
 
 Una _preocupación transversal(cross-cutting concern)_ es una funcionalidad que afecta múltiples puntos de una aplicación. Por ejemplo: seguridad, bitácorado, auditoría, medición de benchamrk, manejo de transacciones.
@@ -129,7 +139,7 @@ public class UserServiceLoggedImpl implements UserService {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
   <div class="col-md-6">
     <h4><i class="icon-file"></i> TaskServiceLoggedImpl.java</h4>
@@ -174,7 +184,7 @@ public class TaskServiceLoggedImpl implements TaskService {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
@@ -216,27 +226,242 @@ public class LoggingServicesTests {
   }
 
 }
-    </script>
+    ]]></script>
   </div>
 </div>
 
 ## Declarando aspectos
 
-### Soporte de anotaciones con AspectJ
+### Definiendo advices
 
-### Declaración de aspectos(Advice)
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> AfterAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica18;
 
-### Before
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 
-### After
+@Aspect
+@Component
+// This is the trick baby!!!
+public class AfterAdvice {
 
-### After returning
+  /**
+   * You may register aspect classes as regular beans in your Spring XML
+   * configuration, or autodetect them through classpath scanning - just like
+   * any other Spring-managed bean. However, note that the @Aspect annotation is
+   * not sufficient for autodetection in the classpath
+   */
 
-### After throwing
+  private Log log = LogFactory.getLog(AfterAdvice.class);
 
-### Around
+  @After("execution(public * *(..))")
+  public void afterMethod() {
+    log.debug("After method advice");
+  }
 
-## JoinPoint en detalle
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> BeforeAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica18;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class BeforeAdvice {
+  
+  private Log log = LogFactory.getLog(BeforeAdvice.class);
+  
+  @Before("execution(public * *(..))")
+  public void beforeMethod() {
+    log.debug("Before method advice");
+  }
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> AfterReturningAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica18;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class AfterReturningAdvice {
+
+  private Log log = LogFactory.getLog(AfterReturningAdvice.class);
+
+  @AfterReturning("execution(public * *(..))")
+  public void afterReturningMethod() {
+    log.debug("After returning method advice");
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> TaskServiceEmptyImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica18;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.Task;
+import com.makingdevs.model.TaskStatus;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@Service
+public class TaskServiceEmptyImpl implements TaskService {
+  
+  @Autowired
+  UserService userService;
+
+  @Override
+  public Task createTaskForUserStory(String taskDescription, Long userStoryId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void assignTaskToUser(Long taskId, String username) {
+    userService.findUserByUsername(username);
+  }
+
+  @Override
+  public void changeTaskStatus(Long taskId, TaskStatus taskStatus) {
+    throw new RuntimeException("WTF fail!!!!");
+  }
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> UserServiceEmptyImpl.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica18;
+
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+@Service
+public class UserServiceEmptyImpl implements UserService {
+
+  @Override
+  public User findUserByUsername(String username) {
+    return null;
+  }
+
+  @Override
+  public User createUser(String username) {
+    return null;
+  }
+
+  @Override
+  public void addToProject(String username, String codeName) {
+    throw new RuntimeException("Cannot find project or username");
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> AdvicesAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <!-- HEY! this is fundamental, keep one eye here! ... -->   
+  <aop:aspectj-autoproxy/>
+  
+  <context:component-scan base-package="com.makingdevs.practica18"/>
+
+</beans>
+    ]]></script>
+  </div>
+  <div class="col-md-6">
+    <h4><i class="icon-file"></i> AdvicedServicesTests.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica18;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"AdvicesAppCtx.xml"})
+public class AdvicedServicesTests {
+  
+  @Autowired
+  UserService userService;
+  @Autowired
+  TaskService taskService;
+
+  @Test
+  public void testUserService() {
+    Assert.notNull(userService);
+    userService.createUser("EmilyThorn");
+  }
+  
+  @Test
+  public void testTaskService() {
+    Assert.notNull(taskService);
+    taskService.assignTaskToUser(1L, "MakingDevs");
+  }
+  
+  @Test(expected=RuntimeException.class)
+  public void testWithException() {
+    userService.addToProject("makingdevs", "spring-essentials");
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+------
+
+## Declarando mejores pointcuts
 
 ## Declarando aspectos con XML
 
