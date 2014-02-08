@@ -696,4 +696,137 @@ public class BenchmarkAroundAdvice {
 
 ## Declarando aspectos con XML
 
+<div class="row">
+  <div class="col-md-12">
+    <h4><i class="icon-file"></i> SchemaAOPAppCtx.xml</h4>
+    <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+      <?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+  
+  <context:component-scan base-package="com.makingdevs.practica21"/>
+  
+  <bean class="com.makingdevs.practica19.BeansForAopConfig"/>
+  
+  <aop:config>
+    <aop:pointcut expression="execution(* com.makingdevs.practica18.*Service*.*(..))" id="commonPointcut"/>
+    
+    <aop:aspect ref="beforeAdvice">
+      <aop:before method="beforeMethod" pointcut-ref="commonPointcut" />
+    </aop:aspect>
+    
+    <aop:aspect ref="afterAdvice">
+      <aop:after method="afterMethod" pointcut-ref="commonPointcut"/>
+    </aop:aspect>
+    
+    <aop:aspect ref="logAroundAdvice">
+      <aop:around method="aroundMethod" pointcut-ref="commonPointcut"/>
+    </aop:aspect>
+      
+  </aop:config>
+  
+
+</beans>
+    ]]></script>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> BeforeAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica21;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
+
+@Component
+public class BeforeAdvice {
+  
+  private Log log = LogFactory.getLog(BeforeAdvice.class);
+  
+  public void beforeMethod(JoinPoint joinPoint) {
+    log.debug("Before advice method in " + joinPoint.getSignature().getName() + " with arguments:");
+    for(Object o:joinPoint.getArgs()){
+      log.debug("\t - " + o);
+    }
+  }
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> AfterAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica21;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AfterAdvice {
+
+  private Log log = LogFactory.getLog(AfterAdvice.class);
+
+  public void afterMethod(JoinPoint joinPoint) {
+    log.debug("After advice method in " + joinPoint.getSignature().getName() + " with arguments:");
+    for(Object o:joinPoint.getArgs()){
+      log.debug("\t - " + o);
+    }
+  }
+
+}
+    ]]></script>
+  </div>
+  <div class="col-md-4">
+    <h4><i class="icon-file"></i> AfterThrowingAdvice.java</h4>
+    <script type="syntaxhighlighter" class="brush: java"><![CDATA[
+package com.makingdevs.practica21;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AfterThrowingAdvice {
+
+  private Log log = LogFactory.getLog(AfterThrowingAdvice.class);
+  
+  public void afterReturningMethod(JoinPoint joinPoint, RuntimeException customNameException) {
+    StringBuffer buffer = new StringBuffer("Ha ocurrido un error en " + joinPoint.getSignature().getName() + " ");
+    buffer.append("de " + joinPoint.getTarget().getClass().getName() + " - Argumentos:");
+    for(Object o:joinPoint.getArgs()){
+      buffer.append(o + " ");
+    }
+    buffer.append(" y el error " + customNameException.getMessage());
+    log.error(buffer.toString());
+  }
+
+}
+    ]]></script>
+  </div>
+</div>
+
+
 ### Advice ordering
+
+¿Qué sucede cuando hay varios advices y todos quieren correr al mismo join point? Spring AOP sigue las mismas reglas de precedencia como AspectJ para determinar el orden de ejecución de advices. El advice con más alta prioridad va primero.
+
+Puede controlar el orden de ejecución especificando prioridad. Esto se hace en la forma normal por la implementación de la interfaz `org.springframework.core.Ordered` en la clase de aspecto o la anotación `@Order`. Teniendo en cuenta que el aspecto a devolver el valor más bajo desde `Ordered.getValue()` (o el valor de la anotación) tiene la prioridad más alta.
+
+### Advisor
+
+<blockquote>
+  <p>Un Advisor es la suma de un advice y un pointcut dentro del mismo bean.</p>
+</blockquote>
+
+Sin lugar a dudas será un tema interesante en el manejo de transacciones con Spring...
