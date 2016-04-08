@@ -1,0 +1,683 @@
+:icons: font
+:source-highlighter: coderay
+
+# Programación orientada a aspectos
+En software, varias actividades son comúnes a la mayoría de las aplicaciones. Logs, seguridad y la administración de transacciones son importantes, pero dichas acciones ¿deberían ser objetos involucrados dentro la aplicación en uso activo y constante?, o sería mejor si los objetos se enfocarán en los problemas de negocio y dejar ciertos aspectos a ser manejados por algiuien más.
+
+En desarrollo de software, las funciones que se extienden a múltiples puntos de una aplicación son llamados _cross cutting concerns_. Típicamente, dichas preocupaciones transversales están conceptualmente separadas(pero a menudi embebebidos) de la lógica de la aplicación. La separación de las preocupaciones transversales de la lógica de negocio es donde la *programación orientada a aspectos* se ocupa bastante bien.
+
+TIP: El AOP es usado en Spring para...
+.. proveer servicios empresariales declarativos, especialmente como reemplazo de los servicios EJB's. El servicio más importante es la administración declarativa de transacciones
+... permitir a los usuarios implementar aspectos personalizados, complementando el uso de POO con AOP.
+
+## [[bookmark-1]]Conceptos esenciales
+Una _preocupación transversal(cross-cutting concern)_ es una funcionalidad que afecta múltiples puntos de una aplicación. Por ejemplo: seguridad, bitácorado, auditoría, medición de benchamrk, manejo de transacciones.
+
+Una técnica común en la programación orientada objeto para reusar funcionalidad común es la herencia o la delegación. Pero la herencia puede conducir a una jerarquía de objetos frágiles si la misma clase base se utiliza en toda la aplicación, y la delegación puede ser incómoda porque se pueden requerir complicados llamadas al objeto delegado.
+
+Con AOP, se puede definir la funcionalidad común en un lugar, pero se puede definir de forma declarativa como y donde debe ser aplicado, sin tener que modificar la clase en cuestión. Los beneficios, la lógica de negocion de cada concern está ahora en un lugar, opuesto a ser arrastrado en todo el código base; adicionalmente, nuestros módulos de servicios son ahora más limpios por que sólo tienen nuestra preocupación principal que es la lógica de negocio, y las preocupaciones secundarias han sido movidas a aspectos.
+
+TIP: Mientras haces el diseño de tu aplicación no consideras el uso de AOP.
+
+## [[bookmark-2]]Advice
+Los aspectos tienen un propósito, un trabajo por hacer. En términos de AOP, el trabajo de un aspecto es llamado _advice_. Es decir, es código que se ejecutará en alguna parte de la aplicación. Los advices definen el _qué_ y el _cuándo_ de un aspecto. Los aspectos de Spring pueden trabajar con 5 tipos de advice:
+
+* Before
+* After
+* After-returning
+* After-throwing
+* Around
+
+### [[bookmark-3]]JoinPoint
+*Un join point es un punto en la ejecución de la aplicación donde un aspecto puede ser conectado*. Este punto podría ser la llamada a ún método, cuando una excepción sea arrojada, o incluso si un campo es modificado. Esos son los puntos donde el código de un aspecto puede ser insertado dentro del flujo normal de la aplicación para agregar nuevo comportamiento.
+
+### [[bookmark-4]]Pointcut
+Los _pointcuts_ ayudan a reducir los join points avisados por un aspecto. Es decir, son el predicado de un adivce. Si el advice define el qué y el cuándo, los pointcuts definen el dónde. La definición de pointcut hace coincidir uno o más join points a los cuales el advice deberá estar tejido. A menudo se específican dichos pointcuts usando clases explícitas y nombres de métodos, o a través de expresiones regulares que definen los patrones de coincidencias en nombres de clases o métodos.
+
+### [[bookmark-5]]Aspectos
+Un aspecto es la combinación de advices y pointcuts. Tomados en conjunto, definen cada cosa que hay que saber acerca del aspecto en total, lo que hace, cuando lo hace y dónde lo hace.
+
+TIP: Introductions
+Aunque no son considerador en este entrenamiento, es bueno saber que un introduction te permite agregar métodos o atributos a clases existentes. El nuevo método y variable de instancia pueden ser introducidos a clases existentes sin tener que cambiarlo, dándoles nuevo comportamiento y estado.
+
+### Target object
+Es el objeto siendo avisado por varios por uno o más aspectos. Además conocido como el advice object. Este objeto por lo general será un objeto proxy.
+
+### [[bookmark-6]]AOP Proxy
+Es un objeto creado por el framework de AOP en orden para implementar los contratos del aspecto. En Spring, un proxy AOP será un proxy dinámico del JDK o un proxy CGLIB.
+
+### [[bookmark-7]]Weaving
+_Weaving_ es el proceso de aplicar aspectos a un target object para crear un proxy object. Los aspectos son tejidos dentro del target object en los join points específicados. El weaving puedde tomar lugar en varios puntos en el ciclo de vida del target object:
+
+* _Compile time_ - Los aspectos son tejidos cuando la clase es compilada. Esto requiere un compilador especial, en el caso de AspecjtJ lo hace de esta forma.
+* _Classload time_ - Los aspectos son tejidos cuando la clase es cargada dentro de la JVM. Esto requiere un ClassLoader especial que mejora el código de byte de la clase antes de ser introducida a la aplicación.
+* _Runtime_ - Los aspectos son tejidos en algún momento durante la ejecución de la aplicación. Típicamente, un contenedor de AOP generará dinámicamente un proxy object que será delegado al target object mientras se en los aspectos. Así es como Spring AOP funcionan.
+
+TIP: Los advices de Spring son escritos en Java.
+
+TIP: Te recomendamos que visites el sitio de link:http://www.eclipse.org/aspectj/[AspectJ] para más información.
+*En resumen:* Los join points son todos los puntos dentro del flujo de ejecución de la aplicación que son candidatos a tener aplicado un advice. El pointcut define donde el advice es aplicado. El concepto clave que debes tomar de esto es que los pointcuts definen cuales join points obtendran un advice.
+
+
+El soporte de Spring para AOP viene en 4 formas:
+
+* Spring AOP clásico basado en objetos proxy
+* Aspectos manejados por anotaciones con `@AspectJ`
+* Aspectos POJO puros
+* Aspectos inyectados de AspectJ(disponibles en todas las versiones de Spring)
+
+TIP: Y aunque el soporte clásico de Spring es base para aquellos manejados por aspectos y los de POJO puros, no los trataremos a profundidad, sin embargo, es bueno revisar y entender los link:http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html#aop-introduction-proxies[proxies de AOP en la documentación de Spring]
+
+En Spring, los aspectos son tejidos dentro de los beans administrados por Spring en tiempo de ejecución cambiándolos por una clase proxy. Entre el tiempo cuando el proxy intercepta la llamada al método y el tiempo cuando invoca el método del target bean, el proxy ejecuta la lógica del aspecto. Spring no crea objetos proxy hasta que el bean proxy es necesario para la aplicación. Es por esto último que no necesitamos un compilador de AOP, ya que todo sucede en runtime.
+
+TIP: Spring sólo soporta Join Points de métodos.
+
+*UserServiceLoggedImpl.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica17;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+@Service
+public class UserServiceLoggedImpl implements UserService {
+
+  private Log log = LogFactory.getLog(UserServiceLoggedImpl.class);
+
+  @Override
+  public User findUserByUsername(String username) {
+    log.debug("findUserByUsername : params = [" + username + "]");
+    return null;
+  }
+
+  @Override
+  public User createUser(String username) {
+    log.debug("createUser : params = [" + username + "]");
+    return null;
+  }
+
+  @Override
+  public void addToProject(String username, String codeName) {
+    log.debug("addToProject : params = [" + username + "," + codeName + "]");
+  }
+
+}
+----
+
+*TaskServiceLoggedImpl.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica17;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.Task;
+import com.makingdevs.model.TaskStatus;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@Service
+public class TaskServiceLoggedImpl implements TaskService {
+
+  private Log log = LogFactory.getLog(TaskServiceLoggedImpl.class);
+
+  @Autowired
+  UserService userService;
+
+  @Override
+  public Task createTaskForUserStory(String taskDescription, Long userStoryId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void assignTaskToUser(Long taskId, String username) {
+    log.debug("Starting: assignTaskToUser");
+    userService.findUserByUsername(username);
+    log.debug("Ending: assignTaskToUser");
+  }
+
+  @Override
+  public void changeTaskStatus(Long taskId, TaskStatus taskStatus) {
+    // TODO Auto-generated method stub
+
+  }
+
+}
+----
+
+*LoggingServicesTests.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica17;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"LoggingAppCtx.xml"})
+public class LoggingServicesTests {
+
+  @Autowired
+  UserService userService;
+  @Autowired
+  TaskService taskService;
+
+  @Test
+  public void testUserService() {
+    Assert.notNull(userService);
+    userService.createUser("EmilyThorn");
+  }
+
+  @Test
+  public void testTaskService() {
+    Assert.notNull(taskService);
+    taskService.assignTaskToUser(1L, "MakingDevs");
+  }
+
+}
+----
+
+## [[bookmark-8]]Declarando aspectos
+### [[bookmark-9]]Definiendo advices
+
+*AfterAdvice.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica18;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+// This is the trick baby!!!
+public class AfterAdvice {
+
+  /**
+   * You may register aspect classes as regular beans in your Spring XML
+   * configuration, or autodetect them through classpath scanning - just like
+   * any other Spring-managed bean. However, note that the @Aspect annotation is
+   * not sufficient for autodetection in the classpath
+   */
+
+  private Log log = LogFactory.getLog(AfterAdvice.class);
+
+  @After("execution(public * *(..))")
+  public void afterMethod() {
+    log.debug("After method advice");
+  }
+
+}
+----
+
+*BeforeAdvice.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica18;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class BeforeAdvice {
+
+  private Log log = LogFactory.getLog(BeforeAdvice.class);
+
+  @Before("execution(public * *(..))")
+  public void beforeMethod() {
+    log.debug("Before method advice");
+  }
+
+}
+----
+
+*AfterReturningAdvice.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica18;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class AfterReturningAdvice {
+
+  private Log log = LogFactory.getLog(AfterReturningAdvice.class);
+
+  @AfterReturning("execution(public * *(..))")
+  public void afterReturningMethod() {
+    log.debug("After returning method advice");
+  }
+
+}
+----
+
+*TaskServiceEmptyImpl.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica18;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.Task;
+import com.makingdevs.model.TaskStatus;
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@Service
+public class TaskServiceEmptyImpl implements TaskService {
+
+  @Autowired
+  UserService userService;
+
+  @Override
+  public Task createTaskForUserStory(String taskDescription, Long userStoryId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void assignTaskToUser(Long taskId, String username) {
+    userService.findUserByUsername(username);
+  }
+
+  @Override
+  public void changeTaskStatus(Long taskId, TaskStatus taskStatus) {
+    throw new RuntimeException("WTF fail!!!!");
+  }
+
+}
+----
+
+*UserServiceEmptyImpl.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica18;
+
+import org.springframework.stereotype.Service;
+
+import com.makingdevs.model.User;
+import com.makingdevs.services.UserService;
+
+@Service
+public class UserServiceEmptyImpl implements UserService {
+
+  @Override
+  public User findUserByUsername(String username) {
+    return null;
+  }
+
+  @Override
+  public User createUser(String username) {
+    return null;
+  }
+
+  @Override
+  public void addToProject(String username, String codeName) {
+    throw new RuntimeException("Cannot find project or username");
+  }
+
+}
+----
+
+*AdvicesAppCtx.xml*
+
+[source,xml,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <!-- HEY! this is fundamental, keep one eye here! ... -->
+  <aop:aspectj-autoproxy/>
+
+  <context:component-scan base-package="com.makingdevs.practica18"/>
+
+</beans>
+----
+
+*AdvicedServicesTests.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica18;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+import com.makingdevs.services.TaskService;
+import com.makingdevs.services.UserService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"AdvicesAppCtx.xml"})
+public class AdvicedServicesTests {
+
+  @Autowired
+  UserService userService;
+  @Autowired
+  TaskService taskService;
+
+  @Test
+  public void testUserService() {
+    Assert.notNull(userService);
+    userService.createUser("EmilyThorn");
+  }
+
+  @Test
+  public void testTaskService() {
+    Assert.notNull(taskService);
+    taskService.assignTaskToUser(1L, "MakingDevs");
+  }
+
+  @Test(expected=RuntimeException.class)
+  public void testWithException() {
+    userService.addToProject("makingdevs", "spring-essentials");
+  }
+}
+----
+
+#### También puedes habilitar el soporte de anotaciones con Java Config
+
+[source,java,linenums]
+----
+@Configuration
+@EnableAspectJAutoProxy
+public class AppConfig {
+
+}
+----
+
+## [[bookmark-10]]Declarando mejores pointcuts
+En Spring AOP, los pointcuts son definidos usando el lenguaje de expresión de AspectJ. Lo más importante a conocer es que Spring soporta un subconjunto de designadores de pointcuts disponibles en AspectJ. La declaración de un pointcut tiene dos partes:
+
+1. Una firma que comprende un nombre y los parámetros
+2. Una expresión que determina qué ejecuciones de métodos exactamente nos interesa
+
+Para lo anterior nos vamos a ayudar de la anotación `@Pointcut` en un método que deberá ser `void`
+
+Adicionalmente, Spring AOP soporta los siguientes designadores de pointcuts de AspectJ para usar en expresiones:
+
+* `execution` para las coincidencias de ejecución de Join Points
+* `within` límita coincidir con join points dentro de ciertos tipos
+* `this` limita coincidir con join points donde la referencia del bean object es una instancia de un tipo dado
+* `target` limita coincidir con join points donde la referencia del target object es una instancia de un tipo dado
+* `args` limita coincidir con join points donde las instancias de los argumentos son de tipos dados
+* `@target`
+* `@args`
+* `@within`
+* `@annotation`
+
+### [[bookmark-11]]Ejemplos de pointcuts
+* `execution(public * *(..))` - Ejecución de cualquier método publico
+* `execution(* set*(..))` - Ejecución de cualquier metodo que comience con el nombre set
+* `execution(* com.makingdevs.services.UserService.*(..))` - La ejecución de cualquier método definido por la interfaz UserService
+* `execution(* com.makingdevs.services..(..))` - La ejecución de cualquier método dentro del paquete
+* `execution(* com.makingdevs.services...(..))` - La ejecución de cualquier método dentro del paquete y subpaquete
+* `within(com.makingdevs.services.*)` - Cualquier JP dentro del paquete de servicio
+* `this(com.makingdevs.services.UserService)` - Cualquier JP donde los proxies implementen UserService
+* `target(com.makingdevs.services.UserService)` - Cualquier JP donde el target object implemente UserService
+* `args(java.io.Serializable)` - Cualquier JP que tome sólo un parámetro, y el argumento pasado en tiempo de ejecución sea Serializable
+* `@target(org.springframework.transaction.annotation.Transactional)` - Cualquier JP donde el target object este anotado con `@Transactional`
+* `@within(org.springframework.transaction.annotation.Transactional)` - Cualquier JP donde el tipo declarado del target object tenga una anotación `@Transactional`
+* `@annotation(org.springframework.transaction.annotation.Transactional)` - Cualquier JP donde el método ejecutado tenga la anotación `@Transactional`
+
+TIP: Para una comprensión más completa de la estructura de los pointcuts podemos consultar el link:http://www.eclipse.org/aspectj/doc/released/adk15notebook/index.html[AspectJ 5 Developers Notebook]
+
+*pom.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica20;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class CommonPointcut {
+
+  @Pointcut("this(com.makingdevs.services.UserService)")
+  public void dataAccessLayer() {
+  }
+
+  @Pointcut("execution(* com.makingdevs.practica18.*Service*.*(..))")
+  public void servicesLayer() {
+  }
+
+  @Pointcut("within(com.makingdevs.services.*)")
+  public void webLayer() {
+  }
+}
+----
+
+*pom.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica20;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class LogAroundAdvice {
+
+  private Log log = LogFactory.getLog(LogAroundAdvice.class);
+
+  @Around("com.makingdevs.practica20.CommonPointcut.servicesLayer()")
+  public Object aroundMethod(ProceedingJoinPoint pjp) throws Throwable{
+    log.debug("Antes de ejecutar " + pjp.getSignature().getName());
+    Object retVal = pjp.proceed();
+    log.debug("Despues de ejecutar " + pjp.getSignature().getName());
+    return retVal;
+  }
+}
+----
+
+*pom.java*
+----
+package com.makingdevs.practica20;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class BenchmarkAroundAdvice {
+  private Log log = LogFactory.getLog(BenchmarkAroundAdvice.class);
+
+  @Around("com.makingdevs.practica20.CommonPointcut.servicesLayer()")
+  public Object aroundMethod(ProceedingJoinPoint pjp) throws Throwable{
+    long startTime = System.currentTimeMillis();
+    Object retVal = pjp.proceed();
+    long endTime = System.currentTimeMillis();
+    log.debug("Method " + pjp.getSignature().getName() +" executed in " + (endTime-startTime) + " ms.");
+    return retVal;
+  }
+}
+----
+
+### [[bookmark-12]]Declarando aspectos con XML
+
+*SchemaAOPAppCtx.xml*
+
+[source,xml,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+  <context:component-scan base-package="com.makingdevs.practica21"/>
+
+  <bean class="com.makingdevs.practica19.BeansForAopConfig"/>
+
+  <aop:config>
+    <aop:pointcut expression="execution(* com.makingdevs.practica18.*Service*.*(..))" id="commonPointcut"/>
+
+    <aop:aspect ref="beforeAdvice">
+      <aop:before method="beforeMethod" pointcut-ref="commonPointcut" />
+    </aop:aspect>
+
+    <aop:aspect ref="afterAdvice">
+      <aop:after method="afterMethod" pointcut-ref="commonPointcut"/>
+    </aop:aspect>
+
+    <aop:aspect ref="logAroundAdvice">
+      <aop:around method="aroundMethod" pointcut-ref="commonPointcut"/>
+    </aop:aspect>
+
+  </aop:config>
+</beans>
+----
+
+*BeforeAdvice.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica21;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
+
+@Component
+public class BeforeAdvice {
+
+  private Log log = LogFactory.getLog(BeforeAdvice.class);
+
+  public void beforeMethod(JoinPoint joinPoint) {
+    log.debug("Before advice method in " + joinPoint.getSignature().getName() + " with arguments:");
+    for(Object o:joinPoint.getArgs()){
+      log.debug("\t - " + o);
+    }
+  }
+}
+----
+
+*AfterAdvice.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica21;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AfterAdvice {
+
+  private Log log = LogFactory.getLog(AfterAdvice.class);
+
+  public void afterMethod(JoinPoint joinPoint) {
+    log.debug("After advice method in " + joinPoint.getSignature().getName() + " with arguments:");
+    for(Object o:joinPoint.getArgs()){
+      log.debug("\t - " + o);
+    }
+  }
+}
+----
+
+*AfterThrowingAdvice.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.practica21;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AfterThrowingAdvice {
+
+  private Log log = LogFactory.getLog(AfterThrowingAdvice.class);
+
+  public void afterReturningMethod(JoinPoint joinPoint, RuntimeException customNameException) {
+    StringBuffer buffer = new StringBuffer("Ha ocurrido un error en " + joinPoint.getSignature().getName() + " ");
+    buffer.append("de " + joinPoint.getTarget().getClass().getName() + " - Argumentos:");
+    for(Object o:joinPoint.getArgs()){
+      buffer.append(o + " ");
+    }
+    buffer.append(" y el error " + customNameException.getMessage());
+    log.error(buffer.toString());
+  }
+}
+----
+
+## [[bookmark-13]]Advice ordering
+¿Qué sucede cuando hay varios advices y todos quieren correr al mismo join point? Spring AOP sigue las mismas reglas de precedencia como AspectJ para determinar el orden de ejecución de advices. El advice con más alta prioridad va primero.
+
+Puede controlar el orden de ejecución especificando prioridad. Esto se hace en la forma normal por la implementación de la interfaz `org.springframework.core.Ordered` en la clase de aspecto o la anotación `@Order`. Teniendo en cuenta que el aspecto a devolver el valor más bajo desde `Ordered.getValue()` (o el valor de la anotación) tiene la prioridad más alta.
+
+### [[bookmark-14]]Advisor
+
+Un Advisor es la suma de un advice y un pointcut dentro del mismo bean.
+
+Sin lugar a dudas será un tema interesante en el manejo de transacciones con Spring…
+
+
+[small]#Powered by link:http://makingdevs.com/[MakingDevs.com]#

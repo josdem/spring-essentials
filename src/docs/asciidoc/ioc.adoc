@@ -1,0 +1,388 @@
+:icons: font
+:source-highlighter: coderay
+
+# Inversion of control y Dependency Injection
+
+## [[bookmark-1]]Inversión de control
+De forma conceptual, Inversion of Control es el principio donde el control del flujo de un programa es invertido, es decir, generalmente nosotros le indicamos(de manera secuencial y procedural) la forma en como los objetos se crean y asocian, además de como se comunican. Usando la inversión de control nosotros indicamos a través de algún elemento(framework, servicios, metadatos) que tome el control de la creación de los componentes y de las llamadas a los mismos.
+
+IoC es parte fundamental que hace a un framework distinto de una librería. Una librería es esencialmente un conjunto de funciones que se pueden invocar, usualmente organizados en clases y paquetes. Cada llamada hace algo y regresa el control al cliiente..
+
+Un ejemplo muy simple sería como el siguiente:
+
+----
+print "Enter yout name:"
+read name
+print "Enter your birthday:"
+read birthday
+store in database
+----
+
+Ahora vamos a invertir el control:
+
+----
+when the user types in field input_name, store it in NAME
+when the user types in field input_address, store it in ADDRESS
+when the user saves action, call StoreUserInfoInDB
+----
+
+Ahora el control está invertido, básicamente, cualquier cosa con un loop en el evento, los callbacks o triggers pueden beneficiarse del IoC. Springframework está basado en callbacks.
+
+En términos más llanos para nuestro caso significa que en lugar de propiamente llamar a los métodos del framework, el framework llamará a las implementaciones proveídas por la aplicación.
+
+*TaskManagerHighTied.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.TaskStore;
+
+public class TaskManagerHighTied {
+  private TaskStore taskStore;
+  private UserStore userStore;
+  private LineStore lineStore;
+
+  public TaskManagerHighTied(){
+    this.taskStore = new TaskStore();
+    this.userStore = new UserStore();
+    this.lineStore = new Store();
+  }
+  //..
+}
+----
+
+*TaskManagerLowTied.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.TaskStore;
+
+public class TaskManagerLowTied {
+  private TaskStore taskStore;
+  private UserStore userStore;
+  private LineStore lineStore;
+
+  public TaskManagerHighTied(TaskStore taskStore,
+                             UserStore userStore,
+                             LineStore lineStore) {
+    this.taskStore = taskStore;
+    this.userStore = userStore;
+    this.lineStore = lineStore;
+  }
+}
+----
+
+TIP: Y aunque no es la mejor forma de hacerlo ejemplifica perfectamente la inversión de control que deseamos hacer.
+
+## [[bookmark-2]]Estos principios de diseño debes aprender.
+
+[[bookmark-3]]Acerca de las interdependencias
+
+TIP: Módulos de alto nivel NO deberían depender de módulos de bajo nivel. AMBOS deben depender de abstracciones.
+~ Uncle Bob Martín - Clean Code
+
+[[bookmark-4]]Acerca de las implementaciones
+
+TIP: Las abstracciones no deben depender de los detalles. Los detalles deben depender de las abstracciones.
+~ Uncle Bob Martín - Clean Code
+
+## Inyección de dependencias
+DI o Dependency Injection es una forma de Inversión de Control, donde las implementaciones son pasadas a un objeto a través de constructores, setters, o búsqueda de servicios(lookups), de las cuales el objeto dependerá para comportarse correctamente.
+
+Aunque se puede usar IoC sin DI, a esto se le conoce como el patrón Template por que la implementación puede ser cambiada a través de subclases. Así también, Los frameworks de DI están diseñados para hacer uso de la técnica y pueden definir interfaces para facilitar el paso de las implementaciones.
+
+Los contendores de IoC son frameworks de DI que pueden trabajar fuera del lenguaje de programación. En algunos de ellos puedes configurar las implementaciones usando metadatos los cuales son menos invasivos.
+
+*TaskManagerConstructorIoC.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.TaskStore;
+
+public class TaskManagerConstructorIoC {
+  private TaskStore taskStore;
+  private UserStore userStore;
+  private LineStore lineStore;
+
+  public TaskManagerHighTied(TaskStore taskStore,
+                             UserStore userStore,
+                             LineStore lineStore) {
+    this.taskStore = taskStore;
+    this.userStore = userStore;
+    this.lineStore = lineStore;
+  }
+
+}
+----
+
+*TaskManagerSetterIoC.javai*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.TaskStore;
+
+public class TaskManagerSetterIoC {
+  private TaskStore taskStore;
+  private UserStore userStore;
+  private LineStore lineStore;
+
+  public void setTaskStore(TaskStore taskStore) {
+    this.taskStore = taskStore;
+  }
+
+  public void setUserStore(UserStore userStore) {
+    this.userStore = userStore;
+  }
+
+  public void setLineStore(LineStore lineStore) {
+    this.lineStore = lineStore;
+  }
+}
+----
+
+Un tercer tipo de inyección de dependencias se hace a través de interfaces, las cuales permiten abstraer un nivel más los posibles elementos que podría ocupar un componente y concentrarlos en las llamadas a sus métodos indicando el tipo que necesitan.
+
+*TaskComponents.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.TaskStore;
+
+public interface TaskComponents {
+  void lineStore(LineStore lineStore);
+  void userStore(UserStore userStore);
+  void taskStore(TaskStore taskStore);
+}
+----
+
+*TaskManagerInterfaceIoC.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.TaskStore;
+
+public class TaskManagerInterfaceIoC implements TaskComponents {
+  private TaskStore taskStore;
+  private UserStore userStore;
+  private LineStore lineStore;
+
+  @Override
+  public void lineStore(LineStore lineStore) {
+    this.lineStore = lineStore;
+  }
+
+  @Override
+  public void userStore(UserStore userStore) {
+    this.userStore = userStore;
+  }
+
+  @Override
+  public void taskStore(TaskStore taskStore) {
+    this.taskStore = taskStore;
+  }
+}
+----
+
+TIP: Sin lugar a dudas uno de los pensadores más influyentes es Martin Fowler, el cual, ha escrito de los contenedores de IoD y le patrón DI, es recomendables esta lectura por que incluso hace mención del lenguaje Java y de Springframework como el ejemplo de ello.
+
+## [[bookmark-5]]Separación de las interfaces y sus implementaciones
+TIP: ...todas las arquitecturas orientadas a objetos bien estructuradas han definido claramente sus capas, con cada capa se proporciona un conjunto coherente de servicios a través de una interfaz bien definida y controlada...
+~ Grady Booch - Object Solutions
+
+### [[bookmark-6]]Uso de dependencias de forma directa
+
+*SimpleTaskStore.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+public class SimpleTaskStore {
+
+  private DataSource dataSource;
+
+  public SimpleTaskStore() {
+    // Init DataSource
+  }
+
+  public List<Task> getCurrentTasks() {
+    // DB Operations are here
+    new UnsupportedOperationException("Pain!!!");
+  }
+
+}
+----
+
+*SimpleTaskManager.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+import java.util.List;
+
+public class SimpleTaskManager {
+  private SimpleTaskStore simpleTaskStore;
+
+  public SimpleTaskManager(){
+    this.simpleTaskStore = new SimpleTaskStore();
+  }
+
+  public List<Task> getCurrentTasks() {
+    // Business Logic is here
+    return simpleTaskStore.getCurrentTasks();
+  }
+}
+----
+
+*PresentationTaskManager.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+import java.util.List;
+
+public class PresentationTaskManager {
+  private SimpleTaskManager simpleTaskManager;
+
+  public PresentationTaskManager(){
+    this.simpleTaskManager = new SimpleTaskManager();
+  }
+
+  public View showCurrentTasks(){
+    List<Task> currentTasks = simpleTaskManager.getCurrentTasks();
+    View view = new BlockView();
+    // currentTasks + View
+    return view;
+  }
+}
+----
+
+TIP: La recomendación para desacoplar las dependencias entre los componentes es crear abstracciones que puedan ser sustituidas por cualquier implementación.
+
+*ITaskStore.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+public interface ITaskStore {
+  void setDataSource(DataSource dataSource);
+  List<Task> getCurrentTasks();
+}
+----
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+
+import java.util.List;
+
+public interface ITaskManager {
+  List<Task> getCurrentTasks();
+}
+----
+
+Teniendo estas abstracciones podemos usarlas en nuestros componentes agregando la dependencia a quienes desean usarlos e implementando a quienes se encargan de los detalles.
+
+*TaskStoreImpl.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+public class TaskStoreImpl implements ITaskStore {
+
+  private DataSource dataSource;
+
+  public void setDataSource(DataSource dataSource){
+    this.dataSource = dataSource;
+  }
+
+  public List<Task> getCurrentTasks() {
+    //...
+  }
+
+}
+----
+
+*TaskManagerImpl.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+import java.util.List;
+
+public class TaskManagerImpl implements ITaskManager {
+
+  private ITaskStore iTaskStore;
+
+  // Constructor or setter, what do you prefer?
+
+  public List<Task> getCurrentTasks() {
+    // Business Logic is here
+    // Implementation goes here
+  }
+}
+----
+
+*PresentationTaskManager.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.ioc;
+
+import com.makingdevs.essentials.Task;
+import java.util.List;
+
+public class PresentationTaskManager {
+
+  private ITaskManager iTaskManager;
+
+  // Constructor or setter, is your choice
+
+  public View showCurrentTasks(){
+    List<Task> currentTasks = iTaskManager.getCurrentTasks();
+    // currentTasks + View
+    return view;
+  }
+}
+----
+
+La inyección de dependencias es la raíz de muchos beneficios aclamados para las tecnologías orientadas a objetos. Su aplicación adecuada es necesaria para la creación de frameworks reutilizables.Es además críticamente importante para la construcción de código que es resistente al cambio. Y, desde que las abstracciones y los detalles están aislados unos de otros, el código es mucho más fácil de mantener.
+
+
+[small]#Powered by link:http://makingdevs.com/[MakingDevs.com]#

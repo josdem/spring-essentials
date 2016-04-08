@@ -1,0 +1,485 @@
+:icons: font
+:source-highlighter: coderay
+
+# El contenedor de Spring
+
+## [[bookmark-1]]Bill of materials
+Si estás usando Maven para la administración de dependencias no necesitas proveerlas de forma explícita. Por ejemplo, para crear una aplicación con Spring usando sólo inyección de dependencias la dependencia de Maven que necesitas es:
+
+*pom.xml*
+
+[source,xml,linenums]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>4.0.0.RELEASE</version>
+  </dependency>
+</dependencies>
+----
+
+El ejemplo anterior trabaja con el repo Central de Maven. Pero para garantizar la entrega de las dependencias podemos usar alguno de los repositorios de Spring, sólo necesitamos agregarlos a nuestra configuración.
+
+*pom.xml - RELEASES*
+
+[source,xml,linenums]
+----
+<repositories>
+  <repository>
+    <id>io.spring.repo.maven.release</id>
+    <url>http://repo.spring.io/release/</url>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+----
+
+*pom.xml - MILESTONES*
+
+[source,xml,linenums]
+----
+<repositories>
+  <repository>
+    <id>io.spring.repo.maven.milestone</id>
+    <url>http://repo.spring.io/milestone/</url>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+----
+
+*pom.xml - SNAPSHOTS*
+
+[source,xml,linenums]
+----
+<repositories>
+  <repository>
+    <id>io.spring.repo.maven.snapshot</id>
+    <url>http://repo.spring.io/snapshot/</url>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+----
+
+Es posible accidentalmente mezclar diferentes versiones de los JAR’s de Spring cuando se usa Maven. Por ejemplo, podrás encontrar librerías de terceros que usan versiones específicas de Spring, o incluso algún subproyecto de Spring usa ciertas versiones del framework, jalando por lo tanto versiones anteriores por Dependencias Transitivas.
+
+Para solucionar el problema, Maven soporta el concepto de “Bill of materials”. Puedes importar la dependencia *spring-framework-bom* en la section de *dependencyManagement* para asegurarse que las dependencias de Spring(directas y transitivas) son de la misma versión.
+
+*pom.xml*
+
+[source,xml,linenums]
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-framework-bom</artifactId>
+      <version>4.0.0.RELEASE</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
+
+*pom.xml*
+
+[source,xml,linenums]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-web</artifactId>
+  </dependency>
+<dependencies>
+----
+
+## [[bookmark-2]]Administración de dependencias con Gradle
+
+Para usar los repositorios de Spring con Gradle incluye las URL’s apropiadas en la sección de repositorios, y agrega las dependencias a tu gusto:i
+
+*build.gradle*
+
+[source,groovy]
+----
+repositories {
+  mavenCentral()
+  maven { url "http://repo.spring.io/release" }  // milestone or snapshotsl
+}
+dependencies {
+  compile("org.springframework:spring-context:4.0.0.RELEASE")
+  testCompile("org.springframework:spring-test:4.0.0.RELEASE")
+}
+----
+
+### BeanFactory y AppCtx
+
+TIP: En Spring los objetos que forman la columna vertebral de tu aplicación y que son manejados por el contenedor de IoC son llamados *beans*
+
+Spring provee dos tipos de implementación del contenedor de IoC. La básica es llamada bean factory, la más avanzada es llamada application context, el cual es una extensión compatible con el bean factory. Y la configuración para estos dos tipos de contenedores es idéntica. El AppCtx provee funcionalidades más avanzadas pero se mantiene simple de usar. Es más recomemdable usar el AppCtx para cada aplicación a menos que los recursos de esta sean restringidos, como cuando corremos un appleto o un dispositvo móvil. Dichos contenedores están declarados en las siguientes interfaces:
+
+* link:http://docs.spring.io/spring/docs/4.0.x/javadoc-api/org/springframework/beans/factory/BeanFactory.html[org.springframework.beans.factory.BeanFactory]
+* link:http://docs.spring.io/spring/docs/4.0.x/javadoc-api/org/springframework/context/ApplicationContext.html[org.springframework.context.ApplicationContext]
+
+En donde, como se puede ver el AppCtx es un subtipo de BeanFactory, y mas interesante es, ver los tipos de ApplicationContext con los que contamos para crear una aplicación, entre ellos podemos nombrar de forma destacada:
+
+* AnnotationConfigApplicationContext
+* AnnotationConfigWebApplicationContext
+* ClassPathXmlApplicationContext
+* FileSystemXmlApplicationContext
+* GenericGroovyApplicationContext
+* GenericWebApplicationContext
+* GenericXmlApplicationContext
+* XmlWebApplicationContext
+
+*Instanciando el AppCtx*
+
+[source,java,linenums]
+----
+ApplicationContext context = new FileSystemXmlApplicationContext("/tmp/foo.xml");
+ApplicationContext context2 = new ClassPathXmlApplicationContext("/tmp/bar.xml");
+----
+
+TIP: Adicionalmente, es bueno mencionar que los paquetes *org.springframework.beans* y *org.springframework.context* son la base del contenedor de Spring.
+
+## [[bookmark-3]]Diferencias entre el BeanFactory y el AppCtx
+El *BeanFactory* proporciona la base fundamental para la funcionalidad del contenedor de IoC de Spring pero sólo se usa directamente en la integración con otros frameworks de terceros, y ahora es en gran parte de naturaleza histórica para la mayoría de los usuarios de Spring. Sin embargo la regla es: *Usa un ApplicationContext a menos que tengas una buena razón para no hacerlo*
+
+El *ApplicationContext* agrega la integración con características de AOP, manejo de recursos, publicación de eventos y contextos específicos en función del tipo de aplicación.
+
+* Un BeanFactory
+** Instancia y alambra los beans
+* Un ApplicationContext
+** Instancia y alambra los beans
+** Hace un registro automático con *BeanPostProcessor*
+** Hace un registro automático del *BeanFactoryPostProcessor*
+** Habilita el acceso conveniente al *MessageSource*
+** Hace la publicación del *ApplicationEvent*
+
+*Usando el BeanFactory*
+
+[source,java,linenums]
+----
+XmlBeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+MyBeanPostProcessor postProcessor = new MyBeanPostProcessor();
+factory.addBeanPostProcessor(postProcessor);
+PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
+cfg.setLocation(new FileSystemResource("jdbc.properties"));
+cfg.postProcessBeanFactory(factory);
+----
+
+*Archivo base de configuración: appctx.xml*
+
+[source,xml,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="..." class="...">
+      <!-- colaboradores y configuraciones de este bean -->
+    </bean>
+</beans>
+----
+
+## Inyección de Dependencias entre beans con elementos transversales
+
+### [[bookmark-4]]El contenedor de beans de Spring
+
+image::spring-container.png[]
+
+### [[bookmark-5]]Componentes funcionales y no funcionales
+
+image::di.png[]
+
+### [[bookmark-6]]Cross cutting concerns
+
+image::cross-concern.png[]
+
+### Ciclo de vida de los beans
+
+TIP: Un bean es un objeto que es instanciado, ensamblado, y de alguna manera administrado por el contenedor de Spring.
+
+En una aplicación basada en Spring, los objetos de la aplicación vivirán dentro del contenedor de IoC, este último los creará y ellos se alambrarán, se configurarán y el mismo contenedor los administrará.
+
+image::container-magic.png[]
+
+El contenedor es la parte central de SpringFramework, el cual, usa inyección de dependencias para administrar los componentes de la aplicación. Esto incluye la creación de asociaciones entre componentes colaboradores.
+
+En una aplicación Java tradicional el ciclo de vida de un bean es simple, la palabra reservada new es usada para instanciarlo y con eso esta listo para usarse. Una vez que ya no se usa más, entonces es candidato para que el Garbage Collector pase por él. En contraste, el ciclo de vida de un bean dentro del contenedor de Spring es más elaborado. Como se pudo apreciar anteriormente, el *BeanFactory* ejecuta varias pasos antes de enlistar un bean, y sumado con lo que hace el *ApplicationContext* podemos enlistar las siguientes:
+
+1. Spring instancia el bean
+2. Spring inyecta valores y referencias de beans en sus propiedades.
+3. Si el bean implementa BeanNameAware, Spring pasa el ID del bean al método setBeanName().
+4. Si el bean implementa BeanFactoryAware, Spring llama al método setBeanFactory(), pasando el bean a dicho factory.
+5. Si el bean implementa ApplicationContextAware, Spring llama el método setApplicationContext(), pasando la referencia a dicho AppCtx dentro del bean.
+6. Si cualquiera de los beans implementa la interface BeanPostProcessor, Spring llama a su método postProcessBeforeInitialization().
+7. Si cualquiera de los beans implementa la interfaz InitializingBean, Spring llama a su método agterPropertiesSet(). Similarmente, si el bean fue declarado con un init-method, entonces dicho método es llamado.
+8. Si existen beans que implementan BeanPostProcessor, Soring llmará a su método postProcessAfterInitialization().
+9. En este punto, el bean esta listo para ser usado por la aplicación y permanecerá en el contexto de la aplicación hasta que dicho contexto sea destruido.
+10. Si cualquier bean implementa la interfaz DisposableBean, entonces Spring llamará a su método destroy(). De otra forma, si cualquier bean fue declarado con un destroy-method, entonces dicho método será llamado.
+
+### Caso de estudio
+
+Nuestro ejemplo estará basado en un tablero de tareas(Taskboard), el cual esta asignado a algun proyecto que a su vez tiene varias historias de usuario, dichas historias serán pobladas por las tareas. Todo este conjunto nos dará como resultado un tablero que potencialmente podrá ser visualizado en un front-end.
+
+#### Creación de proyectos
+
+[cols="1"]
+|===
+|*Como* product owner +
+*Deseo* administrar proyectos +
+*De tal manera* que pueda crearlos y visualizarlos +
+|*Criterios de aceptación:* +
+1. El proyecto debe tener un identificador único +
+2. El identificador de proyecto de estar en mayúsculas y sin espacios +
+3. Debe de tener una descripción +
+4. Esta formado de varias historias de usuario +
+5. Se deberá calcular el esfuerzo total del proyecto +
+|===
+
+#### Agregar historias de usuario
+
+[cols="1"]
+|===
+|*Como* product owner +
+*Deseo* agregar la descripción de una funcionalidad +
+*De tal manera* que pueda identificarla como una historia de usuario +
+|*Criterios de aceptación:* +
+1. Debe de tener el esfuerzo necesario en puntos +
+2. Debe tener una prioridad +
+3. Dos historias de usuario no pueden tener la misma prioridad +
+4. Debe tener una descripción +
+5. Es posible asignarle varias tareas +
+6. Cuando todas sus tareas están terminadas entonces se considera hecho +
+7. Se puede repriorizar una historia de usuario. +
+|===
+
+#### Crear tareas
+
+[cols="1"]
+|===
+|*Como* miembro del equipo +
+*Deseo* agregar tareas +
+*De tal manera* que puedan ser parte de una historia de usuario +
+|*Criterios de aceptación:* +
+1. Las tareas pueden tener tres estados: TODO, WIP y DONE +
+2. Una tarea puede estar asignada a varios usuarios +
+3. Tienen una descripción +
+4. Pueden cambiar de estado +
+5. Un usuario sólo puede tener una tarea en WIP +
+6. Cuando se crea una tarea debe de tener el estado TODO +
+7. Sólo se pueden asignar tareas a usuarios dentro del proyecto +
+|===
+
+#### Agregar miembros al equipo
+
+[cols="1"]
+|===
+|*Como* miembro del equipo +
+*Deseo* unirme al equipo +
+*De tal manera* que agregar tareas y colaborar en un proyecto +
+|*Criterios de aceptación:* +
+1. Los nombres de usuario deben ser únicos +
+2. El nombre de usuario debe tener la forma de un correo
+|===
+
+#### Visualizar un tablero de tareas
+
+[cols="1"]
+|===
+|*Como* miembro del equipo +
+*Deseo* un tablero con las tareas de una proyecto +
+*De tal manera* que pueda visualizar el estado actual del proyecto
+|*Criterios de aceptación:* +
+1. Debe de tener 3 líneas +
+2. Las tareas deben mostrar el nombre de los participantes
+|===
+
+#### Tu propia historia...
+
+[cols=""1]
+|===
+|*Como* un usuario +
+*Deseo* hacer algo +
+*De tal manera* que me aporte valor
+|*Criterios de aceptación:* +
+1. Satisfacción +
+2. Validación +
+3. Restricción
+|===
+
+## [[bookmark-7]]Estructura de las clases de dominio
+
+*Project.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+import java.util.Date;
+import java.util.List;
+
+public class Project {
+  private Long id;
+  private String name;
+  private String codeName;
+  private String description;
+  private Date dateCreated;
+  private Date lastUpdated;
+
+  private List<UserStory> userStories;
+  private List<User> participants;
+
+  // Getters y Setters
+  // Constructores
+}
+----
+
+*UserStory.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+import java.util.Date;
+import java.util.List;
+
+public class UserStory {
+  private Long id;
+  private String description;
+  private Integer priority;
+  private Integer effort;
+  private Date dateCreated;
+  private Date lastUpdated;
+
+  private Project project;
+  private List<Task> tasks;
+  // Getters y Setters
+  // Constructores
+}
+----
+
+*Task.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+import java.util.Date;
+import java.util.List;
+
+public class Task {
+  private Long id;
+  private String description;
+  private TaskStatus status;
+  private Date dateCreated;
+  private Date lastUpdated;
+
+  private UserStory userStory;
+  private List<User> participants;
+  // Getters y Setters
+  // Constructores
+}
+----
+
+*TaskStatus.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+public enum TaskStatus {
+  TODO,WIP,DONE;
+}
+----
+
+*User.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+import java.util.Date;
+
+public class User {
+  private Long id;
+  private String username;
+  private Date dateCreated;
+  private Date lastUpdated;
+  // Getters y Setters
+  // Constructores
+}
+----
+
+## [[bookmark-8]]Funcionalidad que deseamos implementar a nivel de interfaces
+
+*ProjectService.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+public interface ProjectService {
+  void createNewProject(Project project);
+  Project findProjectByCodeName(String codeName);
+  Integer totalEffortForProject(String codeName);
+}
+----
+
+*UserStoryService.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+import java.util.List;
+
+public interface UserStoryService {
+  void createUserStory(UserStory userStory);
+  List<UserStory> findUserStoriesByProject(String codeName);
+  boolean isUserStoryDone(Long userStoryId);
+  UserStory findUserStoryByIdentifier(Long userStoryId);
+}
+----
+
+*TaskService.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+public interface TaskService {
+  Task createTaskForUserStory(String taskDescription, Long userStoryId);
+  void assignTaskToUser(Long taskId, String username);
+  void changeTaskStatus(Long taskId, TaskStatus taskStatus);
+}
+----
+
+*UserService.java*
+
+[source,java,linenums]
+----
+package com.makingdevs.container;
+
+public interface UserService {
+  User findUserByUsername(String username);
+  User createUser(String username);
+  void addToProject(String username, String codeName);
+}
+----
+
+TIP: Aunque esta es la funcionalidad de negocio que deseamos implementar, debes recordar que aún necesitarás otros componentes que te permitan almacenar los datos de la estructura; tales componentes podrían implementarse con acceso a datos(relacionales o no relacionales) y sus respectivas abstracciones.
+
+
+[small]#Powered by link:http://makingdevs.com/[MakingDevs.com]#
