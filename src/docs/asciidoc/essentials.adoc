@@ -69,24 +69,24 @@ En Diciembre del 2013 se libero la versión 4 de Spring, con cambios y mejoras m
 ## Módulos de Spring
 Springframework esta formado en alrededor de 20 módulos. Dichos módulos están agrupados dentro del Core Container, la Integración y el Acceso a Datos, Web, AOP, la Instrumentación y Test.
 
-image::spring-overview.png[]
+image::images/spring-overview.png[]
 
 ### Escenarios de uso de Spring
 so típico en una aplicación Web hecha totalmente con Spring
 
-image::overview-full.png[]
+image::images/overview-full.png[]
 
 so de Spring en la capa de servicios usando una librería web de terceros
 
-image::overview-thirdparty-web.png[]
+image::images/overview-thirdparty-web.png[]
 
 so de elementos remotos
 
-image::overview-remoting.png[]
+image::images/overview-remoting.png[]
 
 ntercambiando POJO’s existentes
 
-image::overview-ejb.png[]
+image::images/overview-ejb.png[]
 
 ## Diseño de aplicaciones(orientada a interfaces)
 La mayoría de nosotros hemos tenido la mala experiencia de lidiar con una pieza de software que tiene un mal diseño. Inclusive muchos de nosotros hemos tratado de descubrir que quizo decir el autor con ese diseño. Pero ¿qué es un mal diseño?.
