@@ -3,7 +3,7 @@
 
 # Inversion of control y Dependency Injection
 
-## [[bookmark-1]]Inversión de control
+## Inversión de control
 De forma conceptual, Inversion of Control es el principio donde el control del flujo de un programa es invertido, es decir, generalmente nosotros le indicamos(de manera secuencial y procedural) la forma en como los objetos se crean y asocian, además de como se comunican. Usando la inversión de control nosotros indicamos a través de algún elemento(framework, servicios, metadatos) que tome el control de la creación de los componentes y de las llamadas a los mismos.
 
 IoC es parte fundamental que hace a un framework distinto de una librería. Una librería es esencialmente un conjunto de funciones que se pueden invocar, usualmente organizados en clases y paquetes. Cada llamada hace algo y regresa el control al cliiente..
@@ -77,14 +77,14 @@ public class TaskManagerLowTied {
 
 TIP: Y aunque no es la mejor forma de hacerlo ejemplifica perfectamente la inversión de control que deseamos hacer.
 
-## [[bookmark-2]]Estos principios de diseño debes aprender.
+## Estos principios de diseño debes aprender.
 
-[[bookmark-3]]Acerca de las interdependencias
+Acerca de las interdependencias
 
 TIP: Módulos de alto nivel NO deberían depender de módulos de bajo nivel. AMBOS deben depender de abstracciones.
 ~ Uncle Bob Martín - Clean Code
 
-[[bookmark-4]]Acerca de las implementaciones
+Acerca de las implementaciones
 
 TIP: Las abstracciones no deben depender de los detalles. Los detalles deben depender de las abstracciones.
 ~ Uncle Bob Martín - Clean Code
@@ -196,11 +196,11 @@ public class TaskManagerInterfaceIoC implements TaskComponents {
 
 TIP: Sin lugar a dudas uno de los pensadores más influyentes es Martin Fowler, el cual, ha escrito de los contenedores de IoD y le patrón DI, es recomendables esta lectura por que incluso hace mención del lenguaje Java y de Springframework como el ejemplo de ello.
 
-## [[bookmark-5]]Separación de las interfaces y sus implementaciones
+## Separación de las interfaces y sus implementaciones
 TIP: ...todas las arquitecturas orientadas a objetos bien estructuradas han definido claramente sus capas, con cada capa se proporciona un conjunto coherente de servicios a través de una interfaz bien definida y controlada...
 ~ Grady Booch - Object Solutions
 
-### [[bookmark-6]]Uso de dependencias de forma directa
+### Uso de dependencias de forma directa
 
 *SimpleTaskStore.java*
 

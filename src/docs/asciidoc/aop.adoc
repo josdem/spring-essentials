@@ -10,7 +10,7 @@ TIP: El AOP es usado en Spring para...
 .. proveer servicios empresariales declarativos, especialmente como reemplazo de los servicios EJB's. El servicio más importante es la administración declarativa de transacciones
 ... permitir a los usuarios implementar aspectos personalizados, complementando el uso de POO con AOP.
 
-## [[bookmark-1]]Conceptos esenciales
+## Conceptos esenciales
 Una _preocupación transversal(cross-cutting concern)_ es una funcionalidad que afecta múltiples puntos de una aplicación. Por ejemplo: seguridad, bitácorado, auditoría, medición de benchamrk, manejo de transacciones.
 
 Una técnica común en la programación orientada objeto para reusar funcionalidad común es la herencia o la delegación. Pero la herencia puede conducir a una jerarquía de objetos frágiles si la misma clase base se utiliza en toda la aplicación, y la delegación puede ser incómoda porque se pueden requerir complicados llamadas al objeto delegado.
@@ -19,7 +19,7 @@ Con AOP, se puede definir la funcionalidad común en un lugar, pero se puede def
 
 TIP: Mientras haces el diseño de tu aplicación no consideras el uso de AOP.
 
-## [[bookmark-2]]Advice
+### Advice
 Los aspectos tienen un propósito, un trabajo por hacer. En términos de AOP, el trabajo de un aspecto es llamado _advice_. Es decir, es código que se ejecutará en alguna parte de la aplicación. Los advices definen el _qué_ y el _cuándo_ de un aspecto. Los aspectos de Spring pueden trabajar con 5 tipos de advice:
 
 * Before
@@ -28,13 +28,13 @@ Los aspectos tienen un propósito, un trabajo por hacer. En términos de AOP, el
 * After-throwing
 * Around
 
-### [[bookmark-3]]JoinPoint
+### JoinPoint
 *Un join point es un punto en la ejecución de la aplicación donde un aspecto puede ser conectado*. Este punto podría ser la llamada a ún método, cuando una excepción sea arrojada, o incluso si un campo es modificado. Esos son los puntos donde el código de un aspecto puede ser insertado dentro del flujo normal de la aplicación para agregar nuevo comportamiento.
 
-### [[bookmark-4]]Pointcut
+### Pointcut
 Los _pointcuts_ ayudan a reducir los join points avisados por un aspecto. Es decir, son el predicado de un adivce. Si el advice define el qué y el cuándo, los pointcuts definen el dónde. La definición de pointcut hace coincidir uno o más join points a los cuales el advice deberá estar tejido. A menudo se específican dichos pointcuts usando clases explícitas y nombres de métodos, o a través de expresiones regulares que definen los patrones de coincidencias en nombres de clases o métodos.
 
-### [[bookmark-5]]Aspectos
+### Aspectos
 Un aspecto es la combinación de advices y pointcuts. Tomados en conjunto, definen cada cosa que hay que saber acerca del aspecto en total, lo que hace, cuando lo hace y dónde lo hace.
 
 TIP: Introductions
@@ -43,10 +43,10 @@ Aunque no son considerador en este entrenamiento, es bueno saber que un introduc
 ### Target object
 Es el objeto siendo avisado por varios por uno o más aspectos. Además conocido como el advice object. Este objeto por lo general será un objeto proxy.
 
-### [[bookmark-6]]AOP Proxy
+### AOP Proxy
 Es un objeto creado por el framework de AOP en orden para implementar los contratos del aspecto. En Spring, un proxy AOP será un proxy dinámico del JDK o un proxy CGLIB.
 
-### [[bookmark-7]]Weaving
+### Weaving
 _Weaving_ es el proceso de aplicar aspectos a un target object para crear un proxy object. Los aspectos son tejidos dentro del target object en los join points específicados. El weaving puedde tomar lugar en varios puntos en el ciclo de vida del target object:
 
 * _Compile time_ - Los aspectos son tejidos cuando la clase es compilada. Esto requiere un compilador especial, en el caso de AspecjtJ lo hace de esta forma.
@@ -196,8 +196,8 @@ public class LoggingServicesTests {
 }
 ----
 
-## [[bookmark-8]]Declarando aspectos
-### [[bookmark-9]]Definiendo advices
+## Declarando aspectos
+### Definiendo advices
 
 *AfterAdvice.java*
 
@@ -432,7 +432,7 @@ public class AppConfig {
 }
 ----
 
-## [[bookmark-10]]Declarando mejores pointcuts
+## Declarando mejores pointcuts
 En Spring AOP, los pointcuts son definidos usando el lenguaje de expresión de AspectJ. Lo más importante a conocer es que Spring soporta un subconjunto de designadores de pointcuts disponibles en AspectJ. La declaración de un pointcut tiene dos partes:
 
 1. Una firma que comprende un nombre y los parámetros
@@ -452,7 +452,7 @@ Adicionalmente, Spring AOP soporta los siguientes designadores de pointcuts de A
 * `@within`
 * `@annotation`
 
-### [[bookmark-11]]Ejemplos de pointcuts
+### Ejemplos de pointcuts
 * `execution(public * *(..))` - Ejecución de cualquier método publico
 * `execution(* set*(..))` - Ejecución de cualquier metodo que comience con el nombre set
 * `execution(* com.makingdevs.services.UserService.*(..))` - La ejecución de cualquier método definido por la interfaz UserService
@@ -552,7 +552,7 @@ public class BenchmarkAroundAdvice {
 }
 ----
 
-### [[bookmark-12]]Declarando aspectos con XML
+### Declarando aspectos con XML
 
 *SchemaAOPAppCtx.xml*
 
@@ -668,12 +668,12 @@ public class AfterThrowingAdvice {
 }
 ----
 
-## [[bookmark-13]]Advice ordering
+## Advice ordering
 ¿Qué sucede cuando hay varios advices y todos quieren correr al mismo join point? Spring AOP sigue las mismas reglas de precedencia como AspectJ para determinar el orden de ejecución de advices. El advice con más alta prioridad va primero.
 
 Puede controlar el orden de ejecución especificando prioridad. Esto se hace en la forma normal por la implementación de la interfaz `org.springframework.core.Ordered` en la clase de aspecto o la anotación `@Order`. Teniendo en cuenta que el aspecto a devolver el valor más bajo desde `Ordered.getValue()` (o el valor de la anotación) tiene la prioridad más alta.
 
-### [[bookmark-14]]Advisor
+## Advisor
 
 Un Advisor es la suma de un advice y un pointcut dentro del mismo bean.
 

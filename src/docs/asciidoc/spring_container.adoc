@@ -3,7 +3,7 @@
 
 # El contenedor de Spring
 
-## [[bookmark-1]]Bill of materials
+## Bill of materials
 Si estás usando Maven para la administración de dependencias no necesitas proveerlas de forma explícita. Por ejemplo, para crear una aplicación con Spring usando sólo inyección de dependencias la dependencia de Maven que necesitas es:
 
 *pom.xml*
@@ -103,7 +103,7 @@ Para solucionar el problema, Maven soporta el concepto de “Bill of materials�
 <dependencies>
 ----
 
-## [[bookmark-2]]Administración de dependencias con Gradle
+## Administración de dependencias con Gradle
 
 Para usar los repositorios de Spring con Gradle incluye las URL’s apropiadas en la sección de repositorios, y agrega las dependencias a tu gusto:i
 
@@ -151,7 +151,7 @@ ApplicationContext context2 = new ClassPathXmlApplicationContext("/tmp/bar.xml")
 
 TIP: Adicionalmente, es bueno mencionar que los paquetes *org.springframework.beans* y *org.springframework.context* son la base del contenedor de Spring.
 
-## [[bookmark-3]]Diferencias entre el BeanFactory y el AppCtx
+## Diferencias entre el BeanFactory y el AppCtx
 El *BeanFactory* proporciona la base fundamental para la funcionalidad del contenedor de IoC de Spring pero sólo se usa directamente en la integración con otros frameworks de terceros, y ahora es en gran parte de naturaleza histórica para la mayoría de los usuarios de Spring. Sin embargo la regla es: *Usa un ApplicationContext a menos que tengas una buena razón para no hacerlo*
 
 El *ApplicationContext* agrega la integración con características de AOP, manejo de recursos, publicación de eventos y contextos específicos en función del tipo de aplicación.
@@ -194,17 +194,17 @@ cfg.postProcessBeanFactory(factory);
 
 ## Inyección de Dependencias entre beans con elementos transversales
 
-### [[bookmark-4]]El contenedor de beans de Spring
+### El contenedor de beans de Spring
 
-image::spring-container.png[]
+image::images/spring-container.png[]
 
-### [[bookmark-5]]Componentes funcionales y no funcionales
+### Componentes funcionales y no funcionales
 
-image::di.png[]
+image::images/di.png[]
 
-### [[bookmark-6]]Cross cutting concerns
+### Cross cutting concerns
 
-image::cross-concern.png[]
+image::images/cross-concern.png[]
 
 ### Ciclo de vida de los beans
 
@@ -212,7 +212,7 @@ TIP: Un bean es un objeto que es instanciado, ensamblado, y de alguna manera adm
 
 En una aplicación basada en Spring, los objetos de la aplicación vivirán dentro del contenedor de IoC, este último los creará y ellos se alambrarán, se configurarán y el mismo contenedor los administrará.
 
-image::container-magic.png[]
+image::images/container-magic.png[]
 
 El contenedor es la parte central de SpringFramework, el cual, usa inyección de dependencias para administrar los componentes de la aplicación. Esto incluye la creación de asociaciones entre componentes colaboradores.
 
@@ -319,7 +319,7 @@ Nuestro ejemplo estará basado en un tablero de tareas(Taskboard), el cual esta 
 3. Restricción
 |===
 
-## [[bookmark-7]]Estructura de las clases de dominio
+## Estructura de las clases de dominio
 
 *Project.java*
 
@@ -422,7 +422,7 @@ public class User {
 }
 ----
 
-## [[bookmark-8]]Funcionalidad que deseamos implementar a nivel de interfaces
+## Funcionalidad que deseamos implementar a nivel de interfaces
 
 *ProjectService.java*
 

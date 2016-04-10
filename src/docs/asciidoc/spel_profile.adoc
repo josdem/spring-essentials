@@ -3,7 +3,7 @@
 
 # Uso de SpEL y Profiles
 
-## [[bookmark-1]]Spring Expression Language
+## Spring Expression Language
 El lenguaje de Expresión de Spring es un poderoso lenguaje de expresión ue soporta la búsqueda y manipulación de un objeto como grafo en tiempo de ejecución. El cual, fue creado para ser usado en varios subproyectos de Spring.
 
 No esta directamente atado a Spring, por lo que puede ser usado de forma independiente(es decir, no necesita un `ApplicationContext`. Aunque mayormente, estremos usando el SpEL dentro del contenedor de Spring.
@@ -167,7 +167,7 @@ public class UsingLanguageTests {
 }
 ----
 
-## Uso de SpEL dentro de los archivos de configuración
+### Uso de SpEL dentro de los archivos de configuración
 
 *SpELInjection.java*
 
@@ -284,7 +284,7 @@ public class SpELXmlConfigTests {
 }
 ----
 
-## Uso de SpEL en configuración basada en anotaciones
+### Uso de SpEL en configuración basada en anotaciones
 
 *db_parameters.properties*
 
@@ -379,7 +379,7 @@ public class SpELAnnotatedTests {
 }
 ----
 
-## [[bookmark-2]]Spring Profiles
+## Spring Profiles
 
 La definición de beans de profile es un mecanismo en el contenedor central de Spring que permite el registro de diferentes beans en diferentes entornos. Esta característica puede ayudarnos en un par de casos de uso:
 
