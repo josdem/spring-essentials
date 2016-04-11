@@ -104,7 +104,7 @@ Por otra parte, sería difícil demostrar que una pieza de software que no exhib
 ### Creando aplicaciones con baja cohesión y alto acoplamiento
 Si bien podemos crear aplicaciones con el entendimiento mínimo del requerimiento, y también siendo muy estrictos en su funcionamiento, encapsulando y colocando toda la funcionalidad en un sólo lugar puede causarnos muchos más problemas de los que potencialmente resolvería.
 
-*Estrella.java*
+*TaskManager.java*
 
 [source,java,linenums]
 ----
