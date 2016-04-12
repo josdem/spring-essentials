@@ -1,4 +1,3 @@
-
 # Elementos esenciales de Springframework
 
 image::images/platform-stack.png[]
@@ -7,7 +6,7 @@ Spring es un framework Open Source, originalmente creado por Rod Johnson y descr
 
 TIP: Spring simplifica de sobremanera el desarrollo Java.
 
-Actualmente, Springframework es una plataforma Java que proveeo del soporte comprensivo de infraestructura para desarrollar aplicaciones para la JVM. Maneja y administra la infraestructura de tal manera que podemos enfocarnos en el desarrollo de la aplicación.
+Actualmente, Springframework es una plataforma Java que provee del soporte comprensivo de infraestructura para desarrollar aplicaciones para la JVM. Maneja y administra la infraestructura de tal manera que podemos enfocarnos en el desarrollo de la aplicación.
 
 Al usar Spring tu puedes:
 
@@ -16,7 +15,7 @@ Al usar Spring tu puedes:
 * Hacer un método local en Java una operación administrada sin tener que tratar con la API de JMX.
 * Hacer un método local en Java un manejador de mensajes sin tener que tratar con la API de JMS.
 
-Ahora bien, *¿cómo le hace Spring para eliminar toda esta complejidad?. A grandes rasgos, se emplean 4 estrategias:
+Ahora bien, *¿cómo le hace Spring para eliminar toda esta complejidad?*. A grandes rasgos, se emplean 4 estrategias:
 
 * El desarrollo debe ser ligero y minimamente invasivo con POJO’s.
 * Bajo acoplamiento a través de la inyección de dependencias y la orientación a interfaces.
@@ -46,7 +45,7 @@ Con la liberación de Spring 3.0(Diciembre del 2009), se adoptaron aún más el 
 ** Nuevas anotaciones para SpringMVC, incluyendo @CookieValue y @Request-Header, para jalar valores desde la información del navegador y el request.
 ** Un nuevo namespace XML para una configuración más fácil de SpringMVC
 ** Soporte para validaciones declarativas con anotaciones de JSR-303(Bean Validations).
-** Soporte para la especificación JSR-330 en inyección de dependencias. *y Declaraciones basada en anotaciones de métodos calendarizados y asíncronos.
+** Soporte para la especificación JSR-330 en inyección de dependencias. Declaraciones basada en anotaciones de métodos calendarizados y asíncronos.
 ** Una nueva configuración basada en anotaciones para librar a Spring de la configuración XML.
 ** La funcionalidad de mapeo Objeto a XML del proyecto de Spring WebServices(OXM).
 ** Ya no hay soporte para Java 1.4
@@ -72,19 +71,19 @@ Springframework esta formado en alrededor de 20 módulos. Dichos módulos están
 image::images/spring-overview.png[]
 
 ### Escenarios de uso de Spring
-so típico en una aplicación Web hecha totalmente con Spring
+Uso típico en una aplicación Web hecha totalmente con Spring
 
 image::images/overview-full.png[]
 
-so de Spring en la capa de servicios usando una librería web de terceros
+Uso de Spring en la capa de servicios usando una librería web de terceros
 
 image::images/overview-thirdparty-web.png[]
 
-so de elementos remotos
+Uso de elementos remotos
 
 image::images/overview-remoting.png[]
 
-ntercambiando POJO’s existentes
+Intercambiando POJO’s existentes
 
 image::images/overview-ejb.png[]
 
@@ -333,7 +332,7 @@ public class TaskManagerKaban extends TaskManager {
 
 Es aquí, en donde entra posibilidad de abstraer el comportamiento de los componentes que tienen responsabilidades por separados y pensar que inclusive se podrían y deberían de probar por separado, de tal manera que podríamos resusarlos o cambiarlos sin afectar a los demás.
 
-Las interfaces surgen como el siguiente paso de la Programación Orientada a Objetos con la necesidad de agrupar y reutilizar las distintas funcionalidades de un objetode una forma más simple. Mediante interfaces podemos crear mejores diseños sin caer en las trampas de POO, así también, se crean nuevas y mejores formas de aplicar la implementación de un código de forma abstracta. Sin embargo debemos de tener presentes los 3 principios:
+Las interfaces surgen como el siguiente paso de la Programación Orientada a Objetos con la necesidad de agrupar y reutilizar las distintas funcionalidades de un objeto de una forma más simple. Mediante interfaces podemos crear mejores diseños sin caer en las trampas de POO, así también, se crean nuevas y mejores formas de aplicar la implementación de un código de forma abstracta. Sin embargo debemos de tener presentes los 3 principios:
 
 [TIP]
 ====
@@ -427,7 +426,7 @@ Algunas otras características son:
 * Soporte verificaciones de un número exacto de invocaciones o de por lo menos alguna.
 * Algunas otras más.
 
-*TaskManagerUnitTests.javai*
+*TaskManagerUnitTests.java*
 
 [source,java,linenums]
 ----

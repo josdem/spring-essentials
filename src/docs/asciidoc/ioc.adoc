@@ -1,5 +1,3 @@
-:icons: font
-:source-highlighter: coderay
 
 # Inversion of control y Dependency Injection
 
