@@ -504,12 +504,6 @@ public class TaskManagerUnitTests {
   }
 
   @Test
-  public void addATasksFromAFile(){
-    // TODO: Implements the feature
-    assertTrue(false);
-  }
-
-  @Test
   public void getATaskByIndex(){
     addATaskFromAString();
     when(taskStore.readTask(1L)).thenReturn(new Task());
