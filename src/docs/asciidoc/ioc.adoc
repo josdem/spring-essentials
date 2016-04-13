@@ -118,7 +118,7 @@ public class TaskManagerConstructorIoC {
 }
 ----
 
-*TaskManagerSetterIoC.javai*
+*TaskManagerSetterIoC.java*
 
 [source,java,linenums]
 ----
@@ -192,7 +192,7 @@ public class TaskManagerInterfaceIoC implements TaskComponents {
 }
 ----
 
-TIP: Sin lugar a dudas uno de los pensadores más influyentes es Martin Fowler, el cual, ha escrito de los contenedores de IoD y le patrón DI, es recomendables esta lectura por que incluso hace mención del lenguaje Java y de Springframework como el ejemplo de ello.
+TIP: Sin lugar a dudas uno de los pensadores más influyentes es Martin Fowler, el cual, ha escrito de los link:http://martinfowler.com/articles/injection.html[contenedores de IoD y le patrón DI], es recomendables esta lectura por que incluso hace mención del lenguaje Java y de Springframework como el ejemplo de ello.
 
 ## Separación de las interfaces y sus implementaciones
 TIP: ...todas las arquitecturas orientadas a objetos bien estructuradas han definido claramente sus capas, con cada capa se proporciona un conjunto coherente de servicios a través de una interfaz bien definida y controlada...
