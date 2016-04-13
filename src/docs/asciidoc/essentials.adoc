@@ -188,7 +188,7 @@ public class TaskManagerIntegrationTests {
   @Test
   public void addATaskFromAString(){
     assertNotNull(taskManager);
-    taskManager.addTask("new task with String");
+    taskManager.addTask("new task");
     assertTrue(taskManager.howManyTasks() == 1);
   }
 
@@ -196,8 +196,8 @@ public class TaskManagerIntegrationTests {
   public void addATasksFromAList(){
     assertNotNull(taskManager);
     List<Task> tasksToAdd = new ArrayList<Task>();
-    tasksToAdd.add(new Task());
-    tasksToAdd.add(new Task());
+    tasksToAdd.add(new Task("new task"));
+    tasksToAdd.add(new Task("new task"));
     taskManager.addTask(tasksToAdd);
     assertTrue(taskManager.howManyTasks() == 2);
   }
