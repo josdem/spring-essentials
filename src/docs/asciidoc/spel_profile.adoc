@@ -490,7 +490,7 @@ Hay algunas coas que debes observar cuando consideras usar perfiles en la defini
 * Se cuidadoso con no poner mucho en producción
 ====
 
-Aunque puedes usar la propiedad de sistema spring.profiles.active para determinar de forma externalizada que ambiente se usará. Adicionalmente, podemos usar anotaciones para configurar los perfiles.
+Aunque puedes usar la propiedad de sistema `spring.profiles.active` para determinar de forma externalizada que ambiente se usará. Adicionalmente, podemos usar anotaciones para configurar los perfiles.
 
 *StandaloneDataConfig.java*
 

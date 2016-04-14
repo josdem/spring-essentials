@@ -1,5 +1,3 @@
-:icons: font
-:source-highlighter: coderay
 
 # Programación orientada a aspectos
 En software, varias actividades son comúnes a la mayoría de las aplicaciones. Logs, seguridad y la administración de transacciones son importantes, pero dichas acciones ¿deberían ser objetos involucrados dentro la aplicación en uso activo y constante?, o sería mejor si los objetos se enfocarán en los problemas de negocio y dejar ciertos aspectos a ser manejados por algiuien más.
