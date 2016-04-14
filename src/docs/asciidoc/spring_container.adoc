@@ -1,5 +1,3 @@
-:icons: font
-:source-highlighter: coderay
 
 # El contenedor de Spring
 
@@ -316,7 +314,7 @@ Nuestro ejemplo estará basado en un tablero de tareas(Taskboard), el cual esta 
 |*Criterios de aceptación:* +
 1. Satisfacción +
 2. Validación +
-3. Restricción
+3. Restricción y/o valor
 |===
 
 ## Estructura de las clases de dominio

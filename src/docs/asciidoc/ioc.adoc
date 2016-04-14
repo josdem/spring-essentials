@@ -380,7 +380,7 @@ public class PresentationTaskManager {
 }
 ----
 
-La inyección de dependencias es la raíz de muchos beneficios aclamados para las tecnologías orientadas a objetos. Su aplicación adecuada es necesaria para la creación de frameworks reutilizables.Es además críticamente importante para la construcción de código que es resistente al cambio. Y, desde que las abstracciones y los detalles están aislados unos de otros, el código es mucho más fácil de mantener.
+La inyección de dependencias es la raíz de muchos beneficios aclamados para las tecnologías orientadas a objetos. Su aplicación adecuada es necesaria para la creación de frameworks reutilizables. Es además críticamente importante para la construcción de código que es resistente al cambio. Y, desde que las abstracciones y los detalles están aislados unos de otros, el código es mucho más fácil de mantener.
 
 
 [small]#Powered by link:http://makingdevs.com/[MakingDevs.com]#

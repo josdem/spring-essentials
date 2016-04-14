@@ -1,5 +1,3 @@
-:icons: font
-:source-highlighter: coderay
 
 # Uso de SpEL y Profiles
 

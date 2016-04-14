@@ -103,7 +103,7 @@ public class TaskManagerLowTied {
 
 DI o Dependency Injection es una forma de Inversión de Control, donde las implementaciones son pasadas a un objeto a través de constructores, setters, o búsqueda de servicios(lookups), de las cuales el objeto _dependerá_ para comportarse correctamente.
 
-Aunque se puede usar IoC sin DI, a esto se le conoce como el patrón Template por que la implementación puede ser cambiada a través de subclases. Así también, Los frameworks de DI están diseñados para hacer uso de la técnica y pueden definir interfaces para facilitar el paso de las implementaciones. 
+Aunque se puede usar IoC sin DI, a esto se le conoce como el patrón Template por que la implementación puede ser cambiada a través de subclases. Así también, Los frameworks de DI están diseñados para hacer uso de la técnica y pueden definir interfaces para facilitar el paso de las implementaciones.
 
 Los contendores de IoC son frameworks de DI que pueden trabajar fuera del lenguaje de programación. En algunos de ellos puedes configurar las implementaciones usando metadatos los cuales son menos invasivos.
 
@@ -219,7 +219,7 @@ public class TaskManagerInterfaceIoC implements TaskComponents {
 
 <blockquote>
   <p>...todas las arquitecturas orientadas a objetos bien estructuradas han definido claramente sus capas, con cada capa se proporciona un conjunto coherente de servicios a través de una interfaz bien definida y controlada...</p>
-  <small>Grady Booch - <cite title="Object Solutions">Object Solutions</cite></small>  
+  <small>Grady Booch - <cite title="Object Solutions">Object Solutions</cite></small>
 </blockquote>
 
 ### Uso de dependencias de forma directa
@@ -407,4 +407,4 @@ public class PresentationTaskManager {
   </div>
 </div>
 
-La inyección de dependencias es la raíz de muchos beneficios aclamados para las tecnologías orientadas a objetos. Su aplicación adecuada es necesaria para la creación de frameworks reutilizables.Es además críticamente importante para la construcción de código que es resistente al cambio. Y, desde que las abstracciones y los detalles están aislados unos de otros, el código es mucho más fácil de mantener.
+La inyección de dependencias es la raíz de muchos beneficios aclamados para las tecnologías orientadas a objetos. Su aplicación adecuada es necesaria para la creación de frameworks reutilizables. Es además críticamente importante para la construcción de código que es resistente al cambio. Y, desde que las abstracciones y los detalles están aislados unos de otros, el código es mucho más fácil de mantener.
