@@ -1,12 +1,10 @@
-:icons: font
-:source-highlighter: coderay
 
 # Configuración del AppCtx
 En Spring, los objetos no son responsables de encontrar o crear a otros objetos que necesitan para hacer su trabajo. En lugar de ello, se les dan referencias a los objetos con los que colaboran en el contenedor. Nuestro servicio de negocio por ejemplo, necesitará a su vez de otros componentes que les permita cumplir con el flujo del proceso deseado, y no pueden estar vacíos, sin refrenecia o nulos.
 
 El acto de crear dichas asociaciones entre los objetos de la aplicación es la esencia de la inyección de dependencias(DI), y es comúnmente referido como wiring. Como la inyección de dependencias es el concepto más elemental que hace Spring, mostraremos las técnicas mayormente usadas y las que encontrarás en la mayoría de los proyectos actualmente desarrollados.
 
-## [[bookmark-1]]Declaración de beans y configuración con XML
+## Declaración de beans y configuración con XML
 Como hemos dicho antes, Spring es un framework basado en contenedores. Pero si Spring no es configurado, entonces, tenemos un contenedor vacío y no sirve de mucho. Necesitamos configurar Spring para decirle que beans deberá contener y como los alambra para que trabajen juntos.
 
 *UserServiceSimpleImpl.java*
@@ -85,7 +83,7 @@ public class UseSpringAsLibraryTests {
 }
 ----
 
-### [[bookmark-2]]Inyección por constructor
+## Inyección por constructor
 
 WARNING: Las clases de dominio no se benefician de la inyección de dependencias, los ejemplos mostrados a continuación no son prácticas recomendadas y sólo nos servirán de ejemplo.
 
@@ -164,7 +162,7 @@ public class ConstructorInjectionTest {
 }
 ----
 
-### [[bookmark-3]]Inyecciones por setter
+## Inyecciones por setter
 
 TIP: Usa mayormente la inyección por setters, pues es díficil de mantener una clase con un constructor y varios parámetros por inyectar.
 
@@ -249,7 +247,7 @@ public class SetterInjectionTest {
 }
 ----
 
-## Inyección de colaboradores
+### Inyección de colaboradores
 
 WARNING: Las clases de dominio no se benefician de la inyección de dependencias, los ejemplos mostrados a continuación no son prácticas recomendadas y sólo nos servirán de ejemplo.
 
@@ -535,7 +533,7 @@ public class MultiPropertiesCollaboratorInjectionTest {
 }
 ----
 
-## [[bookmark-4]]Proceso de resolución de dependencias
+## Proceso de resolución de dependencias
 * El `ApplicationContext` es creado e inicializado con la configuración de los metadatos que describe todos los beans. Los metadatos pueden ser XML, Java, Groovy o anotaciones.
 * Para cada bean, sus dependencias son expresadas en forma de propiedades, argumentos del constructor, o argumentos de un método de factoría estática si se está usando en lugar de un constructor. Dichas dependencias son proveídas al bean, cuando el bean es creado.
 * Cada propiedad o argumento del constructor es una definición actual del valor a establecer, o una referencia a otro bean en el contenedor.
@@ -543,7 +541,7 @@ public class MultiPropertiesCollaboratorInjectionTest {
 
 El contenedor de Spring valida la configuración de cada bean al momento de que se va creando el contenedor, incluyendo las referencias que tiene un bean hacia otros beans. Sin embargo, las propiedades de los beans por si mismas no son establecidas hasta que hayan sido creadas.
 
-## [[bookmark-5]]Namespaces
+## Namespaces
 
 * `aop` Provee elementos para declarar aspectos y para automáticamente proxear clases anotadas con AspectJ como aspectos de Spring
 * `beans` El namespace central de Spring, habilita la declaración de beans y como deben ser alambrados.
@@ -652,7 +650,7 @@ public class MultiPropertiesWithNamespaceCollaboratorInjectionTest {
 
 TIP: Puedes importar más archivos de configuración, para hacerlo usa el tag `import resource="masConfiguracion.xml"` para agregar más definiciones de beans.
 
-## [[bookmark-6]]Alcance de los beans y modelos de instanciación
+## Alcance de los beans y modelos de instanciación
 
 TIP: Por default, todos los beans son singletons.
 
@@ -667,20 +665,20 @@ Para la mayoría de las veces, probablemente será suficiente con dejar el alcan
 
 TIP: Te recomendamos que veas el video de link:https://vimeo.com/12381504[Modelos de instanciación en Spring], pues podrás notar que opciones tienes y como funcionan al momento de crear un bean dentro de Spring.
 
-### [[bookmark-7]]Autowiring de colaboradores
+## Autowiring de colaboradores
 El contenedor de Spring puede auto-alambrar relaciones entre beans que colaboran entre ellos. Puede permitir a Spring resolver colaboradores automáticamente para los beans declarados inspeccionando el contenido del `ApplicationContext`. El *autowiring* tiene las siguientes ventajas:
 
 * El autowiring puede significativamente reducir la necesidad de especificar propiedades o argumentos del constructor.
 * El autowiring puede actualizar una configuración como los objetos vayan evolucionando. Por ejemplo, si necesitas una dependencia en una clase, dicha dependendencia puede ser satisfecha automáticamente sin la necesidad de modificar la configuración. Muy útil en desarrollo.
 
-#### [[bookmark-8]]Modos de autowiring
+#### Modos de autowiring
 
 * no - Las dependencias deben ser especificadas vía un elemento `ref` de la decalración del bean.
 * byName
 * byType
 * constructor
 
-### [[bookmark-9]]Configuración con Anotaciones
+## Configuración con Anotaciones
 Desde Spring 2.5, una de las formas más interesantes de crear un contenedor de Spring con todos sus beans ha sido usar anotaciones para automáticamente alambrar las propiedades de los beans. Autowiring con anotaciones no es tan diferente como usar `autowire` en XML. Sin embargo, es más selectivo al marcar ciertas propiedades.
 
 La configuración por anotaciones no esta habilitada por default, por lo tanto, antes de usarla debemos habilitarla:
@@ -884,7 +882,7 @@ public class AnnotationConfigBeansTests {
 }
 ----
 
-### [[bookmark-10]]Descubriendo beans de forma automática
+### Descubriendo beans de forma automática
 Cuando agregas `<context:annotation-config />` a tu configuración de Spring, le debemos indicar a Spring la definición de los beans que queremos dar de alta dentro del AppCtx, aunque las dependencias se resuelvan por si solas con ayuda de la inyección basada en anotaciones. Es decir, a pesar de que nos quitamos el trabajo de definir `<property>` y `<constructor-arg>`, aún tenemos que definir `<bean>`.
 
 Pero Spring cuenta con `<context:component-scan base-package="com.makingdevs"/>`, que hace el trabajo de `<context:annotation-config />`, y además le indica a Spring que descubra todos los beans que sean candidatos a vivir dentro del contenedor. Por lo tanto no tenemos la necesidad de declarlos como `<bean>`.
@@ -1067,7 +1065,7 @@ public class ComponentScanBeansTests {
 }
 ----
 
-## [[bookmark-11]]Configuración con JavaConfig
+## Configuración con JavaConfig
 No a todos nos gusta el XML, y a muchos les gusta mucho el lenguaje Java. A partir de Spring 3 podemos configurar la mayor parte de nuestra aplicación con clases Java, crear el contenedor y configurar la onyección de dependencias con la estructura de una clase, para ellos nos basaremos en un par de anotaciones: `@Configuration` y `@Bean` para hacerlo.
 
 Lo que estamos haciendo es crear un `AnnotationConfigApplicationContext`, el cuál es capaz de no sólo aceptar clases con `@Configuration`, además puede usar `@Component` y clases anotadas con el JSR-330. Nota: Lo cual permite crear abstracciones aún más altas.
@@ -1086,7 +1084,7 @@ public static void main(String[] args) {
 }
 ----
 
-### [[bookmark-12]]Replicando el comportamiento de la configuración basada en XML con Java Config
+### Replicando el comportamiento de la configuración basada en XML con Java Config
 
 *ProjectServiceImpl.java*
 
@@ -1241,7 +1239,7 @@ public class JavaBeansConfigurationTests {
 }
 ----
 
-### [[bookmark-13]]Inyección de configuración
+### Inyección de configuración
 Es posible definir a nivel de contrato que instancias o beans deseamos de algún elemento, las configuraciones serán implementadas a nivel de clase, y por lo tanto podremos inyectarlas entre sí.
 
 *BeanConfigurationContractOne.java*
@@ -1356,7 +1354,7 @@ public class BeanConfigurationTwo implements BeanConfigurationContractTwo{
 
 Ahora solo necesitaremos usar esta última configuración en nuestra última prueba para determinar que nuestro wiring es correcto: `@ContextConfiguration(classes = { BeanConfigurationTwo.class })`
 
-### [[bookmark-14]]Mezclando configuraciones
+### Mezclando configuraciones
 
 *GlobalConfiguration.java*
 

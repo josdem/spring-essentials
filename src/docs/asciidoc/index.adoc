@@ -10,6 +10,7 @@
 include::welcome.adoc[]
 include::essentials.adoc[]
 include::ioc.adoc[]
+include::appctx.adoc[]
 include::spring_container.adoc[]
 include::spel_profile.adoc[]
 include::aop.adoc[]
