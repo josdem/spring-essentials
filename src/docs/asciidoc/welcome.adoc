@@ -32,11 +32,13 @@ ____
 
 == Objetivo del entrenamiento
 
-* Crear la cultura de la automatización de un proyecto de software
-* Conocer los elementos esenciales para la construcción de un proyecto hecho en Java o Groovy
-* Incentivar la generación y automatización de pruebas
-* Conocer los conceptos centrales de Gradle, principios y filosofía
-* Conocer el modelo de dominio de Gradle
+* Diseñar aplicaciones basadas en Springframework
+* Conocer los elementos de Depdendency Injection e Inversion of Control
+* Profundizar en el manejo del contenedor de Spring
+* Conocer los diferentes formas para crear un Application Context
+* Aplicar programación Orientada a Aspectos
+* Conocer los elementos de testing para crear componentes sustentables
+* Mejorar tus habilidades como desarrollador Java en la creación de aplicaciones Java empresariales
 
 == Consideraciones
 
