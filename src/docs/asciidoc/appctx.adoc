@@ -29,11 +29,11 @@ public class UserServiceSimpleImpl implements UserService {
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="userService" class="com.makingdevs.practica4.UserServiceSimpleImpl">
-  </bean>
+<bean id="userService" class="com.makingdevs.practica4.UserServiceSimpleImpl">
+</bean>
 
 </beans>
 ----
@@ -59,26 +59,27 @@ import com.makingdevs.services.UserService;
 public class UseSpringAsLibraryTests {
 
   @Test
-  public void useSpringWithBeanFactory() {
-    Resource resource = new ClassPathResource("com/makingdevs/practica4/ApplicationContext.xml");
-    BeanFactory beanFactory = new XmlBeanFactory(resource);
-    UserService userService = (UserService)beanFactory.getBean("userService");
-    assertNotNull(userService);
-  }
+    public void useSpringWithBeanFactory() {
+      DefaultListableBeanFactory xbf = new DefaultListableBeanFactory();
+      XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(xbf);
+      reader.loadBeanDefinitions(new ClassPathResource("/com/makingdevs/practica4/ApplicationContext.xml", getClass()));
+      UserService userService = (UserService)xbf.getBean("userService");
+      assertNotNull(userService);
+    }
 
   @Test
-  public void useSpringWithAppCtx() {
-    ApplicationContext appCtx = new ClassPathXmlApplicationContext("com/makingdevs/practica4/ApplicationContext.xml");
-    UserService userService = (UserService)appCtx.getBean("userService");
-    assertNotNull(userService);
-  }
+    public void useSpringWithAppCtx() {
+      ApplicationContext appCtx = new ClassPathXmlApplicationContext("com/makingdevs/practica4/ApplicationContext.xml");
+      UserService userService = (UserService)appCtx.getBean("userService");
+      assertNotNull(userService);
+    }
 
   @Test
-  public void useSpringWithAppCtxByType() {
-    ApplicationContext appCtx = new ClassPathXmlApplicationContext("com/makingdevs/practica4/ApplicationContext.xml");
-    UserService userService = appCtx.getBean(UserService.class);
-    assertNotNull(userService);
-  }
+    public void useSpringWithAppCtxByType() {
+      ApplicationContext appCtx = new ClassPathXmlApplicationContext("com/makingdevs/practica4/ApplicationContext.xml");
+      UserService userService = appCtx.getBean(UserService.class);
+      assertNotNull(userService);
+    }
 
 }
 ----
@@ -93,21 +94,21 @@ WARNING: Las clases de dominio no se benefician de la inyección de dependencias
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="projectFromConstructor" class="com.makingdevs.model.Project">
-    <constructor-arg value="1"/>
-    <constructor-arg value="My taskboards"/>
-    <constructor-arg value="TASKBOARD"/>
-    <constructor-arg value="Project description"/>
-  </bean>
+<bean id="projectFromConstructor" class="com.makingdevs.model.Project">
+<constructor-arg value="1"/>
+<constructor-arg value="My taskboards"/>
+<constructor-arg value="TASKBOARD"/>
+<constructor-arg value="Project description"/>
+</bean>
 
-  <bean id="userFromConstructor" class="com.makingdevs.model.User">
-    <constructor-arg value="makingdevs" index="1"/>
-    <constructor-arg name="id" value="100"/>
-    <constructor-arg value="true" type="boolean"/>
-  </bean>
+<bean id="userFromConstructor" class="com.makingdevs.model.User">
+<constructor-arg value="makingdevs" index="1"/>
+<constructor-arg name="id" value="100"/>
+<constructor-arg value="true" type="boolean"/>
+</bean>
 
 </beans>
 ----
@@ -134,30 +135,30 @@ public class ConstructorInjectionTest {
   private ApplicationContext appCtx;
 
   @Before
-  public void setup(){
-    // Look ma, String arrays!
-    String[] configurations = {"com/makingdevs/practica5/ConstructorInjectionAppCtx.xml"};
-    appCtx = new ClassPathXmlApplicationContext(configurations);
-    assertNotNull(appCtx);
-  }
+    public void setup(){
+      // Look ma, String arrays!
+      String[] configurations = {"com/makingdevs/practica5/ConstructorInjectionAppCtx.xml"};
+      appCtx = new ClassPathXmlApplicationContext(configurations);
+      assertNotNull(appCtx);
+    }
 
   @Test
-  public void getBeanWithConstructorInjection() {
-    assertTrue(appCtx.containsBean("projectFromConstructor"));
-    Project project = (Project)appCtx.getBean("projectFromConstructor");
-    assertTrue(project.getId() == 1L);
-    assertTrue(project.getName().equals("My taskboards"));
-    assertTrue(project.getCodeName().equals("TASKBOARD"));
-    assertTrue(project.getDescription().equals("Project description"));
-  }
+    public void getBeanWithConstructorInjection() {
+      assertTrue(appCtx.containsBean("projectFromConstructor"));
+      Project project = (Project)appCtx.getBean("projectFromConstructor");
+      assertTrue(project.getId() == 1L);
+      assertTrue(project.getName().equals("My taskboards"));
+      assertTrue(project.getCodeName().equals("TASKBOARD"));
+      assertTrue(project.getDescription().equals("Project description"));
+    }
 
   @Test
-  public void getAnotherBeanWithConstructor(){
-    User user = appCtx.getBean(User.class);
-    assertTrue(user.getId() == 100L);
-    assertTrue(user.getUsername().equals("makingdevs"));
-    assertTrue(user.isEnabled());
-  }
+    public void getAnotherBeanWithConstructor(){
+      User user = appCtx.getBean(User.class);
+      assertTrue(user.getId() == 100L);
+      assertTrue(user.getUsername().equals("makingdevs"));
+      assertTrue(user.isEnabled());
+    }
 
 }
 ----
@@ -172,26 +173,26 @@ TIP: Usa mayormente la inyección por setters, pues es díficil de mantener una 
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="projectFromConstructor" class="com.makingdevs.model.Project">
-    <property name="id" value="1"/>
-    <property name="name" value="My taskboards"/>
-    <property name="codeName" value="TASKBOARD"/>
-    <property name="description" value="Project description"/>
-  </bean>
+<bean id="projectFromConstructor" class="com.makingdevs.model.Project">
+<property name="id" value="1"/>
+<property name="name" value="My taskboards"/>
+<property name="codeName" value="TASKBOARD"/>
+<property name="description" value="Project description"/>
+</bean>
 
-  <bean id="userFromConstructor" class="com.makingdevs.model.User">
-    <property name="id" value="100"/>
-    <property name="username">
-      <value>makingdevs</value>
-    </property>
-    <property name="enabled" value="true"/>
-    <property name="dateCreated">
-      <bean class="java.util.Date" />
-    </property>
-  </bean>
+<bean id="userFromConstructor" class="com.makingdevs.model.User">
+<property name="id" value="100"/>
+<property name="username">
+<value>makingdevs</value>
+</property>
+<property name="enabled" value="true"/>
+<property name="dateCreated">
+<bean class="java.util.Date" />
+</property>
+</bean>
 
 </beans>
 ----
@@ -218,31 +219,31 @@ public class SetterInjectionTest {
   private ApplicationContext appCtx;
 
   @Before
-  public void setup(){
-    // Look ma! String array.
-    String[] configurations = {"com/makingdevs/practica5/SetterInjectionAppCtx.xml"};
-    appCtx = new ClassPathXmlApplicationContext(configurations);
-    assertNotNull(appCtx);
-  }
+    public void setup(){
+      // Look ma! String array.
+      String[] configurations = {"com/makingdevs/practica5/SetterInjectionAppCtx.xml"};
+      appCtx = new ClassPathXmlApplicationContext(configurations);
+      assertNotNull(appCtx);
+    }
 
   @Test
-  public void getBeanWithConstructorInjection() {
-    assertTrue(appCtx.containsBean("projectFromConstructor"));
-    Project project = (Project)appCtx.getBean("projectFromConstructor");
-    assertTrue(project.getId() == 1L);
-    assertTrue(project.getName().equals("My taskboards"));
-    assertTrue(project.getCodeName().equals("TASKBOARD"));
-    assertTrue(project.getDescription().equals("Project description"));
-  }
+    public void getBeanWithConstructorInjection() {
+      assertTrue(appCtx.containsBean("projectFromConstructor"));
+      Project project = (Project)appCtx.getBean("projectFromConstructor");
+      assertTrue(project.getId() == 1L);
+      assertTrue(project.getName().equals("My taskboards"));
+      assertTrue(project.getCodeName().equals("TASKBOARD"));
+      assertTrue(project.getDescription().equals("Project description"));
+    }
 
   @Test
-  public void getAnotherBeanWithConstructor(){
-    User user = appCtx.getBean(User.class);
-    assertTrue(user.getId() == 100L);
-    assertTrue(user.getUsername().equals("makingdevs"));
-    assertTrue(user.isEnabled());
-    assertNotNull(user.getDateCreated());
-  }
+    public void getAnotherBeanWithConstructor(){
+      User user = appCtx.getBean(User.class);
+      assertTrue(user.getId() == 100L);
+      assertTrue(user.getUsername().equals("makingdevs"));
+      assertTrue(user.isEnabled());
+      assertNotNull(user.getDateCreated());
+    }
 
 }
 ----
@@ -257,36 +258,36 @@ WARNING: Las clases de dominio no se benefician de la inyección de dependencias
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="taskDescription1" class="java.lang.String">
-    <constructor-arg value="Create schema" />
-  </bean>
+<bean id="taskDescription1" class="java.lang.String">
+<constructor-arg value="Create schema" />
+</bean>
 
-  <bean id="task1" class="com.makingdevs.model.Task">
-    <property name="id" value="1" />
-    <property name="description" ref="taskDescription1" />
-    <property name="status">
-      <value type="com.makingdevs.model.TaskStatus">
-        TODO
-      </value>
-    </property>
-    <property name="userStory" ref="userStory"/>
-  </bean>
+<bean id="task1" class="com.makingdevs.model.Task">
+<property name="id" value="1" />
+<property name="description" ref="taskDescription1" />
+<property name="status">
+<value type="com.makingdevs.model.TaskStatus">
+TODO
+</value>
+</property>
+<property name="userStory" ref="userStory"/>
+</bean>
 
-  <bean id="task2" class="com.makingdevs.model.Task">
-    <property name="id" value="2" />
-    <property name="description" value="Create folder structure" />
-    <property name="status">
-      <value type="com.makingdevs.model.TaskStatus">
-        TODO
-      </value>
-    </property>
-    <property name="userStory">
-      <null/>
-    </property>
-  </bean>
+<bean id="task2" class="com.makingdevs.model.Task">
+<property name="id" value="2" />
+<property name="description" value="Create folder structure" />
+<property name="status">
+<value type="com.makingdevs.model.TaskStatus">
+TODO
+</value>
+</property>
+<property name="userStory">
+<null/>
+</property>
+</bean>
 
 </beans>
 ----
@@ -297,49 +298,49 @@ WARNING: Las clases de dominio no se benefician de la inyección de dependencias
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="userStory" class="com.makingdevs.model.UserStory">
-    <property name="priority" value="1" />
-    <property name="effort" value="3" />
-    <property name="tasks">
-      <array>
-        <ref bean="task1" />
-        <null />
-        <ref bean="task2" />
-        <bean id="task3" class="com.makingdevs.model.Task">
-          <property name="id" value="3" />
-          <property name="description" value="Initialize configuration" />
-          <property name="status">
-            <value type="com.makingdevs.model.TaskStatus">
-              TODO
-            </value>
-          </property>
-        </bean>
-      </array>
-    </property>
-  </bean>
+<bean id="userStory" class="com.makingdevs.model.UserStory">
+<property name="priority" value="1" />
+<property name="effort" value="3" />
+<property name="tasks">
+<array>
+<ref bean="task1" />
+<null />
+<ref bean="task2" />
+<bean id="task3" class="com.makingdevs.model.Task">
+<property name="id" value="3" />
+<property name="description" value="Initialize configuration" />
+<property name="status">
+<value type="com.makingdevs.model.TaskStatus">
+TODO
+</value>
+</property>
+</bean>
+</array>
+</property>
+</bean>
 
-  <bean class="com.makingdevs.model.Project">
-    <property name="codeName" value="TASKBOARD" />
-    <property name="name" value="My Taskboard" />
-    <property name="id" value="2" />
-    <property name="userStories">
-      <array>
-        <ref bean="userStory" />
-      </array>
-    </property>
-    <property name="participants">
-      <set>
-        <bean class="com.makingdevs.model.User">
-          <property name="username" value="makingdevs" />
-          <property name="enabled" value="true" />
-          <property name="id" value="12" />
-        </bean>
-      </set>
-    </property>
-  </bean>
+<bean class="com.makingdevs.model.Project">
+<property name="codeName" value="TASKBOARD" />
+<property name="name" value="My Taskboard" />
+<property name="id" value="2" />
+<property name="userStories">
+<array>
+<ref bean="userStory" />
+</array>
+</property>
+<property name="participants">
+<set>
+<bean class="com.makingdevs.model.User">
+<property name="username" value="makingdevs" />
+<property name="enabled" value="true" />
+<property name="id" value="12" />
+</bean>
+</set>
+</property>
+</bean>
 
 </beans>
 ----
@@ -367,30 +368,30 @@ public class CollaboratorInjectionTest {
   private ApplicationContext appCtx;
 
   @Before
-  public void setup(){
-    String[] configurations = {
+    public void setup(){
+      String[] configurations = {
         "com/makingdevs/practica6/CollaboratorInjectionAppCtx.xml",
         "com/makingdevs/practica6/AnotherCollaboratorInjectionAppCtx.xml"
-        };
-    appCtx = new ClassPathXmlApplicationContext(configurations);
-    assertNotNull(appCtx);
-  }
+      };
+      appCtx = new ClassPathXmlApplicationContext(configurations);
+      assertNotNull(appCtx);
+    }
 
   @Test
-  public void getBeanWithDependencies() {
-    Project project = appCtx.getBean(Project.class);
-    assertTrue(project.getId() == 2L);
-    assertTrue(project.getCodeName().equals("TASKBOARD"));
-    assertTrue(project.getUserStories().size() == 1);
-    assertTrue(project.getParticipants().size() == 1);
-    User user = project.getParticipants().get(0);
-    assertTrue(user.getUsername().equals("makingdevs"));
-    UserStory userStory = project.getUserStories().get(0);
-    assertTrue(userStory.getEffort() == 3);
-    assertTrue(userStory.getTasks().size() == 4);
-    assertTrue(userStory.getTasks().contains(null));
-    // Wherever you want...
-  }
+    public void getBeanWithDependencies() {
+      Project project = appCtx.getBean(Project.class);
+      assertTrue(project.getId() == 2L);
+      assertTrue(project.getCodeName().equals("TASKBOARD"));
+      assertTrue(project.getUserStories().size() == 1);
+      assertTrue(project.getParticipants().size() == 1);
+      User user = project.getParticipants().get(0);
+      assertTrue(user.getUsername().equals("makingdevs"));
+      UserStory userStory = project.getUserStories().get(0);
+      assertTrue(userStory.getEffort() == 3);
+      assertTrue(userStory.getTasks().size() == 4);
+      assertTrue(userStory.getTasks().contains(null));
+      // Wherever you want...
+    }
 
 }
 ----
@@ -447,48 +448,48 @@ public class MultiPropertiesBean {
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="tres" class="java.lang.Integer">
-   <constructor-arg value="3"/>
-  </bean>
+<bean id="tres" class="java.lang.Integer">
+<constructor-arg value="3"/>
+</bean>
 
-  <bean id="multiPropertiesBean" class="com.makingdevs.practica6.MultiPropertiesBean">
-    <property name="aMap">
-      <map>
-        <entry key="Uno"><value>1</value></entry>
-        <entry key="Dos" value="2"></entry>
-        <entry key="Uno" value-ref="tres"/>
-        <entry key="Tres" value-ref="tres"/>
-      </map>
-    </property>
-    <property name="multiLine">
-      <array>
-        <value>Welcome!!!</value>
-        <value>You're MakingDevs...</value>
-        <value>And you're here because...</value>
-        <value>You want to be a better developer!</value>
-      </array>
-    </property>
-    <property name="primeNumbers">
-      <set>
-        <value>1</value>
-        <value>3</value>
-        <value>5</value>
-        <value>7</value>
-        <value>11</value>
-        <value>13</value>
-      </set>
-    </property>
-    <property name="courseProperties">
-      <props>
-        <prop key="SPRING-ESSENTIALS">Diseño de aplicaciones con Spring</prop>
-        <prop key="SPRING-DATA_ACCESS">Acceso a datos con Spring</prop>
-        <prop key="SPRING-WEB">Desarrollo Web con Spring</prop>
-      </props>
-    </property>
-  </bean>
+<bean id="multiPropertiesBean" class="com.makingdevs.practica6.MultiPropertiesBean">
+<property name="aMap">
+<map>
+<entry key="Uno"><value>1</value></entry>
+<entry key="Dos" value="2"></entry>
+<entry key="Uno" value-ref="tres"/>
+<entry key="Tres" value-ref="tres"/>
+</map>
+</property>
+<property name="multiLine">
+<array>
+<value>Welcome!!!</value>
+<value>You're MakingDevs...</value>
+<value>And you're here because...</value>
+<value>You want to be a better developer!</value>
+</array>
+</property>
+<property name="primeNumbers">
+<set>
+<value>1</value>
+<value>3</value>
+<value>5</value>
+<value>7</value>
+<value>11</value>
+<value>13</value>
+</set>
+</property>
+<property name="courseProperties">
+<props>
+<prop key="SPRING-ESSENTIALS">Diseño de aplicaciones con Spring</prop>
+<prop key="SPRING-DATA_ACCESS">Acceso a datos con Spring</prop>
+<prop key="SPRING-WEB">Desarrollo Web con Spring</prop>
+</props>
+</property>
+</bean>
 
 </beans>
 ----
@@ -512,23 +513,23 @@ public class MultiPropertiesCollaboratorInjectionTest {
   private ApplicationContext appCtx;
 
   @Before
-  public void setup() {
-    String[] configurations = { "com/makingdevs/practica6/MoreInjectedBeansAppCtx.xml" };
-    appCtx = new ClassPathXmlApplicationContext(configurations);
-    assertNotNull(appCtx);
-  }
+    public void setup() {
+      String[] configurations = { "com/makingdevs/practica6/MoreInjectedBeansAppCtx.xml" };
+      appCtx = new ClassPathXmlApplicationContext(configurations);
+      assertNotNull(appCtx);
+    }
 
   @Test
-  public void getBeanWitMultiProperties() {
-    MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
-    assertTrue(multi.getaMap().size() == 3);
-    assertTrue(multi.getaMap().containsKey("Uno"));
-    assertTrue(multi.getMultiLine().size() == 4);
-    assertTrue(multi.getPrimeNumbers().size() == 6);
-    assertTrue(multi.getCourseProperties().size() == 3);
-    assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
-    // Wherever you want...
-  }
+    public void getBeanWitMultiProperties() {
+      MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
+      assertTrue(multi.getaMap().size() == 3);
+      assertTrue(multi.getaMap().containsKey("Uno"));
+      assertTrue(multi.getMultiLine().size() == 4);
+      assertTrue(multi.getPrimeNumbers().size() == 6);
+      assertTrue(multi.getCourseProperties().size() == 3);
+      assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
+      // Wherever you want...
+    }
 
 }
 ----
@@ -561,47 +562,47 @@ El contenedor de Spring valida la configuración de cada bean al momento de que 
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
-  <util:properties id="courseProperties" location="com/makingdevs/practica7/externalProperties.properties"/>
+<util:properties id="courseProperties" location="com/makingdevs/practica7/externalProperties.properties"/>
 
-  <bean id="tres" class="java.lang.Integer">
-    <constructor-arg value="3" />
-  </bean>
+<bean id="tres" class="java.lang.Integer">
+<constructor-arg value="3" />
+</bean>
 
-  <util:map id="naturalNumbers">
-    <entry key="Uno">
-      <value>1</value>
-    </entry>
-    <entry key="Dos" value="2"></entry>
-    <entry key="Uno" value-ref="tres" />
-    <entry key="Tres" value-ref="tres" />
-  </util:map>
+<util:map id="naturalNumbers">
+<entry key="Uno">
+<value>1</value>
+</entry>
+<entry key="Dos" value="2"></entry>
+<entry key="Uno" value-ref="tres" />
+<entry key="Tres" value-ref="tres" />
+</util:map>
 
-  <util:list id="multiLine">
-    <value>Welcome!!!</value>
-    <value>You're MakingDevs...</value>
-    <value>And you're here because...</value>
-    <value>You want to be a better developer!</value>
-  </util:list>
+<util:list id="multiLine">
+<value>Welcome!!!</value>
+<value>You're MakingDevs...</value>
+<value>And you're here because...</value>
+<value>You want to be a better developer!</value>
+</util:list>
 
-  <util:set id="primeNumbers">
-    <value>1</value>
-    <value>3</value>
-    <value>5</value>
-    <value>7</value>
-    <value>11</value>
-    <value>13</value>
-  </util:set>
+<util:set id="primeNumbers">
+<value>1</value>
+<value>3</value>
+<value>5</value>
+<value>7</value>
+<value>11</value>
+<value>13</value>
+</util:set>
 
-  <bean id="multiPropertiesBean" class="com.makingdevs.practica6.MultiPropertiesBean">
-    <property name="aMap" ref="naturalNumbers"/>
-    <property name="multiLine" ref="multiLine"/>
-    <property name="primeNumbers" ref="primeNumbers"/>
-    <property name="courseProperties" ref="courseProperties"/>
-  </bean>
+<bean id="multiPropertiesBean" class="com.makingdevs.practica6.MultiPropertiesBean">
+<property name="aMap" ref="naturalNumbers"/>
+<property name="multiLine" ref="multiLine"/>
+<property name="primeNumbers" ref="primeNumbers"/>
+<property name="courseProperties" ref="courseProperties"/>
+</bean>
 
 </beans>
 ----
@@ -627,23 +628,23 @@ public class MultiPropertiesWithNamespaceCollaboratorInjectionTest {
   private AplicationContext appCtx;
 
   @Before
-  public void setup() {
-    String[] configurations = { "com/makingdevs/practica7/UsingNamespacesAppCtx.xml" };
-    appCtx = new ClassPathXmlApplicationContext(configurations);
-    assertNotNull(appCtx);
-  }
+    public void setup() {
+      String[] configurations = { "com/makingdevs/practica7/UsingNamespacesAppCtx.xml" };
+      appCtx = new ClassPathXmlApplicationContext(configurations);
+      assertNotNull(appCtx);
+    }
 
   @Test
-  public void getBeanWitMultiProperties() {
-    MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
-    assertTrue(multi.getaMap().size() == 3);
-    assertTrue(multi.getaMap().containsKey("Uno"));
-    assertTrue(multi.getMultiLine().size() == 4);
-    assertTrue(multi.getPrimeNumbers().size() == 6);
-    assertTrue(multi.getCourseProperties().size() == 3);
-    assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
-    // Wherever you want...
-  }
+    public void getBeanWitMultiProperties() {
+      MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
+      assertTrue(multi.getaMap().size() == 3);
+      assertTrue(multi.getaMap().containsKey("Uno"));
+      assertTrue(multi.getMultiLine().size() == 4);
+      assertTrue(multi.getPrimeNumbers().size() == 6);
+      assertTrue(multi.getCourseProperties().size() == 3);
+      assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
+      // Wherever you want...
+    }
 
 }
 ----
@@ -689,14 +690,14 @@ La configuración por anotaciones no esta habilitada por default, por lo tanto, 
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:annotation-config/>
+<context:annotation-config/>
 </beans>
 ----
 
@@ -741,9 +742,9 @@ public class TaskServiceImpl implements TaskService {
   // @Inject
   // @Resource
   @Autowired
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
+    public void setUserService(UserService userService) {
+      this.userService = userService;
+    }
 
   public UserService getUserService() {
     return userService;
@@ -792,9 +793,9 @@ public class UserStoryServiceImpl implements UserStoryService {
   // @Inject
   // @Resource
   @Autowired
-  public UserStoryServiceImpl(ProjectService projectService){
-    this.projectService =  projectService;
-  }
+    public UserStoryServiceImpl(ProjectService projectService){
+      this.projectService =  projectService;
+    }
 
   public ProjectService getProjectService() {
     return projectService;
@@ -810,17 +811,17 @@ public class UserStoryServiceImpl implements UserStoryService {
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-  <context:annotation-config />
+<context:annotation-config />
 
-  <bean class="com.makingdevs.practica8.ProjectServiceImpl"/>
-  <bean class="com.makingdevs.practica8.TaskServiceImpl"/>
-  <bean class="com.makingdevs.practica8.UserServiceImpl"/>
-  <bean class="com.makingdevs.practica8.UserStoryServiceImpl"/>
+<bean class="com.makingdevs.practica8.ProjectServiceImpl"/>
+<bean class="com.makingdevs.practica8.TaskServiceImpl"/>
+<bean class="com.makingdevs.practica8.UserServiceImpl"/>
+<bean class="com.makingdevs.practica8.UserStoryServiceImpl"/>
 </beans>
 ----
 
@@ -845,41 +846,41 @@ import com.makingdevs.services.UserService;
 import com.makingdevs.services.UserStoryService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"AnnotationConfigAppCtx.xml"})
-public class AnnotationConfigBeansTests {
+  @ContextConfiguration(locations={"AnnotationConfigAppCtx.xml"})
+  public class AnnotationConfigBeansTests {
 
-  @Autowired
-  ApplicationContext applicationContext;
+    @Autowired
+      ApplicationContext applicationContext;
 
-  @Test
-  public void testAppCtx() {
-    notNull(applicationContext);
+    @Test
+      public void testAppCtx() {
+        notNull(applicationContext);
+      }
+
+    @Test
+      public void testBeans(){
+        ProjectService projectService = applicationContext.getBean(ProjectService.class);
+        TaskService taskService= applicationContext.getBean(TaskService.class);
+        UserService userService = applicationContext.getBean(UserService.class);
+        UserStoryService userStoryService = applicationContext.getBean(UserStoryService.class);
+
+        notNull(projectService);
+        notNull(taskService);
+        notNull(userService);
+        notNull(userStoryService);
+      }
+
+    @Test
+      public void testImplementedBeans(){
+        TaskServiceImpl taskServiceImpl = applicationContext.getBean(TaskServiceImpl.class);
+        notNull(taskServiceImpl);
+        notNull(taskServiceImpl.getUserService());
+
+        UserStoryServiceImpl userStoryServiceImpl = applicationContext.getBean(UserStoryServiceImpl.class);
+        notNull(userStoryServiceImpl);
+        notNull(userStoryServiceImpl.getProjectService());
+      }
   }
-
-  @Test
-  public void testBeans(){
-    ProjectService projectService = applicationContext.getBean(ProjectService.class);
-    TaskService taskService= applicationContext.getBean(TaskService.class);
-    UserService userService = applicationContext.getBean(UserService.class);
-    UserStoryService userStoryService = applicationContext.getBean(UserStoryService.class);
-
-    notNull(projectService);
-    notNull(taskService);
-    notNull(userService);
-    notNull(userStoryService);
-  }
-
-  @Test
-  public void testImplementedBeans(){
-    TaskServiceImpl taskServiceImpl = applicationContext.getBean(TaskServiceImpl.class);
-    notNull(taskServiceImpl);
-    notNull(taskServiceImpl.getUserService());
-
-    UserStoryServiceImpl userStoryServiceImpl = applicationContext.getBean(UserStoryServiceImpl.class);
-    notNull(userStoryServiceImpl);
-    notNull(userStoryServiceImpl.getProjectService());
-  }
-}
 ----
 
 ### Descubriendo beans de forma automática
@@ -895,12 +896,12 @@ Usamos el elemento `<context:component-scan base-package=""/>` dentro del archiv
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-  <context:component-scan base-package="com.makingdevs.practica9"/>
+<context:component-scan base-package="com.makingdevs.practica9"/>
 </beans>
 ----
 
@@ -948,7 +949,7 @@ import com.makingdevs.services.UserService;
 public class TaskServiceImpl implements TaskService {
 
   @Autowired
-  private UserService userService;
+    private UserService userService;
 
   public UserService getUserService() {
     return userService;
@@ -996,7 +997,7 @@ import com.makingdevs.services.UserStoryService;
 public class UserStoryServiceImpl implements UserStoryService {
 
   @Autowired
-  private ProjectService projectService;
+    private ProjectService projectService;
 
   public ProjectService getProjectService() {
     return projectService;
@@ -1027,42 +1028,42 @@ import com.makingdevs.services.UserService;
 import com.makingdevs.services.UserStoryService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"ComponentScanAppCtx.xml"})
-public class ComponentScanBeansTests {
+  @ContextConfiguration(locations={"ComponentScanAppCtx.xml"})
+  public class ComponentScanBeansTests {
 
-  // You must inject abstractions, like this.
-  @Autowired
-  TaskService taskService;
-  @Autowired
-  ProjectService projectService;
-  @Autowired
-  UserService userService;
-  @Autowired
-  UserStoryService userStoryService;
+    // You must inject abstractions, like this.
+    @Autowired
+      TaskService taskService;
+    @Autowired
+      ProjectService projectService;
+    @Autowired
+      UserService userService;
+    @Autowired
+      UserStoryService userStoryService;
 
-  // This is bad practice, is only for demo purposes.
-  @Autowired
-  TaskServiceImpl taskServiceImpl;
-  @Autowired
-  UserStoryServiceImpl userStoryServiceImpl;
+    // This is bad practice, is only for demo purposes.
+    @Autowired
+      TaskServiceImpl taskServiceImpl;
+    @Autowired
+      UserStoryServiceImpl userStoryServiceImpl;
 
-  @Test
-  public void testBeans(){
+    @Test
+      public void testBeans(){
 
-    notNull(projectService);
-    notNull(taskService);
-    notNull(userService);
-    notNull(userStoryService);
+        notNull(projectService);
+        notNull(taskService);
+        notNull(userService);
+        notNull(userStoryService);
+      }
+
+    @Test
+      public void testImplementedBeans(){
+        notNull(taskServiceImpl);
+        notNull(taskServiceImpl.getUserService());
+        notNull(userStoryServiceImpl);
+        notNull(userStoryServiceImpl.getProjectService());
+      }
   }
-
-  @Test
-  public void testImplementedBeans(){
-    notNull(taskServiceImpl);
-    notNull(taskServiceImpl.getUserService());
-    notNull(userStoryServiceImpl);
-    notNull(userStoryServiceImpl.getProjectService());
-  }
-}
 ----
 
 ## Configuración con JavaConfig
@@ -1193,31 +1194,31 @@ import com.makingdevs.services.UserStoryService;
 public class JavaBeanConfiguration {
 
   @Bean
-  public ProjectService projectService(){
-    ProjectService projectService = new ProjectServiceImpl();
-    return projectService;
-  }
+    public ProjectService projectService(){
+      ProjectService projectService = new ProjectServiceImpl();
+      return projectService;
+    }
 
   @Bean
-  public UserStoryService userStoryService(){
-    UserStoryServiceImpl userStoryServiceImpl = new UserStoryServiceImpl();
-    // Setter injection
-    userStoryServiceImpl.setProjectService(projectService());
-    return userStoryServiceImpl;
-  }
+    public UserStoryService userStoryService(){
+      UserStoryServiceImpl userStoryServiceImpl = new UserStoryServiceImpl();
+      // Setter injection
+      userStoryServiceImpl.setProjectService(projectService());
+      return userStoryServiceImpl;
+    }
 
   @Bean
-  public UserService userService() {
-    UserService userService = new UserServiceImpl();
-    return userService;
-  }
+    public UserService userService() {
+      UserService userService = new UserServiceImpl();
+      return userService;
+    }
 
   @Bean
-  public TaskService taskService(){
-    // Constructor injection
-    TaskService taskService = new TaskServiceImpl(userService());
-    return taskService;
-  }
+    public TaskService taskService(){
+      // Constructor injection
+      TaskService taskService = new TaskServiceImpl(userService());
+      return taskService;
+    }
 }
 ----
 
@@ -1230,13 +1231,13 @@ package com.makingdevs.practica10;
 // Other imports
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//Hey look the configuration, It's Java!!!
+  //Hey look the configuration, It's Java!!!
 @ContextConfiguration(classes = { JavaBeanConfiguration.class })
-public class JavaBeansConfigurationTests {
+  public class JavaBeansConfigurationTests {
 
-  // Same as ComponentScanBeansTests
+    // Same as ComponentScanBeansTests
 
-}
+  }
 ----
 
 ### Inyección de configuración
@@ -1295,16 +1296,16 @@ import com.makingdevs.services.UserService;
 public class BeanConfigurationOne implements BeanConfigurationContractOne {
 
   @Bean
-  public ProjectService projectService(){
-    ProjectService projectService = new ProjectServiceImpl();
-    return projectService;
-  }
+    public ProjectService projectService(){
+      ProjectService projectService = new ProjectServiceImpl();
+      return projectService;
+    }
 
   @Bean
-  public UserService userService() {
-    UserService userService = new UserServiceImpl();
-    return userService;
-  }
+    public UserService userService() {
+      UserService userService = new UserServiceImpl();
+      return userService;
+    }
 
 }
 ----
@@ -1325,31 +1326,31 @@ import com.makingdevs.practica10.UserStoryServiceImpl;
 import com.makingdevs.services.TaskService;
 import com.makingdevs.services.UserStoryService;
 
-@Configuration
+  @Configuration
 @Import(BeanConfigurationOne.class) // Look ma, importing configuration
-public class BeanConfigurationTwo implements BeanConfigurationContractTwo{
+  public class BeanConfigurationTwo implements BeanConfigurationContractTwo{
 
-  // WTF!, are you serious? Inject configuration?
-  @Autowired
-  BeanConfigurationContractOne beanConfigurationContractOne;
+    // WTF!, are you serious? Inject configuration?
+    @Autowired
+      BeanConfigurationContractOne beanConfigurationContractOne;
 
-  @Bean
-  public UserStoryService userStoryService(){
-    UserStoryServiceImpl userStoryServiceImpl = new UserStoryServiceImpl();
-    // Setter injection
-    userStoryServiceImpl.setProjectService(beanConfigurationContractOne.projectService());
-    return userStoryServiceImpl;
+    @Bean
+      public UserStoryService userStoryService(){
+        UserStoryServiceImpl userStoryServiceImpl = new UserStoryServiceImpl();
+        // Setter injection
+        userStoryServiceImpl.setProjectService(beanConfigurationContractOne.projectService());
+        return userStoryServiceImpl;
+      }
+
+
+    @Bean
+      public TaskService taskService(){
+        // Constructor injection
+        TaskService taskService = new TaskServiceImpl(beanConfigurationContractOne.userService());
+        return taskService;
+      }
+
   }
-
-
-  @Bean
-  public TaskService taskService(){
-    // Constructor injection
-    TaskService taskService = new TaskServiceImpl(beanConfigurationContractOne.userService());
-    return taskService;
-  }
-
-}
 ----
 
 Ahora solo necesitaremos usar esta última configuración en nuestra última prueba para determinar que nuestro wiring es correcto: `@ContextConfiguration(classes = { BeanConfigurationTwo.class })`
@@ -1369,13 +1370,13 @@ import org.springframework.context.annotation.ImportResource;
 
 import com.makingdevs.practica11.BeanConfigurationTwo;
 
-@Configuration
+  @Configuration
 @Import(BeanConfigurationTwo.class)
-@ImportResource({ "classpath:/com/makingdevs/practica6/MoreInjectedBeansAppCtx.xml" })
-@ComponentScan(basePackages = { "com.makingdevs.practica12" })
-public class GlobalConfiguration {
+  @ImportResource({ "classpath:/com/makingdevs/practica6/MoreInjectedBeansAppCtx.xml" })
+  @ComponentScan(basePackages = { "com.makingdevs.practica12" })
+  public class GlobalConfiguration {
 
-}
+  }
 ----
 
 *MultiStyleConfiguration.xml*
@@ -1384,12 +1385,12 @@ public class GlobalConfiguration {
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-  <context:component-scan base-package="com.makingdevs.practica12"/>
+<context:component-scan base-package="com.makingdevs.practica12"/>
 </beans>
 ----
 
@@ -1416,51 +1417,51 @@ import com.makingdevs.services.UserService;
 import com.makingdevs.services.UserStoryService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations={"MultiStyleConfiguration.xml"})
+  //@ContextConfiguration(locations={"MultiStyleConfiguration.xml"})
 @ContextConfiguration(classes={GlobalConfiguration.class})
-public class MultiStyleConfigurationTests {
+  public class MultiStyleConfigurationTests {
 
-  @Autowired
-  TaskService taskService;
-  @Autowired
-  ProjectService projectService;
-  @Autowired
-  UserService userService;
-  @Autowired
-  UserStoryService userStoryService;
+    @Autowired
+      TaskService taskService;
+    @Autowired
+      ProjectService projectService;
+    @Autowired
+      UserService userService;
+    @Autowired
+      UserStoryService userStoryService;
 
-  @Autowired
-  ApplicationContext appCtx;
+    @Autowired
+      ApplicationContext appCtx;
 
-  @Autowired
-  UserStoreImpl userStoreImpl;
+    @Autowired
+      UserStoreImpl userStoreImpl;
 
-  @Test
-  public void testBeans() {
-    notNull(projectService);
-    notNull(taskService);
-    notNull(userService);
-    notNull(userStoryService);
+    @Test
+      public void testBeans() {
+        notNull(projectService);
+        notNull(taskService);
+        notNull(userService);
+        notNull(userStoryService);
+      }
+
+    @Test
+      public void getBeanWitMultiProperties() {
+        MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
+        assertTrue(multi.getaMap().size() == 3);
+        assertTrue(multi.getaMap().containsKey("Uno"));
+        assertTrue(multi.getMultiLine().size() == 4);
+        assertTrue(multi.getPrimeNumbers().size() == 6);
+        assertTrue(multi.getCourseProperties().size() == 3);
+        assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
+        // Wherever you want...
+      }
+
+    @Test
+      public void getAnotherExtraBean(){
+        notNull(userStoreImpl);
+      }
+
   }
-
-  @Test
-  public void getBeanWitMultiProperties() {
-    MultiPropertiesBean multi = appCtx.getBean(MultiPropertiesBean.class);
-    assertTrue(multi.getaMap().size() == 3);
-    assertTrue(multi.getaMap().containsKey("Uno"));
-    assertTrue(multi.getMultiLine().size() == 4);
-    assertTrue(multi.getPrimeNumbers().size() == 6);
-    assertTrue(multi.getCourseProperties().size() == 3);
-    assertTrue(multi.getCourseProperties().get("SPRING-WEB").equals("Desarrollo Web con Spring"));
-    // Wherever you want...
-  }
-
-  @Test
-  public void getAnotherExtraBean(){
-    notNull(userStoreImpl);
-  }
-
-}
 ----
 
 ## Configuración con Groovy
@@ -1489,31 +1490,31 @@ class GroovyAppCtxTests {
 
   def appCtx
 
-  @Before
-  void before() {
-    appCtx = new GenericApplicationContext()
-    def reader = new GroovyBeanDefinitionReader(appCtx)
+    @Before
+    void before() {
+      appCtx = new GenericApplicationContext()
+        def reader = new GroovyBeanDefinitionReader(appCtx)
 
-    reader.beans {
-      projectService(ProjectServiceImpl)
-      userService(UserServiceImpl)
-      userStoryService(UserStoryServiceImpl){
-        projectService = projectService
-      }
-      taskService(TaskServiceImpl){
-         userService = userService
-      }
+        reader.beans {
+          projectService(ProjectServiceImpl)
+            userService(UserServiceImpl)
+            userStoryService(UserStoryServiceImpl){
+              projectService = projectService
+            }
+          taskService(TaskServiceImpl){
+            userService = userService
+          }
+        }
+
+      appCtx.refresh()
     }
 
-    appCtx.refresh()
-  }
-
   @Test
-  public void testAppCtx() {
-    def taskService = appCtx.getBean("taskService")
-    notNull(taskService)
-    notNull(taskService.userService)
-  }
+    public void testAppCtx() {
+      def taskService = appCtx.getBean("taskService")
+        notNull(taskService)
+        notNull(taskService.userService)
+    }
 
 }
 ----
