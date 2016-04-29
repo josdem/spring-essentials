@@ -538,7 +538,7 @@ public class MultiPropertiesCollaboratorInjectionTest {
 * El `ApplicationContext` es creado e inicializado con la configuración de los metadatos que describe todos los beans. Los metadatos pueden ser XML, Java, Groovy o anotaciones.
 * Para cada bean, sus dependencias son expresadas en forma de propiedades, argumentos del constructor, o argumentos de un método de factoría estática si se está usando en lugar de un constructor. Dichas dependencias son proveídas al bean, cuando el bean es creado.
 * Cada propiedad o argumento del constructor es una definición actual del valor a establecer, o una referencia a otro bean en el contenedor.
-* Cada propiedad o argumento del constructor el cual es un valor es convertido de su formato específico al tipo actual de la propiedad o argumento del constructor. Por default Spring trbajá muy bien con los tipos más simples que tenemos en la plataforma Java.
+* Cada propiedad o argumento del constructor el cual es un valor es convertido de su formato específico al tipo actual de la propiedad o argumento del constructor. Por default Spring trabajá muy bien con los tipos más simples que tenemos en la plataforma Java.
 
 El contenedor de Spring valida la configuración de cada bean al momento de que se va creando el contenedor, incluyendo las referencias que tiene un bean hacia otros beans. Sin embargo, las propiedades de los beans por si mismas no son establecidas hasta que hayan sido creadas.
 
@@ -549,7 +549,7 @@ El contenedor de Spring valida la configuración de cada bean al momento de que 
 * `context` Viene con elementos para configurar el application context de Spring, incluyendo la habilidad para autodetectar y auto-alambrar beans y la inyección de los objetos no directamente manejados por Spring.
 * `jee` Ofrece integración con la API de JEE como JNDI y EJB.
 * `jms` Provee de elementos de configuración para declarar messgae-driven POJO’s.
-* `lang` Habilita la declaración de beansque implementan Groovy, JRuby o scripts de BeanShell.
+* `lang` Habilita la declaración de beans que implementan Groovy, JRuby o scripts de BeanShell.
 * `mvc` Habilita las capacidades de Spring MVC como las anotaciones orientadas a controllers, vistas e interceptores.
 * `oxm` Soporta la configuración para las características del mapeo objeto a XML(object-to-XML).
 * `tx` Provee de configuración para transacciones declarativas.
@@ -607,7 +607,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 </beans>
 ----
 
-*MultiPropeirtiesWithNamespaceCollaboratorInjectionTest.java*
+*MultiPropertiesWithNamespaceCollaboratorInjectionTest.java*
 
 [source,java,linenums]
 ----
@@ -658,7 +658,7 @@ TIP: Por default, todos los beans son singletons.
 Cuando el contenedor despacha un bean, siempre manejará la misma instancia del bean. Pero habrá veces en las que tal vez necesites una nueva instancia del bean cada vez que lo pidas. Cuando declaras un <bean> en Spring tienes la opción de definir el alcance del mismo. Entre los alcances que tenemos disponibles podemos mencionar los siguientes:
 
 * `singleton` Alcance para la definición de un bean para una sola instancia por contenedor de Spring.
-* `prototype` Permite a un bean ser instanciado cualqueir número de veces(una vez por uso).
+* `prototype` Permite a un bean ser instanciado cualquier número de veces(una vez por uso).
 * `request` Alcance para la definición de un bean en una solicitud HTTP. Sólo válido con el uso de SpringMVC.
 * `session` Alcance de un dentro de la definición de una sesión HTTP.
 
@@ -672,9 +672,9 @@ El contenedor de Spring puede auto-alambrar relaciones entre beans que colaboran
 * El autowiring puede significativamente reducir la necesidad de especificar propiedades o argumentos del constructor.
 * El autowiring puede actualizar una configuración como los objetos vayan evolucionando. Por ejemplo, si necesitas una dependencia en una clase, dicha dependendencia puede ser satisfecha automáticamente sin la necesidad de modificar la configuración. Muy útil en desarrollo.
 
-#### Modos de autowiring
+### Modos de autowiring
 
-* no - Las dependencias deben ser especificadas vía un elemento `ref` de la decalración del bean.
+* no - Las dependencias deben ser especificadas vía un elemento `ref` de la declaración del bean.
 * byName
 * byType
 * constructor
@@ -1273,7 +1273,7 @@ public interface BeanConfigurationContractTwo {
 }
 ----
 
-Las implementaciones son entonces la definición de la configuración que deseamos par< nuestra aplicación.
+Las implementaciones son entonces la definición de la configuración que deseamos para nuestra aplicación.
 
 *BeanConfigurationOne.java*
 
