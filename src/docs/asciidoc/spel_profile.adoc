@@ -84,7 +84,7 @@ public class SpELInterfaceTests {
 
   @Test
   public void testGetValueFromADifferentContext() {
-    GregorianCalendar calendar = new GregorianCalendar(2013, 6, 12);
+    GregorianCalendar calendar = new GregorianCalendar(2016, 29, 12);
     ExpressionParser parser = new SpelExpressionParser();
     Expression exp = parser.parseExpression("time");
     EvaluationContext context = new StandardEvaluationContext(calendar);
