@@ -103,7 +103,7 @@ Para solucionar el problema, Maven soporta el concepto de “Bill of materials�
 
 ## Administración de dependencias con Gradle
 
-Para usar los repositorios de Spring con Gradle incluye las URL’s apropiadas en la sección de repositorios, y agrega las dependencias a tu gusto:i
+Para usar los repositorios de Spring con Gradle incluye las URL’s apropiadas en la sección de repositorios, y agrega las dependencias a tu gusto.
 
 *build.gradle*
 
