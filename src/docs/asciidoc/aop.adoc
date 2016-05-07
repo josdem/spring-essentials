@@ -1,19 +1,19 @@
 
 # Programación orientada a aspectos
-En software, varias actividades son comúnes a la mayoría de las aplicaciones. Logs, seguridad y la administración de transacciones son importantes, pero dichas acciones ¿deberían ser objetos involucrados dentro la aplicación en uso activo y constante?, o sería mejor si los objetos se enfocarán en los problemas de negocio y dejar ciertos aspectos a ser manejados por algiuien más.
+En software, varias actividades son comúnes a la mayoría de las aplicaciones. Logs, seguridad y la administración de transacciones son importantes, pero dichas acciones ¿deberían ser objetos involucrados dentro la aplicación en uso activo y constante?, o sería mejor si los objetos se enfocarán en los problemas de negocio y dejar ciertos aspectos a ser manejados por alguien más.
 
-En desarrollo de software, las funciones que se extienden a múltiples puntos de una aplicación son llamados _cross cutting concerns_. Típicamente, dichas preocupaciones transversales están conceptualmente separadas(pero a menudi embebebidos) de la lógica de la aplicación. La separación de las preocupaciones transversales de la lógica de negocio es donde la *programación orientada a aspectos* se ocupa bastante bien.
+En desarrollo de software, las funciones que se extienden a múltiples puntos de una aplicación son llamados _cross cutting concerns_. Típicamente, dichas preocupaciones transversales están conceptualmente separadas (pero a menudo embebebidos) de la lógica de la aplicación. La separación de las preocupaciones transversales de la lógica de negocio es donde la *programación orientada a aspectos* se ocupa bastante bien.
 
 TIP: El AOP es usado en Spring para...
 .. proveer servicios empresariales declarativos, especialmente como reemplazo de los servicios EJB's. El servicio más importante es la administración declarativa de transacciones
 ... permitir a los usuarios implementar aspectos personalizados, complementando el uso de POO con AOP.
 
 ## Conceptos esenciales
-Una _preocupación transversal(cross-cutting concern)_ es una funcionalidad que afecta múltiples puntos de una aplicación. Por ejemplo: seguridad, bitácorado, auditoría, medición de benchamrk, manejo de transacciones.
+Una _preocupación transversal (cross-cutting concern)_ es una funcionalidad que afecta múltiples puntos de una aplicación. Por ejemplo: seguridad, bitácorado, auditoría, medición de benchamrk, manejo de transacciones.
 
 Una técnica común en la programación orientada objeto para reusar funcionalidad común es la herencia o la delegación. Pero la herencia puede conducir a una jerarquía de objetos frágiles si la misma clase base se utiliza en toda la aplicación, y la delegación puede ser incómoda porque se pueden requerir complicados llamadas al objeto delegado.
 
-Con AOP, se puede definir la funcionalidad común en un lugar, pero se puede definir de forma declarativa como y donde debe ser aplicado, sin tener que modificar la clase en cuestión. Los beneficios, la lógica de negocion de cada concern está ahora en un lugar, opuesto a ser arrastrado en todo el código base; adicionalmente, nuestros módulos de servicios son ahora más limpios por que sólo tienen nuestra preocupación principal que es la lógica de negocio, y las preocupaciones secundarias han sido movidas a aspectos.
+Con AOP, se puede definir la funcionalidad común en un lugar, pero se puede definir de forma declarativa como y donde debe ser aplicado, sin tener que modificar la clase en cuestión. Los beneficios, la lógica de negocio de cada concern está ahora en un lugar, opuesto a ser arrastrado en todo el código base; adicionalmente, nuestros módulos de servicios son ahora más limpios por que sólo tienen nuestra preocupación principal que es la lógica de negocio, y las preocupaciones secundarias han sido movidas a aspectos.
 
 TIP: Mientras haces el diseño de tu aplicación no consideras el uso de AOP.
 
@@ -45,7 +45,7 @@ Es el objeto siendo avisado por varios por uno o más aspectos. Además conocido
 Es un objeto creado por el framework de AOP en orden para implementar los contratos del aspecto. En Spring, un proxy AOP será un proxy dinámico del JDK o un proxy CGLIB.
 
 ### Weaving
-_Weaving_ es el proceso de aplicar aspectos a un target object para crear un proxy object. Los aspectos son tejidos dentro del target object en los join points específicados. El weaving puedde tomar lugar en varios puntos en el ciclo de vida del target object:
+_Weaving_ es el proceso de aplicar aspectos a un target object para crear un proxy object. Los aspectos son tejidos dentro del target object en los join points específicados. El weaving puede tomar lugar en varios puntos en el ciclo de vida del target object:
 
 * _Compile time_ - Los aspectos son tejidos cuando la clase es compilada. Esto requiere un compilador especial, en el caso de AspecjtJ lo hace de esta forma.
 * _Classload time_ - Los aspectos son tejidos cuando la clase es cargada dentro de la JVM. Esto requiere un ClassLoader especial que mejora el código de byte de la clase antes de ser introducida a la aplicación.
@@ -466,7 +466,7 @@ Adicionalmente, Spring AOP soporta los siguientes designadores de pointcuts de A
 
 TIP: Para una comprensión más completa de la estructura de los pointcuts podemos consultar el link:http://www.eclipse.org/aspectj/doc/released/adk15notebook/index.html[AspectJ 5 Developers Notebook]
 
-*pom.java*
+*CommonPointcut.java*
 
 [source,java,linenums]
 ----
@@ -494,7 +494,7 @@ public class CommonPointcut {
 }
 ----
 
-*pom.java*
+*LogAroundAdvice.java*
 
 [source,java,linenums]
 ----
@@ -523,7 +523,8 @@ public class LogAroundAdvice {
 }
 ----
 
-*pom.java*
+*BenchmarkAroundAdvice.java*
+[source,java,linenums]
 ----
 package com.makingdevs.practica20;
 
